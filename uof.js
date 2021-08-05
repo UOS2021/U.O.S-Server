@@ -1,5 +1,6 @@
 // express 기본 모듈 불러오기
 var express = require('express'), http = require('http'), path = require('path'), mysql = require('mysql');
+const fs = require('fs');
 
 // mysql 기본설정
 const conn = {
@@ -50,24 +51,114 @@ app.post('/post', function(req, res, next){
    			console(message);
    			break;
    		case '0001':
-   			var query_text = "INSERT INTO `customer_account` (`id`, `pw`, `name`, `phone_number`)"
-   			+ "VALUES ('" + message.id + "','" + message.pw + "', '" + message.name + "', '" + message.phone_number +"');";
-   			connection.query(query_text, function (err, result, fields){
-   				if(err){
-   					console.log(err);
+   			var check_overlap_text = "select * from customer_account where id=?";
+   			var res_data_string ='';
+
+   			connection.query(check_overlap_text, message.id , function(err, result, fields){
+   				if(result.length > 0){
+   					console.log('아이디 중복');
+					res_data_string = {response_code: "0002"};
+					var res_data_json = JSON.stringify(res_data_string);
+   					res.json(res_data_json);
    				}
-   				console.log(result);
+   				else{
+   					var insert_text = "INSERT INTO `customer_account` (`id`, `pw`, `name`, `phone`)"
+   					+ "VALUES ('" + message.id + "','" + message.pw + "', '" + message.name + "', '" + message.phone +"');";
+   					connection.query(insert_text, function (err, result, fields){
+   						if(err){
+   							console.log(err);
+   						}
+   						res_data_string = {response_code: "0001"};
+   						var res_data_json = JSON.stringify(res_data_string);
+   						res.json(res_data_json);
+   					});
+   				}
+   				
    			});
+
    			break;
+
    		case '0002':
-   			var query_text = "INSERT INTO `uofpartner` (`id`, `pw`, `name`, `phone_number`, `company_name`, `license_number`, `company_type`, `company_address`)"
-   			+ " VALUES ('" + message.id + "','" + message.pw + "', '" + message.name + "', '" + message.phone_number +"', '" + message.company.name +"', '" + message.company.license_number +"', '" + message.company.type +"', '" + message.company.address +"');";
-   			connection.query(query_text, function (err, result, fields){
-   				if(err){
-   					console.log(err);
+   			var check_overlap_text = "select * from uofpartner_account where id=?";
+   			var res_data_string ='';
+   			connection.query(check_overlap_text, message.id , function(err, result, fields){
+   				if(result.length > 0){
+   					console.log('아이디 중복');
+					res_data_string = {response_code: "0002"};
+					var res_data_json = JSON.stringify(res_data_string);
+   					res.json(res_data_json);
    				}
-   				console.log(result);
+   				else{
+   					var insert_text = "INSERT INTO `uofpartner_account` (`id`, `pw`, `name`, `phone`, `company_name`, `license_number`, `company_type`, `company_address`)"
+   					+ " VALUES ('" + message.id + "','" + message.pw + "', '" + message.name + "', '" + message.phone +"', '" + message.company.name +"', '" + message.company.license_num +"', '" + message.company.type +"', '" + message.company.address +"');";
+   					connection.query(insert_text, function (err, result, fields){
+   						if(err){
+   							console.log(err);
+   						}
+		
+		   				var text = message.company.license_img;
+						var bitmap = Buffer.from(text.toString(), 'base64');
+		   				fs.writeFileSync('qrcode.jpg', bitmap);
+	
+	   					var res_data_string = {response_code: "0001"};
+	   					var res_data_json = JSON.stringify(res_data_string);
+	   					res.json(res_data_json);
+		   			});
+   				}
+   			
    			});
+
+   			break;
+   		case '0003':
+   			var check_overlap_text = "";
+
+   			if(message.type == 'customer'){
+   				check_overlap_text = "select * from customer_account where id=?";
+   			}
+   			else if(message.type == 'uofpartner'){
+   				check_overlap_text = "select * from uofpartner_account where id=?";
+   			}
+   			else{
+   				console.log('로그인 type 오류');
+   			}
+
+   			var res_data_string ='';
+
+   			connection.query(check_overlap_text, message.id , function(err, result, fields){
+   				if(result.length > 0){
+   					var check = 'false';
+   					for(var i =0; i < result.length; i++){
+   						if(result[i].pw == message.pw){
+   							check = 'true';
+   							break;
+   						}
+   					}
+   					if(check == 'true'){
+   						console.log('로그인 성공');
+   						res_data_string = {response_code: "0003"};
+   						
+   					}
+   					else{
+   						console.log('비밀번호 부적합');
+   						res_data_string = {response_code: "0005"};
+   						
+   					}
+					
+   				}
+   				else{
+   					console.log('없는 id');
+   					res_data_string = {response_code: "0004"};
+   					
+   				}
+   				var res_data_json = JSON.stringify(res_data_string);
+   				res.json(res_data_json);
+   				
+   			});
+   			
+   			break;
+
+   		case '0004':
+
    			break;
    		default:
    			console.log(request_code + ' does not exist in request_code.');
@@ -75,12 +166,13 @@ app.post('/post', function(req, res, next){
    			break;
    	}
 
-
+   	/*
    	var res_data_string = {request_code: "0003"};
    	var res_data_json = JSON.stringify(res_data_string);
    	res.json(res_data_json);
+	*/
 
-   	connection.end();
+   	//connection.end();
 });
 
 /*
