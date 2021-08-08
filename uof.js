@@ -109,7 +109,9 @@ app.post('/post', function(req, res, next){
    			});
 
    			break;
-   		case '0003':
+		case '0003':
+
+   		case '0004':
    			var check_overlap_text = "";
 
    			if(message.type == 'customer'){
@@ -134,32 +136,160 @@ app.post('/post', function(req, res, next){
    						}
    					}
    					if(check == 'true'){
-   						console.log('로그인 성공');
-   						res_data_string = {response_code: "0003"};
-   						
+   						if(request_code == '0003'){
+   							console.log('로그인 성공');
+   							res_data_string = { response_code: "0003", message: { name: result[i].name, phone: result[i].phone, type: message.type } };	
+   						}
+   						else{
+   							console.log('비밀번호 적합');
+   							res_data_string = { response_code: "0004" };
+   						}
    					}
    					else{
-   						console.log('비밀번호 부적합');
-   						res_data_string = {response_code: "0005"};
-   						
+   						console.log(request_code + ' 비밀번호 부적합');
+   						res_data_string = {response_code: "0006"};
    					}
-					
    				}
    				else{
    					console.log('없는 id');
-   					res_data_string = {response_code: "0004"};
+   					res_data_string = {response_code: "0005"};
    					
    				}
    				var res_data_json = JSON.stringify(res_data_string);
    				res.json(res_data_json);
    				
    			});
+   			break;
+
+   		case '0005':
+   			var update_query = "";
+   			if(message.type == 'customer'){
+   				update_query = "update customer_account set pw='" + message.change_pw +  "' where id=?";
+   			}
+   			else if(message.type == 'uofpartner'){
+   				update_query = "update uofpartner_account set pw='" + message.change_pw +  "' where id=?";
+   			}
+   			else{
+   				console.log('type 오류');
+   			}
+
+   			connection.query(update_query, message.id , function(err, result, fields){
+   				var res_data_string ='';
+   				if(err){
+   					console.log('비밀번호 변경 실패');
+   					res_data_string = {response_code: "0013"};
+   				}
+   				else{
+   					console.log('비밀번호 변경 성공');
+   					res_data_string = {response_code: "0012"};
+   				}
+
+   				var res_data_json = JSON.stringify(res_data_string);
+   				res.json(res_data_json);
+   				
+   			});
+   			break;
+
+   		case '0006':
+   			var update_query = "";
+   			if(message.type == 'customer'){
+   				update_query = "update customer_account set phone='" + message.change_phone +  "' where id=?";
+   			}
+   			else if(message.type == 'uofpartner'){
+   				update_query = "update uofpartner_account set phone='" + message.change_phone +  "' where id=?";
+   			}
+   			else{
+   				console.log('type 오류');
+   			}
+   			connection.query(update_query, message.id , function(err, result, fields){
+   				var res_data_string ='';
+   				if(err){
+   					console.log('휴대폰 번호 변경 실패');
+   					res_data_string = {response_code: "0015"};
+   				}
+   				else{
+   					console.log('휴대폰 번호 변경 성공');
+   					res_data_string = {response_code: "0014"};
+   				}
+
+   				var res_data_json = JSON.stringify(res_data_string);
+   				res.json(res_data_json);
+   				
+   			});
+
+   			break;
+
+   		case '0007':
+   			var delete_query = "";
+   			if(message.type == 'customer'){
+   				delete_query = "delete from customer_account where id=?";
+   			}
+   			else if(message.type == 'uofpartner'){
+   				delete_query = "delete from uofpartner_account where id=?";
+   			}
+   			else{
+   				console.log('type 오류');
+   			}
+   			connection.query(delete_query, message.id , function(err, result, fields){
+   				var res_data_string ='';
+   				if(err){
+   					console.log('회원 탈퇴 실패');
+   					res_data_string = {response_code: "0017"};
+   				}
+   				else{
+   					console.log('회원 탈퇴 성공');
+   					res_data_string = {response_code: "0016"};
+   				}
+
+   				var res_data_json = JSON.stringify(res_data_string);
+   				res.json(res_data_json);
+   				
+   			});
+   			break;
+
+   		case '0008':
+   			var update_query = "";
    			
-   			break;
+   			update_query = "update customer_account set card_num='" + message.card.num +  "', cvc='" + message.card.cvc + "', card_pw='" + message.card.pw +"', due_date='" + message.card.due_date +"' where id=?";
+   			
+   			connection.query(update_query, message.id , function(err, result, fields){
+   				var res_data_string ='';
+   				if(err){
+   					console.log('카드 등록 실패');
+   					res_data_string = {response_code: "0019"};
+   				}
+   				else{
+   					console.log('카드 등록 성공');
+   					res_data_string = {response_code: "0018"};
+   				}
 
-   		case '0004':
-
+   				var res_data_json = JSON.stringify(res_data_string);
+   				res.json(res_data_json);
+   				
+   			});
    			break;
+   		case '0009':
+   			var update_query = "";
+   			
+   			update_query = "update customer_account set card_num=NULL, cvc=NULL, card_pw=NULL, due_date=NULL where id=?";
+   			
+   			connection.query(update_query, message.id , function(err, result, fields){
+   				var res_data_string ='';
+   				if(err){
+   					console.log('카드 제거 실패');
+   					res_data_string = {response_code: "0021"};
+   				}
+   				else{
+   					console.log('카드 제거 성공');
+   					res_data_string = {response_code: "0020"};
+   				}
+
+   				var res_data_json = JSON.stringify(res_data_string);
+   				res.json(res_data_json);
+   				
+   			});
+   			break;
+   		
    		default:
    			console.log(request_code + ' does not exist in request_code.');
    			console.log(message);
