@@ -43,9 +43,6 @@ app.post('/post', function(req, res, next){
 	var request_code = req.body.request_code;
 	var message = req.body.message;
 
-	var paramDecoded;
-	var inputData;
-
    	switch (request_code) {
    		case '0000':
    			console(message);
@@ -113,7 +110,6 @@ app.post('/post', function(req, res, next){
 
    		case '0004':
    			var check_overlap_text = "";
-
    			if(message.type == 'customer'){
    				check_overlap_text = "select * from customer_account where id=?";
    			}
@@ -147,12 +143,12 @@ app.post('/post', function(req, res, next){
    					}
    					else{
    						console.log(request_code + ' 비밀번호 부적합');
-   						res_data_string = {response_code: "0006"};
+   						res_data_string = { response_code: "0006" };
    					}
    				}
    				else{
    					console.log('없는 id');
-   					res_data_string = {response_code: "0005"};
+   					res_data_string = { response_code: "0005" };
    					
    				}
    				var res_data_json = JSON.stringify(res_data_string);
@@ -289,7 +285,7 @@ app.post('/post', function(req, res, next){
    				
    			});
    			break;
-   		
+
    		default:
    			console.log(request_code + ' does not exist in request_code.');
    			console.log(message);
