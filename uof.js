@@ -242,11 +242,28 @@ app.post('/post', function(req, res, next){
    				
    			});
    			break;
-
-   		case '0008':
-   			var update_query = "";
+		case '0008':
+   			var select_query = "select * from customer_account where id=?";
    			
-   			update_query = "update customer_account set card_num='" + message.card.num +  "', cvc='" + message.card.cvc + "', card_pw='" + message.card.pw +"', due_date='" + message.card.due_date +"' where id=?";
+   			connection.query(select_query, message.id , function(err, result, fields){
+   				var res_data_string ='';
+   				if(err){
+   					console.log('카드 조회 실패');
+   					res_data_string = {response_code: "0023"};
+   				}
+   				else{
+   					console.log('카드 조회 성공');
+   					res_data_string = {response_code: "0022", message: {num: result[0].card_num}};
+   				}
+
+   				var res_data_json = JSON.stringify(res_data_string);
+   				res.json(res_data_json);
+   				
+   			});
+   			break;
+
+   		case '0009':
+   			var update_query = "update customer_account set card_num='" + message.card.num +  "', cvc='" + message.card.cvc + "', card_pw='" + message.card.pw +"', due_date='" + message.card.due_date +"' where id=?";
    			
    			connection.query(update_query, message.id , function(err, result, fields){
    				var res_data_string ='';
@@ -264,10 +281,8 @@ app.post('/post', function(req, res, next){
    				
    			});
    			break;
-   		case '0009':
-   			var update_query = "";
-   			
-   			update_query = "update customer_account set card_num=NULL, cvc=NULL, card_pw=NULL, due_date=NULL where id=?";
+   		case '0010':
+   			var update_query = "update customer_account set card_num=NULL, cvc=NULL, card_pw=NULL, due_date=NULL where id=?";
    			
    			connection.query(update_query, message.id , function(err, result, fields){
    				var res_data_string ='';
