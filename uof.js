@@ -134,7 +134,7 @@ app.post('/post', function(req, res, next){
    					if(check == 'true'){
    						if(request_code == '0003'){
    							console.log('로그인 성공');
-   							res_data_string = { response_code: "0003", message: { name: result[i].name, phone: result[i].phone, type: message.type } };	
+   							res_data_string = { response_code: "0003", message: { name: result[0].name, phone: result[0].phone, type: message.type } };	
    						}
    						else{
    							console.log('비밀번호 적합');
@@ -247,7 +247,7 @@ app.post('/post', function(req, res, next){
    			
    			connection.query(select_query, message.id , function(err, result, fields){
    				var res_data_string ='';
-   				if(err){
+   				if(err || result[0].card_num == null ){
    					console.log('카드 조회 실패');
    					res_data_string = {response_code: "0023"};
    				}
@@ -264,11 +264,12 @@ app.post('/post', function(req, res, next){
 
    		case '0009':
    			var update_query = "update customer_account set card_num='" + message.card.num +  "', cvc='" + message.card.cvc + "', card_pw='" + message.card.pw +"', due_date='" + message.card.due_date +"' where id=?";
-   			
+   			//var update_query = "update customer_account set card_num='" + message.card.num +  "', cvc='" + message.card.cvc + "', card_pw='" + message.card.pw + "', due_date='" + message.card.due_date + "' where id=?";
    			connection.query(update_query, message.id , function(err, result, fields){
    				var res_data_string ='';
    				if(err){
    					console.log('카드 등록 실패');
+   					console.log(message);
    					res_data_string = {response_code: "0019"};
    				}
    				else{
@@ -307,56 +308,10 @@ app.post('/post', function(req, res, next){
    			break;
    	}
 
-   	/*
-   	var res_data_string = {request_code: "0003"};
-   	var res_data_json = JSON.stringify(res_data_string);
-   	res.json(res_data_json);
-	*/
-
    	//connection.end();
 });
 
-/*
-router.route('/').get(function(req, res){
-	res.redirect('/homepage/index.html');
-});
-router.route('/routetest').get(function(req, res){
-	res.redirect('http://google.co.kr');
-});
-app.use('/', router);
-
-router.route('/rss').get( (req, res)=>{
-	console.log("rss data requested");
-	var feed = "http://rss.joins.com/joins_news_list.xml";
-	http.get(feed, (httpres)=>{
-		var rss_res="";
-		httpres.on('data', (chunk)=>{
-			rss_res += chunk;
-		});
-		httpres.on('end', (chunk)=>{
-			res.send(rss_res);
-			console.log("rss response completed");
-			res.end();
-		});
-	});
-});
-*/
-
-/*
-app.listen(8080, () => {
-
-	console.log('Example app listening on port 8080!');
-
-});
-*/
-
-/*
-app.use(express.urlencoded()); // post 방식 처리
-app.use(express.json()); // 클라이언트와 서버간에 json 형태의 데이터를 사용하겠다
-*/
-
 // express 서버 시작
-
 
 http.createServer(app).listen(app.get('port'), app.get('host'), ()=>{
 	console.log('Express server running at ' + app.get('port') + ':'+ app.get('host'));
