@@ -8,7 +8,7 @@ const conn = {
 	port: '3306',
 	user: 'root',
 	password: '112antkglok!',
-	database: 'uof_account'
+	database: 'uof'
 };
 
 // express 미들웨어 불러오기
@@ -20,7 +20,7 @@ var router = express.Router();
 
 // 기본 속성 설정
 app.set('port', process.env.PORT || 8080);
-app.set('host', '192.168.50.14');
+app.set('host', '192.168.0.12');
 
 // static 서버 미들웨어 사용
 app.use(static(__dirname)); // 현재 폴더에 대한 정적 접근 허용
@@ -173,11 +173,11 @@ app.post('/post', function(req, res, next){
    				var res_data_string ='';
    				if(err){
    					console.log('비밀번호 변경 실패');
-   					res_data_string = {response_code: "0013"};
+   					res_data_string = {response_code: "0015"};
    				}
    				else{
    					console.log('비밀번호 변경 성공');
-   					res_data_string = {response_code: "0012"};
+   					res_data_string = {response_code: "0014"};
    				}
 
    				var res_data_json = JSON.stringify(res_data_string);
@@ -201,11 +201,11 @@ app.post('/post', function(req, res, next){
    				var res_data_string ='';
    				if(err){
    					console.log('휴대폰 번호 변경 실패');
-   					res_data_string = {response_code: "0015"};
+   					res_data_string = {response_code: "0017"};
    				}
    				else{
    					console.log('휴대폰 번호 변경 성공');
-   					res_data_string = {response_code: "0014"};
+   					res_data_string = {response_code: "0016"};
    				}
 
    				var res_data_json = JSON.stringify(res_data_string);
@@ -230,11 +230,11 @@ app.post('/post', function(req, res, next){
    				var res_data_string ='';
    				if(err){
    					console.log('회원 탈퇴 실패');
-   					res_data_string = {response_code: "0017"};
+   					res_data_string = {response_code: "0019"};
    				}
    				else{
    					console.log('회원 탈퇴 성공');
-   					res_data_string = {response_code: "0016"};
+   					res_data_string = {response_code: "0018"};
    				}
 
    				var res_data_json = JSON.stringify(res_data_string);
@@ -249,11 +249,11 @@ app.post('/post', function(req, res, next){
    				var res_data_string ='';
    				if(err || result[0].card_num == null ){
    					console.log('카드 조회 실패');
-   					res_data_string = {response_code: "0023"};
+   					res_data_string = {response_code: "0025"};
    				}
    				else{
    					console.log('카드 조회 성공');
-   					res_data_string = {response_code: "0022", message: {num: result[0].card_num}};
+   					res_data_string = {response_code: "0024", message: {num: result[0].card_num, cvc: result[0].cvc, due_date: result[0].due_date}};
    				}
 
    				var res_data_json = JSON.stringify(res_data_string);
@@ -270,11 +270,11 @@ app.post('/post', function(req, res, next){
    				if(err){
    					console.log('카드 등록 실패');
    					console.log(message);
-   					res_data_string = {response_code: "0019"};
+   					res_data_string = {response_code: "0021"};
    				}
    				else{
    					console.log('카드 등록 성공');
-   					res_data_string = {response_code: "0018"};
+   					res_data_string = {response_code: "0020"};
    				}
 
    				var res_data_json = JSON.stringify(res_data_string);
@@ -289,11 +289,11 @@ app.post('/post', function(req, res, next){
    				var res_data_string ='';
    				if(err){
    					console.log('카드 제거 실패');
-   					res_data_string = {response_code: "0021"};
+   					res_data_string = {response_code: "0023"};
    				}
    				else{
    					console.log('카드 제거 성공');
-   					res_data_string = {response_code: "0020"};
+   					res_data_string = {response_code: "0022"};
    				}
 
    				var res_data_json = JSON.stringify(res_data_string);
@@ -301,6 +301,104 @@ app.post('/post', function(req, res, next){
    				
    			});
    			break;
+   		case '0013':
+   			var select_query = "select * from order_details where id=?";
+   			
+   			connection.query(select_query, message.id , function(err, result, fields){
+   				var res_data_string ='';
+   				if(err){
+   					console.log('주문 내역 없음');
+   					res_data_string = {response_code: "0013", message: { order_list: [] }};
+   				}
+   				else{
+   					console.log('주문 내역 성공');
+   					res_data_string = {response_code: "0024", message: {num: result[0].card_num, cvc: result[0].cvc, due_date: result[0].due_date}};
+   				}
+
+   				var res_data_json = JSON.stringify(res_data_string);
+   				res.json(res_data_json);
+   				
+   			});
+   			break;
+
+   		case '000A':
+	   		
+	
+
+	   		var select_query = "select * from customer_account where id=?";
+   			
+   			connection.query(select_query, message.id , function(err_origin, result_origin, fields){
+   				var res_data_string ='';
+   				if(err_origin){
+   					console.log('없는 아이디');
+   					res_data_string = {response_code: "D000"};
+
+   					var res_data_json = JSON.stringify(res_data_string);
+   					console.log('보내는 값 : ' + res_data_json)
+   					res.json(res_data_json);
+   				}
+   				else if(result_origin[0].card_pw != message.card.pw){
+   					console.log("카드 비밀번호 부적합");
+   					res_data_string = {response_code: "C000"};
+
+   					var res_data_json = JSON.stringify(res_data_string);
+   					console.log('보내는 값 : ' + res_data_json)
+   					res.json(res_data_json);
+   				}
+   				else{
+   					console.log('카드 조회 성공');
+
+   					var today = new Date();
+
+   					function plusZero(data){
+   						return (data < 10 ? '0' + data : data);
+   					}
+
+   					var year = today.getFullYear();
+   					var month = today.getMonth() + 1;
+   					var date = today.getDate();
+   					var hour = today.getHours();
+   					var minute = today.getMinutes();
+   					var second = today.getSeconds();
+
+   					var today_string = year + "-" + plusZero(month) + "-" + plusZero(date) + " "+ plusZero(hour) + ":" + plusZero(minute) + ":" + plusZero(second);
+
+   					var insert_text = "INSERT INTO `order_details` (`id`, `date`, `company_name`, `orderlist`, `price`)"
+   					+ "VALUES ('" + message.id + "','" + today_string + "', '" + message.company_name + "', '" + JSON.stringify(message.order) + "', '" + message.total_price +"');";
+   					connection.query(insert_text, function (err, result, fields){
+
+   						if(err){
+   							console.log(err);
+   							res_data_string = {response_code: "B000"};
+   							console.log('결제 실패');
+
+   							var res_data_json = JSON.stringify(res_data_string);
+   							console.log('보내는 값 : ' + res_data_json)
+   							res.json(res_data_json);
+   						}
+   						else{
+
+   							var select_query2 = "select COUNT(`num`) AS numCount from order_details";
+
+   							connection.query(select_query2, function(err2, result2, fields){
+   								res_data_string = {response_code: "A000", message: {num: result2[0].numCount}};
+   								console.log('결제 성공');
+
+   								var res_data_json = JSON.stringify(res_data_string);
+   								console.log('보내는 값 : ' + res_data_json)
+   								res.json(res_data_json);
+   							});
+		
+   						}
+   					});
+   				}
+
+
+   				
+   			});
+
+   			break;
+
 
    		default:
    			console.log(request_code + ' does not exist in request_code.');
@@ -314,6 +412,7 @@ app.post('/post', function(req, res, next){
 // express 서버 시작
 
 http.createServer(app).listen(app.get('port'), app.get('host'), ()=>{
-	console.log('Express server running at ' + app.get('port') + ':'+ app.get('host'));
+	console.log('Express server running at ' + app.get('host') + ":" + app.get('port'));
 });
+
 
