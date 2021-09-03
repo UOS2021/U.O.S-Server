@@ -302,21 +302,36 @@ app.post('/post', function(req, res, next){
    			});
    			break;
    		case '0013':
-   			var select_query = "select * from order_details where id=?";
+   			var select_query = "select * from order_details where id=? order by num desc";
    			
    			connection.query(select_query, message.id , function(err, result, fields){
    				var res_data_string ='';
-   				if(err){
+   				if(err || result == ""){
    					console.log('주문 내역 없음');
    					res_data_string = {response_code: "0013", message: { order_list: [] }};
+
+   					var res_data_json = JSON.stringify(res_data_string);
+   					res.json(res_data_json);
    				}
    				else{
+   					
    					console.log('주문 내역 성공');
-   					res_data_string = {response_code: "0024", message: {num: result[0].card_num, cvc: result[0].cvc, due_date: result[0].due_date}};
+   					//console.log(result[0].orderlist);
+   					var order_list_json = { date: result[0].date, company_name: result[0].company_name, order: result[0].orderlist };
+   					var order_list = JSON.stringify(order_list_json);
+   					//console.log("result : " + order_list);
+   					for(var i = 1; i < result.length; i++){
+   						order_list_json = { date: result[i].date, company_name: result[i].company_name, order: result[i].orderlist };
+   						order_list = order_list + "," + ((JSON.stringify(order_list_json)).replace('"[', '[')).replace(']"', "]");
+   					}
+   					res_data_string = (("{response_code: \"0013\", message: { order_list: [" + order_list + "] }}").replace('"[', '[')).replace(']"', "]");
+   					//console.log(res_data_string.replace("\\", ""));
+
+   					//var res_data_json = JSON.stringify(res_data_string);
+   					res.json(res_data_string);
    				}
 
-   				var res_data_json = JSON.stringify(res_data_string);
-   				res.json(res_data_json);
+   				
    				
    			});
    			break;
