@@ -123,7 +123,11 @@ app.post('/post', function(req, res, next){
    			var res_data_string ='';
 
    			connection.query(check_overlap_text, message.id , function(err, result, fields){
-   				if(result.length > 0){
+   				if(err){
+   					console.log('id 체크 오류');
+   					res_data_string = { response_code: "0005" };
+   				}
+   				else if(result.length > 0){
    					var check = 'false';
    					for(var i =0; i < result.length; i++){
    						if(result[i].pw == message.pw){
@@ -134,7 +138,11 @@ app.post('/post', function(req, res, next){
    					if(check == 'true'){
    						if(request_code == '0003'){
    							console.log('로그인 성공');
-   							res_data_string = { response_code: "0003", message: { name: result[0].name, phone: result[0].phone, type: message.type } };	
+   							var companyName = "";
+   							if(message.type == 'uofpartner'){
+   								companyName = result[0].company_name;
+   							}
+   							res_data_string = { response_code: "0003", message: { name: result[0].name, phone: result[0].phone, type: message.type, company_name: companyName, company_type: result[0].company_address } };	
    						}
    						else{
    							console.log('비밀번호 적합');
