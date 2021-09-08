@@ -142,7 +142,7 @@ app.post('/post', function(req, res, next){
    							if(message.type == 'uofpartner'){
    								companyName = result[0].company_name;
    							}
-   							res_data_string = { response_code: "0003", message: { name: result[0].name, phone: result[0].phone, type: message.type, company_name: companyName, company_type: result[0].company_address } };	
+   							res_data_string = { response_code: "0003", message: { name: result[0].name, phone: result[0].phone, type: message.type, company_name: companyName, company_type: result[0].company_type } };	
    						}
    						else{
    							console.log('비밀번호 적합');
