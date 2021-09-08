@@ -4,6 +4,6 @@
 </p>
 
 <p align="center">
-  <a href = "https://github.com/UOF2021/U.O.F-Mobile"><img src="https://img.shields.io/badge/MAIN REPO-UOS_MOBILE-informatoinal?style=for-the-badge"/></a>
+  <a href = "https://github.com/UOF2021/U.O.F-Mobile"><img src="https://img.shields.io/badge/MAIN REPO-UOF_MOBILE-informatoinal?style=for-the-badge"/></a>
 </p>
 
