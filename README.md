@@ -11,10 +11,10 @@
 > -  #### customer_account
 > ![customer_account](https://user-images.githubusercontent.com/35491052/132522752-ff36c1d7-c82d-4b2c-a3a6-c9366c949ef2.png)
 >
-> - #### uofpartner_account
+> - #### uospartner_account
 > ![uofpartner_account](https://user-images.githubusercontent.com/35491052/132523232-30556b85-2e0f-4336-93cf-8f4552d22d9c.png)
 >
-> - #### uofpartner_account
+> - #### uospartner_account
 > ![order_details](https://user-images.githubusercontent.com/35491052/132523338-9314d9be-cbed-42d5-86bb-ce1150d2c319.png)
 
 <br>
