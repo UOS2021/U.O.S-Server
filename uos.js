@@ -8,7 +8,7 @@ const conn = {
 	port: '3306',
 	user: 'root',
 	password: '112antkglok!',
-	database: 'uof'
+	database: 'uos'
 };
 
 // express 미들웨어 불러오기
@@ -20,7 +20,7 @@ var router = express.Router();
 
 // 기본 속성 설정
 app.set('port', process.env.PORT || 8080);
-app.set('host', '192.168.0.12');
+app.set('host', '192.168.1.215');
 
 // static 서버 미들웨어 사용
 app.use(static(__dirname)); // 현재 폴더에 대한 정적 접근 허용
@@ -45,7 +45,7 @@ app.post('/post', function(req, res, next){
 
    	switch (request_code) {
    		case '0000':
-   			console(message);
+   			console.log(message);
    			break;
    		case '0001':
    			var check_overlap_text = "select * from customer_account where id=?";
@@ -76,7 +76,7 @@ app.post('/post', function(req, res, next){
    			break;
 
    		case '0002':
-   			var check_overlap_text = "select * from uofpartner_account where id=?";
+   			var check_overlap_text = "select * from uospartner_account where id=?";
    			var res_data_string ='';
    			connection.query(check_overlap_text, message.id , function(err, result, fields){
    				if(result.length > 0){
@@ -86,7 +86,7 @@ app.post('/post', function(req, res, next){
    					res.json(res_data_json);
    				}
    				else{
-   					var insert_text = "INSERT INTO `uofpartner_account` (`id`, `pw`, `name`, `phone`, `company_name`, `license_number`, `company_type`, `company_address`)"
+   					var insert_text = "INSERT INTO `uospartner_account` (`id`, `pw`, `name`, `phone`, `company_name`, `license_number`, `company_type`, `company_address`)"
    					+ " VALUES ('" + message.id + "','" + message.pw + "', '" + message.name + "', '" + message.phone +"', '" + message.company.name +"', '" + message.company.license_num +"', '" + message.company.type +"', '" + message.company.address +"');";
    					connection.query(insert_text, function (err, result, fields){
    						if(err){
@@ -113,8 +113,8 @@ app.post('/post', function(req, res, next){
    			if(message.type == 'customer'){
    				check_overlap_text = "select * from customer_account where id=?";
    			}
-   			else if(message.type == 'uofpartner'){
-   				check_overlap_text = "select * from uofpartner_account where id=?";
+   			else if(message.type == 'uospartner'){
+   				check_overlap_text = "select * from uospartner_account where id=?";
    			}
    			else{
    				console.log('로그인 type 오류');
@@ -139,7 +139,7 @@ app.post('/post', function(req, res, next){
    						if(request_code == '0003'){
    							console.log('로그인 성공');
    							var companyName = "";
-   							if(message.type == 'uofpartner'){
+   							if(message.type == 'uospartner'){
    								companyName = result[0].company_name;
    							}
    							res_data_string = { response_code: "0003", message: { name: result[0].name, phone: result[0].phone, type: message.type, company_name: companyName, company_type: result[0].company_type } };	
@@ -170,8 +170,8 @@ app.post('/post', function(req, res, next){
    			if(message.type == 'customer'){
    				update_query = "update customer_account set pw='" + message.change_pw +  "' where id=?";
    			}
-   			else if(message.type == 'uofpartner'){
-   				update_query = "update uofpartner_account set pw='" + message.change_pw +  "' where id=?";
+   			else if(message.type == 'uospartner'){
+   				update_query = "update uospartner_account set pw='" + message.change_pw +  "' where id=?";
    			}
    			else{
    				console.log('type 오류');
@@ -199,8 +199,8 @@ app.post('/post', function(req, res, next){
    			if(message.type == 'customer'){
    				update_query = "update customer_account set phone='" + message.change_phone +  "' where id=?";
    			}
-   			else if(message.type == 'uofpartner'){
-   				update_query = "update uofpartner_account set phone='" + message.change_phone +  "' where id=?";
+   			else if(message.type == 'uospartner'){
+   				update_query = "update uospartner_account set phone='" + message.change_phone +  "' where id=?";
    			}
    			else{
    				console.log('type 오류');
@@ -228,8 +228,8 @@ app.post('/post', function(req, res, next){
    			if(message.type == 'customer'){
    				delete_query = "delete from customer_account where id=?";
    			}
-   			else if(message.type == 'uofpartner'){
-   				delete_query = "delete from uofpartner_account where id=?";
+   			else if(message.type == 'uospartner'){
+   				delete_query = "delete from uospartner_account where id=?";
    			}
    			else{
    				console.log('type 오류');
