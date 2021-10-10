@@ -18,9 +18,13 @@ var static = require('serve-static');
 var app = express();
 var router = express.Router();
 
+/// local ip 불러오기
+var ip = require("ip");
+console.dir(ip.address());
+
 // 기본 속성 설정
 app.set('port', process.env.PORT || 8080);
-app.set('host', '192.168.1.215');
+app.set('host', ip.address());
 
 // static 서버 미들웨어 사용
 app.use(static(__dirname)); // 현재 폴더에 대한 정적 접근 허용
@@ -35,6 +39,12 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
+
+router.route('/').get(function(req, res){
+	res.redirect('/pos/login.html');
+});
+
+app.use('/', router);
 
 app.post('/post', function(req, res, next){
 	var connection = mysql.createConnection(conn);
