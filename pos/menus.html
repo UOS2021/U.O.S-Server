@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>UOF-POS</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <link href="resources/css/styles.css" rel="stylesheet" />
+    <link href="resources/css/uof.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+</head>
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark uof-nav-bg">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3" href="index.html">UOF POS</a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+
+</nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark " id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Core</div>
+                    <a class="nav-link" href="/list">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        대쉬보드
+                    </a>
+                    <div class="sb-sidenav-menu-heading">MANAGEMENT</div>
+                    <a class="nav-link" href="/qrcode">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        QR코드 관리
+                    </a>
+                    <a class="nav-link" href="/menu">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        메뉴 관리
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <h1 class="mt-4 uof-h1">메뉴 관리
+                        </h1>
+                        <ul class="nav nav-tabs" id="myTab" role = "tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="set-tab" data-toggle="tab" href="#set" role="tab" aria-controls="set" aria-selected="true">세트</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="wapper-tab" data-toggle="tab" href="#wapper" role="tab" aria-controls="wapper" aria-selected="false">와퍼</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="dessert-tab" data-toggle="tab" href="#dessert" role="tab" aria-controls="dessert" aria-selected="false">디저트</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+
+                            <div class="tab-pane mt-4 active" id="set" role="tabpanel" aria-labelledby="set-tab">
+                                <div class="card mx-2 my-2 border" style="width: 18rem;float:left">
+                                    <img class="card-img-top" src="/resources/assets/img/hamb1.jpg" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">창녕 갈릭 버거 세트</h5>
+                                        <h5 class="card-subtitle">8,500원</h5>
+                                        <p class="card-text">100% 국내산 창녕 햇마늘로 만든 토핑과 마늘 아이올리 30g의 풍미가 육즙을 꽉 가둬낸 순쇠고기 패티 2장과 만나 조화를 이뤄 풍부한 맛</p>
+                                    </div>
+                                </div>
+                                <div class="card mx-2 my-2 border" style="width: 18rem;float:left">
+                                    <img class="card-img-top" src="/resources/assets/img/hamb2.jpg" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">맥스파이시 상하이 세트</h5>
+                                        <h5 class="card-subtitle">8,500원</h5>
+                                        <p class="card-text">상하이 가서 가져온 리얼 순쇠고기 패티 2장</p>
+                                    </div>
+                                </div>
+                                <div class="card mx-2 my-2 border" style="width: 18rem;float:left">
+                                    <img class="card-img-top" src="/resources/assets/img/hamb1.jpg" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">창녕 갈릭 버거 세트</h5>
+                                        <h5 class="card-subtitle">8,500원</h5>
+                                        <p class="card-text">100% 국내산 창녕 햇마늘로 만든 토핑과 마늘 아이올리 30g의 풍미가 육즙을 꽉 가둬낸 순쇠고기 패티 2장과 만나 조화를 이뤄 풍부한 맛</p>
+                                    </div>
+                                </div>
+                                <div class="card mx-2 my-2 border" style="width: 18rem;float:left">
+                                    <img class="card-img-top" src="/resources/assets/img/hamb1.jpg" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">창녕 갈릭 버거 세트</h5>
+                                        <h5 class="card-subtitle">8,500원</h5>
+                                        <p class="card-text">100% 국내산 창녕 햇마늘로 만든 토핑과 마늘 아이올리 30g의 풍미가 육즙을 꽉 가둬낸 순쇠고기 패티 2장과 만나 조화를 이뤄 풍부한 맛</p>
+                                    </div>
+                                </div>
+                                <div class="card mx-2 my-2 border" style="width: 18rem;float:left">
+                                    <img class="card-img-top" src="/resources/assets/img/hamb2.jpg" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">창녕 갈릭 버거 세트</h5>
+                                        <h5 class="card-subtitle">8,500원</h5>
+                                        <p class="card-text">100% 국내산 창녕 햇마늘로 만든 토핑과 마늘 아이올리 30g의 풍미가 육즙을 꽉 가둬낸 순쇠고기 패티 2장과 만나 조화를 이뤄 풍부한 맛</p>
+                                    </div>
+                                </div>
+                                <div class="card mx-2 my-2 border" style="width: 18rem;float:left">
+                                    <img class="card-img-top" src="/resources/assets/img/hamb2.jpg" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">창녕 갈릭 버거 세트</h5>
+                                        <h5 class="card-subtitle">8,500원</h5>
+                                        <p class="card-text">100% 국내산 창녕 햇마늘로 만든 토핑과 마늘 아이올리 30g의 풍미가 육즙을 꽉 가둬낸 순쇠고기 패티 2장과 만나 조화를 이뤄 풍부한 맛</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane mt-4" id="wapper" role="tabpanel" aria-labelledby="wapper-tab">
+                                <div class="card mx-2 my-2 border" style="width: 18rem;float:left">
+                                    <img class="card-img-top" src="/resources/assets/img/hamb1.jpg" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">창녕 갈릭 버거 세트</h5>
+                                        <h5 class="card-subtitle">8,500원</h5>
+                                        <p class="card-text">100% 국내산 창녕 햇마늘로 만든 토핑과 마늘 아이올리 30g의 풍미가 육즙을 꽉 가둬낸 순쇠고기 패티 2장과 만나 조화를 이뤄 풍부한 맛</p>
+                                    </div>
+                                </div>
+                                <div class="card mx-2 my-2 border" style="width: 18rem;float:left">
+                                    <img class="card-img-top" src="/resources/assets/img/hamb1.jpg" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">맥스파이시 상하이 세트</h5>
+                                        <h5 class="card-subtitle">8,500원</h5>
+                                        <p class="card-text">상하이 가서 가져온 리얼 순쇠고기 패티 2장</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane mt-4" id="dessert" role="tabpanel" aria-labelledby="dessert-tab">
+                                <div class="card mx-2 my-2 border" style="width: 18rem;float:left">
+                                    <img class="card-img-top" src="/resources/assets/img/hamb2.jpg" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">창녕 갈릭 버거 세트</h5>
+                                        <h5 class="card-subtitle">8,500원</h5>
+                                        <p class="card-text">100% 국내산 창녕 햇마늘로 만든 토핑과 마늘 아이올리 30g의 풍미가 육즙을 꽉 가둬낸 순쇠고기 패티 2장과 만나 조화를 이뤄 풍부한 맛</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-3 uof-margin">
+                        <!-- Search widget-->
+                            <a class="btn btn-danger float-end px-5 w-50 uof_size" href="#!">카테고리 삭제</a>
+                            <a class="btn btn-success float-end px-5 w-50 uof_size" href="#!">카테고리 추가</a>
+                        <div class="card mb-4 mt-5">
+                            <div class="card-body">
+                                <div class="input-group">
+                                    <input class="form-control" type="text" placeholder="변경할 카테고리 이름" aria-label="변경할 카테고리 이름" aria-describedby="button-search">
+                                    <button class="btn btn-primary" id="button-search" type="button">변경</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <button type="button" class="btn btn-primary" id="modal_open" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">메뉴추가</button>
+                        </div>
+                        <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">추가할 메뉴 정보</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <div class="ml-2 col-sm-6">
+                                                    <div id="msg"></div>
+                                                    <form method="post" id="image-form">
+                                                        <input type="file" name="img[]" class="file" accept="image/*">
+                                                        <div class="input-group my-3">
+                                                            <input type="text" class="form-control" disabled placeholder="Upload File" id="file">
+                                                            <div class="input-group-append">
+                                                                <button type="button" class="browse btn btn-primary">Browse...</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="ml-2 col-sm-6">
+                                                    <img src="https://placehold.it/80x80" id="preview" class="img-thumbnail">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name" class="col-form-label">이름:</label>
+                                                <input type="text" class="form-control" id="name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="price" class="col-form-label">가격:</label>
+                                                <textarea class="form-control" id="price"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="explaination" class="col-form-label">설명:</label>
+                                                <textarea class="form-control" id="explaination"></textarea>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="modal_close">닫기</button>
+                                        <button type="button" class="btn btn-primary" id="modal_menu_add">메뉴추가</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script>
+    $('#myTab a').on('click', function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        document.getElementById("preview").src = '';
+        $("#file").val('');
+    });
+    $('#modal_open').on('click', function(){
+        $('#myModal').modal('show');
+        console.log("click open");
+    });
+    $('#modal_close').on('click', function(){
+        $('#myModal').modal('hide');
+    });
+    $('#modal_menu_add').on('click', function(){ //메뉴추가하는 스크립트
+
+
+
+    });
+    $(document).on("click", ".browse", function() {
+        var file = $(this).parents().find(".file");
+        file.trigger("click");
+    });
+    $('input[type="file"]').change(function(e) {
+        var fileName = e.target.files[0].name;
+        $("#file").val(fileName);
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            // get loaded data and render thumbnail.
+            document.getElementById("preview").src = e.target.result;
+        };
+        // read the image file as a data URL.
+        reader.readAsDataURL(this.files[0]); // 이미지 url
+    });
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="/resources/js/scripts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+<script src="/resources/js/datatables-simple-demo.js"></script>
+</body>
+</html>
