@@ -42,13 +42,12 @@ app.use(bodyParser.json());
 
 router.route('/').get(function(req, res){
 	
-	
 	/*
 	QRCode.toDataURL(url_text,function(err, url){
 		console.log(url);
 	});
 	*/
-
+/*
 	var options = {
 		host: 'ipv4bot.whatismyipaddress.com',
 		port: 80,
@@ -57,7 +56,7 @@ router.route('/').get(function(req, res){
 	http.get(options, function(res2) {
 		res2.on("data", function(ip) {
 			console.log("BODY: " + ip);
-			var url_text = "uosmobile://action?targetIp=" + ip + "&targetPort=8080;";
+			var url_text = "uosmobile://action?uosPartnerId=" + ip + "&targetPort=8080;";
 			QRCode.toDataURL(url_text , function(err , url) {
 				//res.send(url);
 				var data = url.replace(/.*,/ , ''); 
@@ -71,8 +70,12 @@ router.route('/').get(function(req, res){
 			});
 		});
 	});
-
+*/
 	res.redirect('/pos/login.html');
+});
+
+router.route('/pos/qrcode').get(function(req, res){
+	res.redirect('/pos/qrcode.html');
 });
 
 
@@ -187,30 +190,43 @@ app.post('/post', function(req, res, next){
 							companyName = result[0].company_name;
 							if(message.type == 'pos'){
 								//res.writeHead(200, {'Content-Type' : 'pos/menus.html'})
+
+								var url_text = "uosmobile://action?uosPartnerId=" + message.id + ";";
+								QRCode.toDataURL(url_text , function(err , url) {
+									//res.send(url);
+									var data = url.replace(/.*,/ , ''); 
+									console.log("들어옴");
+									//var img = new Buffer(data , 'base64');
+									//res.writeHead(200 , {'Content-Type':'image/png'});
+									//res.end(img);
+
+									var bitmap = Buffer.from(data, 'base64');
+									fs.writeFileSync('qrcode/' + message.id +'.jpg', bitmap);
+								});
 							}
 						}
 						res_data_string = { response_code: "0003", message: { name: result[0].name, phone: result[0].phone, type: message.type, company_name: companyName, company_type: result[0].company_type } }; }
 
 
+						else{
+							console.log('비밀번호 적합');
+							res_data_string = { response_code: "0004" };
+						}
+					}
 					else{
-						console.log('비밀번호 적합');
-						res_data_string = { response_code: "0004" };
+						console.log(request_code + ' 비밀번호 부적합');
+						res_data_string = { response_code: "0006" };
 					}
 				}
 				else{
-					console.log(request_code + ' 비밀번호 부적합');
-					res_data_string = { response_code: "0006" };
+					console.log('없는 id');
+					res_data_string = { response_code: "0005" };
+
 				}
-			}
-			else{
-				console.log('없는 id');
-				res_data_string = { response_code: "0005" };
+				var res_data_json = JSON.stringify(res_data_string);
+				res.json(res_data_json);
 
-			}
-			var res_data_json = JSON.stringify(res_data_string);
-			res.json(res_data_json);
-
-		});
+			});
 		break;
 
 		case '0005':
