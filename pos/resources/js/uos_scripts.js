@@ -29,7 +29,6 @@ function list_attr_add(){
 	var menu = data['menu'];
 	var time = data['time'];
 	var newtr = "<tr><td>"+no+"</td>"+"<td>"+number+"</td>"+"<td>"+menu+"</td>"+"<td>"+time+"</td></tr>";
-	console.log(newtr);
 	$('#tables').append(newtr);	
 }
 
