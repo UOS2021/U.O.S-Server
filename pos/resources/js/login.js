@@ -4,19 +4,33 @@ function login(){
 		location.reload();
 	}
 	else{
-		var param = {};
-		param.userid = $('#inputid').val();
-		param.userpw = $('#inputPassword').val();
+		var userid = $('#inputid').val();
+		var userpw= $('#inputPassword').val();
+		let param =
+		{
+			"request_code": "0003",
+			"message":{
+				"id": userid,
+				"pw" : userpw,
+				"type" : "pos"
+			}
+		};
 		var ajax = $.ajax({
-			url : "/login",
+			url : "/post",
 			data : param,
 			type : 'POST',
-			dataType : "JSON",
-			success:function(result){
-				alert(result.msg);
-				sessionStorage.setItem("userid",param.userid);
-				sessionStorage.setItem("userpw",param.userpw);
+			dataType : 'json'
+		});
+		ajax.done(function(result, status){
+			var data = JSON.parse(result);
+			if(data.response_code == "0003"){
+				sessionStorage.setItem("id",userid);
+				sessionStorage.setItem("pw",userpw);
 				location.href="/pos/list.html";
+			}
+			else{
+				alert("아이디 혹은 비밀번호가 잘못되었습니다.");
+				location.reload();
 			}
 		});
 	}
