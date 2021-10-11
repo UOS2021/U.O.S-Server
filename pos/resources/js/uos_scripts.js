@@ -14,6 +14,8 @@ function login(){
 			dataType : "JSON",
 			success:function(result){
 				alert(result.msg);
+				sessionStorage.setItem("userid",param.userid);
+				sessionStorage.setItem("userpw",param.userpw);
 				location.href="/pos/list.html";
 			}
 		});
