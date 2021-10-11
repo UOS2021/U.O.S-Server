@@ -1,3 +1,4 @@
 goorm.manifest
 package-lock.json
 node_modules/
+manifest.yml

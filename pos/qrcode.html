@@ -49,11 +49,14 @@
         <main>
             <div class="container-fluid px-4">
                 <h1 class="mt-4 uof-h1">QR코드 관리
-                    <a class="btn btn-primary float-end px-5" href="#!">QR코드 생성</a>
-                    <a class="btn btn-primary float-end px-5" href="#!">QR코드 삭제</a>
+                    <a class="btn btn-primary float-end px-5" onclick="make_qr();">QR코드 생성</a>
+                    <a class="btn btn-primary float-end px-5" onclick="delete_qr();">QR코드 삭제</a>
                 </h1>
-                <div class="mx-auto w-50">
-                    <img class="card-img-top" src="resources/assets/img/qrcode.png" alt="...">
+                <div class="mx-auto w-50" id="div_qr">
+					<h3 id="no_qr">
+						저장된 QR코드가 없습니다.
+					</h3>
+                    <img class="card-img-top" id="qrcode">
                 </div>
             </div>
         </main>

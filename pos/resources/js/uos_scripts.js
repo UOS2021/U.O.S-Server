@@ -33,3 +33,17 @@ function list_attr_add(){
 	$('#tables').append(newtr);	
 }
 
+function make_qr(){
+	document.getElementById("no_qr").style.display = "none";
+	document.getElementById("qrcode").src = "resources/assets/img/qrcode.png";
+	document.getElementById("qrcode").style.display = "";
+}
+
+function delete_qr(){
+	document.getElementById("no_qr").style.display = "";
+	document.getElementById("qrcode").style.display = "none";
+	document.getElementById("qrcode").src = "";
+	
+}
+
+//qr코드 페이지 렌더링할때 ajax로 서버에서 qrcode 있는지 없는지 확인해야할듯
