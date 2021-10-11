@@ -163,12 +163,12 @@ app.post('/post', function(req, res, next){
 		case '0003':
 
 		case '0004':
-		console.log('test')
 		var check_overlap_text = "";
 		if(message.type == 'customer'){
 			check_overlap_text = "select * from customer_account where id=?";
 		}
 		else if(message.type == 'uospartner' || message.type == 'pos'){
+			console.log("여기");
 			check_overlap_text = "select * from uospartner_account where id=?";
 		}
 		else{
@@ -179,7 +179,7 @@ app.post('/post', function(req, res, next){
 
 		connection.query(check_overlap_text, message.id , function(err, result, fields){
 			if(err){
-				console.log('id 체크 오류');
+				console.log(err);
 				res_data_string = { response_code: "0005" };
 			}
 			else if(result.length > 0){
@@ -208,8 +208,8 @@ app.post('/post', function(req, res, next){
 									//res.writeHead(200 , {'Content-Type':'image/png'});
 									//res.end(img);
 
-									var bitmap = Buffer.from(data, 'base64');
-									fs.writeFileSync('assets/qrcode/' + message.id +'.jpg', bitmap);
+									// var bitmap = Buffer.from(data, 'base64');
+									// fs.writeFileSync('assets/qrcode/' + message.id +'.jpg', bitmap);
 								});
 							}
 						}
