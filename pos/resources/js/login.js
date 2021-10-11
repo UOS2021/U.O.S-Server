@@ -35,3 +35,9 @@ function login(){
 		});
 	}
 }
+
+function f_enterLogin(){
+	if(window.event.keyCode == 13){
+		login();
+	}
+}

@@ -1,0 +1,25 @@
+.uof-bg{
+	background-color : #ffd54f;
+}
+
+.uof-btn{
+	width:100%;
+}
+.uof-nav-bg{
+	--bs-bg-opacity: 1;
+	background-color : #ffd54f;
+}
+.uof-h1{
+	margin-bottom : 2rem;
+}
+.uof_size{
+    font-size : 1vw;
+    opacity: 0.8;
+}
+.uof-margin{
+    margin-top: 10rem !important;
+}
+.file {
+  visibility: hidden;
+  position: absolute;
+}
