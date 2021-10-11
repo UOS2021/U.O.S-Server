@@ -78,6 +78,14 @@ router.route('/pos/qrcode').get(function(req, res){
 	res.redirect('/pos/qrcode.html');
 });
 
+router.route('/pos/menus').get(function(req, res){
+	res.redirect('/pos/menus.html');
+});
+
+router.route('/pos/list').get(function(req, res){
+	res.redirect('/pos/list.html');
+});
+
 
 app.use('/', router);
 
@@ -201,7 +209,7 @@ app.post('/post', function(req, res, next){
 									//res.end(img);
 
 									var bitmap = Buffer.from(data, 'base64');
-									fs.writeFileSync('qrcode/' + message.id +'.jpg', bitmap);
+									fs.writeFileSync('assets/qrcode/' + message.id +'.jpg', bitmap);
 								});
 							}
 						}
@@ -406,6 +414,11 @@ app.post('/post', function(req, res, next){
    				
    				
    			});
+   			break;
+   			case '0014':
+   				var res_data_string = { response_code: "0007", message: { company: { name: "companyname", type: "pc" }, category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc", image: "img" }], set_list: [{ name: "setname", price: 1000, desc: "desc", conf: "conf", image: "img", category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc" }] }] }] }] } };
+
+   				res.json(res_data_string);
    			break;
 
    			case '000A':
