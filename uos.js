@@ -19,7 +19,6 @@ var app = express();
 var router = express.Router();
 
 // Login 한 유저인지 아닌지 Check;
-
 var check = false;
 
 
@@ -484,6 +483,7 @@ router.post("/login",async function(req,res){
 })
 // express 서버 시작
 
+console.log("여기까지");
 http.createServer(app).listen(app.get('port'), app.get('host'), ()=>{
 	console.log('Express server running at ' + app.get('host') + ":" + app.get('port'));
 });

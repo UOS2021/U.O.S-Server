@@ -150,18 +150,18 @@
                     </div>
                     <div class="col-lg-3 uof-margin">
                         <!-- Search widget-->
-                            <a class="btn btn-danger float-end px-5 w-50 uof_size" href="#!">카테고리 삭제</a>
-                            <a class="btn btn-success float-end px-5 w-50 uof_size" href="#!">카테고리 추가</a>
+                            <a class="btn btn-danger float-end px-5 w-50 uof_size" onclick="delete_category();">카테고리 삭제</a>
+                            <a class="btn btn-success float-end px-5 w-50 uof_size" onclick="add_category();">카테고리 추가</a>
                         <div class="card mb-4 mt-5">
                             <div class="card-body">
                                 <div class="input-group">
                                     <input class="form-control" type="text" placeholder="변경할 카테고리 이름" aria-label="변경할 카테고리 이름" aria-describedby="button-search">
-                                    <button class="btn btn-primary" id="button-search" type="button">변경</button>
+                                    <button class="btn btn-primary" id="button-search" type="button" onclick="change_category();">변경</button>
                                 </div>
                             </div>
                         </div>
                         <div class="card">
-                            <button type="button" class="btn btn-primary" id="modal_open" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">메뉴추가</button>
+                            <button type="button" class="btn btn-primary" id="modal_open" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" onclick="add_menu();">메뉴추가</button>
                         </div>
                         <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
@@ -254,7 +254,7 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="resources/js/scripts.js"></script>
-<script src="resources/js/uos_scripts.js"></script>
+<script src="resources/js/menus.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
 <script src="resources/js/datatables-simple-demo.js"></script>
 </body>
