@@ -18,6 +18,11 @@ var static = require('serve-static');
 var app = express();
 var router = express.Router();
 
+// Login 한 유저인지 아닌지 Check;
+
+var check = false;
+
+
 /// local ip 불러오기
 var ip = require("ip");
 console.dir(ip.address());
@@ -43,6 +48,33 @@ app.use(bodyParser.json());
 router.route('/').get(function(req, res){
 	res.redirect('/pos/login.html');
 });
+
+router.route('/pos/menus').get(function(req,res){
+	if(check){
+		res.redirect('/pos/menus.html');
+	}
+	else{
+		res.redirect('/');
+	}
+})
+
+router.route('/pos/qrcode').get(function(req,res){
+	if(check){
+		res.redirect('/pos/qrcode.html');
+	}
+	else{
+		res.redirect('/');
+	}
+})
+
+router.route('/pos/list').get(function(req,res){
+	if(check){
+		res.redirect('/pos/list.html');
+	}
+	else{
+		res.redirect('/');
+	}
+})
 
 app.use('/', router);
 
@@ -441,7 +473,15 @@ app.post('/post', function(req, res, next){
 
    	//connection.end();
 });
-
+router.post("/login",async function(req,res){
+	var userid = req.body.userid;
+	var userpw = req.body.userpw;
+	console.log("userid : "+userid+"   userpw : "+userpw);
+	var json = {msg:"통과"};
+	check=true;
+	res.send(json);
+	console.log(check);
+})
 // express 서버 시작
 
 http.createServer(app).listen(app.get('port'), app.get('host'), ()=>{
