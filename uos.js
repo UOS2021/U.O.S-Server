@@ -544,18 +544,20 @@ app.post('/post', function(req, res, next){
    					// 추가 된 거 있을 때
    					if(message.no_value < result_count){
    						var res_data = new Object();
-   						
-   						for(var i = 0; i < result.length; i++){
+   						res_data.response_code = "E000";
 
+   						var res_arr = new Array();
+   						for(var i = 0; i < result.length; i++){
+   							var obj = new Object();
+   							obj.order_code = 
    						}
 
-   						var res_data_string = { response_code: "0007", message: { company: { name: "companyname", type: "pc" }, category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc", image: "img" }], set_list: [{ name: "setname", price: 1000, desc: "desc", conf: "conf", image: "img", category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc" }] }] }] }] } };
-
-   						res.json(res_data_string);
+   						res.json(res_data);
    					}
    					//추가 된 거 없을 때
    					else if(message.no_value == result_count){
-
+   						var res_data = { response_code: "F000" };
+   						res.json(res_data);
    					}
    				}
    			});
