@@ -70,7 +70,7 @@ router.route('/').get(function(req, res){
 			});
 		});
 	});
-*/
+	*/
 	res.redirect('/pos/login.html');
 });
 
@@ -154,6 +154,21 @@ app.post('/post', function(req, res, next){
 					var res_data_string = {response_code: "0001"};
 					var res_data_json = JSON.stringify(res_data_string);
 					res.json(res_data_json);
+
+					//res.writeHead(200, {'Content-Type' : 'pos/menus.html'})
+
+					var url_text = "uosmobile://action?uosPartnerId=" + message.id + ";";
+					QRCode.toDataURL(url_text , function(err , url) {
+						//res.send(url);
+						var data = url.replace(/.*,/ , ''); 
+						console.log("QR코드 생성");
+						//var img = new Buffer(data , 'base64');
+						//res.writeHead(200 , {'Content-Type':'image/png'});
+						//res.end(img);
+
+						var bitmap = Buffer.from(data, 'base64');
+						fs.writeFileSync('assets/qrcode/' + message.id +'.jpg', bitmap);
+					});
 				});
 			}
 
@@ -180,6 +195,7 @@ app.post('/post', function(req, res, next){
 		connection.query(check_overlap_text, message.id , function(err, result, fields){
 			if(err){
 				console.log(err);
+				console.log('id 체크 오류');
 				res_data_string = { response_code: "0005" };
 			}
 			else if(result.length > 0){
@@ -197,20 +213,7 @@ app.post('/post', function(req, res, next){
 						if(message.type == 'uospartner' || message.type == 'pos'){
 							companyName = result[0].company_name;
 							if(message.type == 'pos'){
-								//res.writeHead(200, {'Content-Type' : 'pos/menus.html'})
-
-								var url_text = "uosmobile://action?uosPartnerId=" + message.id + ";";
-								QRCode.toDataURL(url_text , function(err , url) {
-									//res.send(url);
-									var data = url.replace(/.*,/ , ''); 
-									console.log("들어옴");
-									//var img = new Buffer(data , 'base64');
-									//res.writeHead(200 , {'Content-Type':'image/png'});
-									//res.end(img);
-
-									// var bitmap = Buffer.from(data, 'base64');
-									// fs.writeFileSync('assets/qrcode/' + message.id +'.jpg', bitmap);
-								});
+								
 							}
 						}
 						res_data_string = { response_code: "0003", message: { name: result[0].name, phone: result[0].phone, type: message.type, company_name: companyName, company_type: result[0].company_type } }; }
@@ -381,6 +384,33 @@ app.post('/post', function(req, res, next){
    				
    			});
    			break;
+
+   			case '0011' :
+
+   			//주문 버퍼
+
+   			
+   			var insert_text = "INSERT INTO `order_buffer` (`uofpartner_id`, `customer_id`, `fcm_token`, `card`, `orderlist`)"
+   			+ "VALUES ('" + message.uofpartner_id + "','" + message.customer_id + "', '" + message.fcm_token + "', '" + JSON.stringify(message.card) + "', '" + JSON.stringify(message.order) + "');";
+   			connection.query(insert_text, function (err, result, fields){
+
+   				if(err){
+   					console.log(err);
+   					res_data_string = {response_code: "0010"};
+   					console.log('주문접수 실패');
+
+   					var res_data_json = JSON.stringify(res_data_string);
+   					res.json(res_data_json);
+   				}
+   				else{
+
+   					console.log("주문 버퍼 추가");
+
+   				}
+   			});
+   			
+   			break;
+
    			case '0013':
    			var select_query = "select * from order_details where id=? order by num desc";
    			
@@ -416,9 +446,9 @@ app.post('/post', function(req, res, next){
    			});
    			break;
    			case '0014':
-   				var res_data_string = { response_code: "0007", message: { company: { name: "companyname", type: "pc" }, category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc", image: "img" }], set_list: [{ name: "setname", price: 1000, desc: "desc", conf: "conf", image: "img", category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc" }] }] }] }] } };
+   			var res_data_string = { response_code: "0007", message: { company: { name: "companyname", type: "pc" }, category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc", image: "img" }], set_list: [{ name: "setname", price: 1000, desc: "desc", conf: "conf", image: "img", category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc" }] }] }] }] } };
 
-   				res.json(res_data_string);
+   			res.json(res_data_string);
    			break;
 
    			case '000A':
@@ -497,6 +527,41 @@ app.post('/post', function(req, res, next){
    				
    			});
 
+   			break;
+
+   			
+   			case '000B':
+
+   			var select_query = "select * from order_buffer where id=?";
+   			var result_count  = 0;
+   			connection.query(select_query, message.id , function(err, result, fields){
+   				if(err){
+
+   				}
+   				else {
+   					result_count = result.length;
+
+   					// 추가 된 거 있을 때
+   					if(message.no_value < result_count){
+   						var res_data = new Object();
+   						
+   						for(var i = 0; i < result.length; i++){
+
+   						}
+
+   						var res_data_string = { response_code: "0007", message: { company: { name: "companyname", type: "pc" }, category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc", image: "img" }], set_list: [{ name: "setname", price: 1000, desc: "desc", conf: "conf", image: "img", category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc" }] }] }] }] } };
+
+   						res.json(res_data_string);
+   					}
+   					//추가 된 거 없을 때
+   					else if(message.no_value == result_count){
+
+   					}
+   				}
+   			});
+
+
+   			console.log('test');
    			break;
 
 
