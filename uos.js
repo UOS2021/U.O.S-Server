@@ -451,7 +451,88 @@ app.post('/post', function(req, res, next){
    			res.json(res_data_string);
    			break;
 
-   			case '000A':
+   			case '000A' :
+
+   			var select_query = "select * from order_buffer where uospartner_id=?";
+
+   			connection.query(select_query, message.id, function(err, result, fields){
+   				if(err){
+   					console.log("sql질의 에러");
+   				}
+   				else {
+
+   					var response_obj = new Object();
+   					response_obj.response_code = "A000";
+
+   					var order_array_arr = new Array();
+
+   					if(result.length != 0){
+   						for(var i = 0; i < result.length; i++){
+   							var obj = new Object();
+   							obj.order_code = result[0].order_code;
+   							obj.state = result[0].state;
+   							obj.order_list = result[0].orderlist;
+   							obj.date = result[0].date;
+
+   							order_array_arr.push(obj);
+   						}
+   					}
+   					
+
+   					response_obj.message = { order_array : order_array_arr };
+
+   					res.json(response_obj);
+
+
+   				}
+   			});
+
+   			break;
+
+   			case '000B':
+
+   			var select_query = "select * from order_buffer where uospartner_id=? and state=?";
+   			connection.query(select_query, [message.id, 0] , function(err, result, fields){
+   				if(err){
+   					console.log("sql질의 에러");
+   				}
+   				else {
+
+   					// 추가 된 거 있을 때
+   					if(message.state0_num < result.length){
+   						var response_obj = new Object();
+   						response_obj.response_code = "B000";
+
+   						var order_array_arr = new Array();
+
+   						if(result.length != 0){
+   							for(var i = 0; i < result.length; i++){
+   								var obj = new Object();
+   								obj.order_code = result[0].order_code;
+   								obj.state = result[0].state;
+   								obj.order_list = result[0].orderlist;
+   								obj.date = result[0].date;
+
+   								order_array_arr.push(obj);
+   							}
+   						}
+
+
+   						response_obj.message = { order_array : order_array_arr };
+
+   						res.json(response_obj);
+   					}
+   					//추가 된 거 없을 때
+   					else if(message.state0_num == result.length){
+   						var res_data = { response_code: "C000" };
+   						res.json(res_data);
+   					}
+   				}
+   			});
+
+   			break;
+
+   			case '000C':
 
 
 
@@ -527,43 +608,6 @@ app.post('/post', function(req, res, next){
    				
    			});
 
-   			break;
-
-   			
-   			case '000B':
-
-   			var select_query = "select * from order_buffer where id=?";
-   			var result_count  = 0;
-   			connection.query(select_query, message.id , function(err, result, fields){
-   				if(err){
-
-   				}
-   				else {
-   					result_count = result.length;
-
-   					// 추가 된 거 있을 때
-   					if(message.no_value < result_count){
-   						var res_data = new Object();
-   						res_data.response_code = "E000";
-
-   						var res_arr = new Array();
-   						for(var i = 0; i < result.length; i++){
-   							var obj = new Object();
-   							obj.order_code = 
-   						}
-
-   						res.json(res_data);
-   					}
-   					//추가 된 거 없을 때
-   					else if(message.no_value == result_count){
-   						var res_data = { response_code: "F000" };
-   						res.json(res_data);
-   					}
-   				}
-   			});
-
-
-   			console.log('test');
    			break;
 
 
