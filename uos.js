@@ -421,7 +421,7 @@ app.post('/post', function(req, res, next){
    					res_data_string = {response_code: "0013", message: { order_list: [] }};
 
    					var res_data_json = JSON.stringify(res_data_string);
-   					res.json(res_data_json);
+   					res.json(res_data_json);	
    				}
    				else{
    					
@@ -469,10 +469,10 @@ app.post('/post', function(req, res, next){
    					if(result.length != 0){
    						for(var i = 0; i < result.length; i++){
    							var obj = new Object();
-   							obj.order_code = result[0].order_code;
-   							obj.state = result[0].state;
-   							obj.order_list = result[0].orderlist;
-   							obj.date = result[0].date;
+   							obj.order_code = result[i].order_code;
+   							obj.state = result[i].state;
+   							obj.order_list = result[i].orderlist;
+   							obj.date = result[i].date;
 
    							order_array_arr.push(obj);
    						}
@@ -502,7 +502,7 @@ app.post('/post', function(req, res, next){
    					if(message.state0_num < result.length){
    						var response_obj = new Object();
    						response_obj.response_code = "B000";
-
+	
    						var order_array_arr = new Array();
 
    						if(result.length != 0){
@@ -533,8 +533,6 @@ app.post('/post', function(req, res, next){
    			break;
 
    			case '000C':
-
-
 
    			var select_query = "select * from customer_account where id=?";
    			

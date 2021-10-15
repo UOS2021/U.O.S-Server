@@ -1,69 +1,257 @@
-$(document).ready(function(){
+var new_order_list;
+var cnt_now;
+var cnt_finish;
 
-	// 이 함수 사용하면 주문현황 리스트에 추가됨
-	function list_attr_add(no, order_code, menu, time){
-		var newtr = "<tr><td>"+no+"</td>"+"<td>"+order_code+"</td>"+"<td>"+menu+"</td>"+"<td>"+time+"</td></tr>";
-		$('#tables').append(newtr);	
-	}
+function init(){
+	cnt_now = 0;
+	cnt_finish = 0;
+	let param =
+	{
+		"request_code": "000A",
+		"message" : {
+			"id" : sessionStorage.getItem("id")
+		}
+	};
+	var req = $.ajax({
+		url : "/post",
+		data : param,
+		type : 'POST',
+		dataType : 'json'
+	});
+	req.done(function(data, status){
 
-	function init(){
-		let param =
-		{
-			"request_code": "000A",
-			"message" : {
-				"id" : sessionStorage.getItem("id")
+		/* for문으로 주문현황 리스트에 주문들 추가 */
+		console.log(data);
+		console.log(data.message.order_array);
+		var i;
+		var order_array = data.message.order_array;
+		for(i=0;i<order_array.length;i++){
+			if(order_array[i].state==0 || order_array[i].state == 1 || order_array[i].state == 2){
+				list_attr_add('#new_order_list',cnt_now,order_array[i].order_code,order_array[i].order_list,order_array[i].date,order_array[i].state);
+				cnt_now++;
 			}
-		};
-		var req = $.ajax({
-			url : "/post",
-			data : param,
-			type : 'POST',
-			dataType : 'json'
-		});
-		req.done(function(data, status){
-
-			/* for문으로 주문현황 리스트에 주문들 추가 */
-			console.log(data);
-			
-		});
-	}
-
-	function repeat_request000B(){
+			else{
+				list_attr_add('#finished_order_list',cnt_finish,order_array[i].order_code,order_array[i].order_list,order_array[i].date,order_array[i].state);
+				cnt_finish++;
+			}
+		}
 		
-		/* 실시간 주문 현황에 올라온 state가 0인 주문들 개수 세기 구현 */
-		var state0_num = 0;
+	});
+}
 
-		let param =
-		{
-			"request_code": "000B",
-			"message" : {
-				"id" : sessionStorage.getItem("id"),
-				"state0_num" : state0_num
+function btn_accept(where,order_code){
+	// console.log(order_code);
+	let param =
+	{
+		"request_code": "00AA", //request_code 알아서 설정해줘 V누르면
+		"message" : {
+			"order_code" : order_code,
+		}
+	};
+	var req = $.ajax({
+		url : "/post",
+		data : param,
+		type : 'POST',
+		dataType : 'json'
+	});
+	req.done(function(data, status){
+		alert("주문 접수 완료");
+		var t = $('#new_order_list').DataTable();
+		var rows = "<button class='btn btn-warning' id='"+order_code+"' type='button' onclick='menu_wait(this,"+order_code+")'>조리 완료</button>";
+		var i;
+		for(i=0;i<t.rows()[0].length;i++){
+			if(t.row(i).data()[1]==order_code){
+				t.cell(i,4).data(rows);
+				break;
 			}
-		};
-		var req = $.ajax({
-			url : "/post",
-			data : param,
-			type : 'POST',
-			dataType : 'json'
-		});
-		req.done(function(data, status){
+		}
+	});
+}
+function btn_reject(order_code){
+	
+	let param =
+	{
+		"request_code": "00AB", //request_code 알아서 설정해줘 X누르면
+		"message" : {
+			"order_code" : order_code,
+		}
+	};
+	var req = $.ajax({
+		url : "/post",
+		data : param,
+		type : 'POST',
+		dataType : 'json'
+	});
+	req.done(function(data, status){
+		alert("주문 거절 완료");
+		var t = $('#new_order_list').DataTable();
+		var i;
+		for(i=0;i<t.rows()[0].length;i++){
+			if(t.row(i).data()[1]==order_code){
+				t.row(i).remove().draw(false);
+				cnt_now--;
+				break;
+			}
+		}
+	});
+}
+			 
+function menu_wait(where,order_code){
+	let param =
+	{
+		"request_code": "00AC", //request_code 알아서 설정해줘 조리완료
+		"message" : {
+			"order_code" : order_code,
+		}
+	};
+	var req = $.ajax({
+		url : "/post",
+		data : param,
+		type : 'POST',
+		dataType : 'json'
+	});
+	req.done(function(data, status){
+		alert("조리 완료");
+		var t = $('#new_order_list').DataTable();
+		var rows = "<button class='btn btn-info' id='"+order_code+"' type='button' onclick='customer_accept(this,"+order_code+")'>수령 완료</button>";
+		var i;
+		for(i=0;i<t.rows()[0].length;i++){
+			if(t.row(i).data()[1]==order_code){
+				t.cell(i,4).data(rows);
+				break;
+			}
+		}
+	});
+}
 
-			// 추가 주문 내역 없음
-			if(data.response_code == "C000"){
+function customer_accept(where, order_code){
+	let param =
+	{
+		"request_code": "00AD", //request_code 알아서 설정해줘 수령완료
+		"message" : {
+			"order_code" : order_code,
+		}
+	};
+	var req = $.ajax({
+		url : "/post",
+		data : param,
+		type : 'POST',
+		dataType : 'json'
+	});
+	req.done(function(data, status){
+		alert("수령완료");
+		var t = $('#new_order_list').DataTable();
+		var rows = "<button class='btn btn-info' id='"+order_code+"' type='button' onclick='customer_accept(this,"+order_code+")'>수령 완료</button>";
+		var i;
+		for(i=0;i<t.rows()[0].length;i++){
+			if(t.row(i).data()[1]==order_code){
+				t.row(i).remove().draw(false);
+				break;
+			}
+		}
+		var order_array = data.message.order_array;
+		if(order_array.state==3){
+			list_attr_add('#finished_order_list',cnt_finish,order_array.order_code,order_array.order_list,order_array.date,order_array.state);
+			cnt_finish--;
+		}
+	});
+}
 
-			}
-			// state가 0인 주문 추가로 들어옴
-			else if(data.response_code == "B000"){
-				/* for문으로 주문현황 리스트에 주문들 추가 */
-				console.log(data);
-			}
-			
-		});
+// 이 함수 사용하면 주문현황 리스트에 추가됨
+function list_attr_add(table,no, order_code, menu, time,state){
+	// var newtr = "<tr><td>"+no+"</td>"+"<td>"+order_code+"</td>"+"<td>"+menu+"</td>"+"<td>"+time+"</td></tr>";
+	// $(table).append(newtr);
+	var t = $(table).DataTable();
+	var rows;
+	if(state==0){
+		rows = "<button class='btn btn-success' id='"+order_code+"' type='button' onclick='btn_accept(this,"+order_code+")'>V</button><button class='btn btn-danger' id='"+order_code+"' type='button' onclick='btn_reject("+order_code+")'>X</button>";
 	}
-
+	else if (state == 1){
+		rows = "<button class='btn btn-warning' id='"+order_code+"' type='button' onclick='menu_wait(this,"+order_code+")'>조리 완료</button>";
+	}
+	else if (state==2){
+		rows = "<button class='btn btn-info' id='"+order_code+"' type='button' onclick='customer_accept(this,"+order_code+")'>수령 완료</button>";
+	}
+	else{
+		rows = "<button class='btn btn-secondary' type='button' disabled>완료 된 주문</button>";
+	}
+	t.row.add([no,order_code,menu,time,rows]).draw(false);
+}
+function repeat_request000B(){
+		
+	/* 실시간 주문 현황에 올라온 state가 0인 주문들 개수 세기 구현 */
+	var state0_num = 0;
+	let param =
+	{
+		"request_code": "000B",
+		"message" : {
+			"id" : sessionStorage.getItem("id"),
+			"state0_num" : state0_num
+		}
+	};
+	var req = $.ajax({
+		url : "/post",
+		data : param,
+		type : 'POST',
+			dataType : 'json'
+	});
+	req.done(function(data, status){
+			// 추가 주문 내역 없음
+		if(data.response_code == "C000"){
+			
+		}
+		// state가 0인 주문 추가로 들어옴
+		else if(data.response_code == "B000"){
+			/* for문으로 주문현황 리스트에 주문들 추가 */
+			var i;
+			var order_array = data.message.order_array;
+			for(i=0;i<order_array.length;i++){
+				if(order_array[i].state==0){
+					alert("새로운 주문이 접수되었습니다.");
+					list_attr_add('#new_order_list',i,order_array[i].order_code,order_array[i].order_list,order_array[i].date,order_array[i].state);
+				}
+			}
+		console.log(data);
+		}		
+	});
+}
+$(document).ready(function(){
+    	
 	// request 000B 1초마다 반복
-	setInterval(repeat_request000B, 1000);
-
-
+	//setInterval(repeat_request000B, 1000);
+	init();
+	$('#new_order_list').DataTable({
+		language : {
+			info : '총 _TOTAL_ 개의 행 중 _START_ 행 부터 _END_ 행 까지',
+			imfoEmpty : '데이터가 없습니다.',
+			lengthMenu : '총 _MENU_ 행씩 보기',
+			paginate : {
+				first : '처음',
+				last : '끝',
+				next : '다음',
+				previous : '이전'
+			},
+			search : '검색 ->'
+		}
+	});
+	$('#finished_order_list').DataTable({
+		language : {
+			info : '총 _TOTAL_ 개의 행 중 _START_ 행 부터 _END_ 행 까지',
+			imfoEmpty : '데이터가 없습니다.',
+			lengthMenu : '총 _MENU_ 행씩 보기',
+			paginate : {
+				first : '처음',
+				last : '끝',
+				next : '다음',
+				previous : '이전'
+			},
+			search : '검색 ->'
+		}
+	});
+	// $(document).on('click','#new_order_list td',function(){
+		// var tr = $(this).closest('tr');
+		// var td = tr.children();
+		// var seq = td.eq(1).text(); // id값 ㅎㅎㅎ
+		// console.log(seq);
+	// });
 });
