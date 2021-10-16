@@ -1,6 +1,7 @@
 var new_order_list;
 var cnt_now;
 var cnt_finish;
+var state0_num = 0;
 
 function init(){
 	cnt_now = 0;
@@ -29,6 +30,9 @@ function init(){
 			if(order_array[i].state==0 || order_array[i].state == 1 || order_array[i].state == 2){
 				list_attr_add('#new_order_list',cnt_now,order_array[i].order_code,order_array[i].order_list,order_array[i].date,order_array[i].state);
 				cnt_now++;
+				if(order_array[i].state == 0){
+					state0_num++;
+				}
 			}
 			else{
 				list_attr_add('#finished_order_list',cnt_finish,order_array[i].order_code,order_array[i].order_list,order_array[i].date,order_array[i].state);
@@ -180,7 +184,6 @@ function list_attr_add(table,no, order_code, menu, time,state){
 function repeat_request000B(){
 		
 	/* 실시간 주문 현황에 올라온 state가 0인 주문들 개수 세기 구현 */
-	var state0_num = 0;
 	let param =
 	{
 		"request_code": "000B",
@@ -212,14 +215,16 @@ function repeat_request000B(){
 				}
 			}
 		console.log(data);
+		state0_num++;
+		console.log(state0_num);
 		}		
 	});
 }
 $(document).ready(function(){
     	
 	// request 000B 1초마다 반복
-	//setInterval(repeat_request000B, 1000);
 	init();
+	setInterval(repeat_request000B, 1000);
 	$('#new_order_list').DataTable({
 		language : {
 			info : '총 _TOTAL_ 개의 행 중 _START_ 행 부터 _END_ 행 까지',

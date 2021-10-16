@@ -527,14 +527,13 @@ app.post('/post', function(req, res, next){
    					console.log("sql질의 에러");
    				}
    				else {
-
    					// 추가 된 거 있을 때
-   					if(message.state0_num < result.length){
+   					if(Number(message.state0_num) < result.length){
    						var response_obj = new Object();
    						response_obj.response_code = "B000";
 
    						var order_array_arr = new Array();
-
+   						console.log(result.length);
    						if(result.length != 0){
    							for(var i = 0; i < result.length; i++){
    								var obj = new Object();
@@ -542,22 +541,24 @@ app.post('/post', function(req, res, next){
    								obj.state = result[i].state;
    								obj.order_list = result[i].orderlist;
    								obj.date = result[i].date;
-
+   								console.log(obj);;
    								order_array_arr.push(obj);
    							}
    						}
 
 
    						response_obj.message = { order_array : order_array_arr };
-
+   						//console.log(order_array_arr);
    						res.json(response_obj);
    					}
    					//추가 된 거 없을 때
-   					else if(message.state0_num == result.length){
+   					else if(Number(message.state0_num) == result.length){
    						var res_data = { response_code: "C000" };
    						res.json(res_data);
+   						console.log(res_data);
    					}
    				}
+
    				connection.end();
    			});
 
@@ -640,7 +641,7 @@ app.post('/post', function(req, res, next){
    							});
 
    						}
-   					});
+   					});										
    				}
 
 
@@ -648,14 +649,14 @@ app.post('/post', function(req, res, next){
    			});
 
    			break;
-
+				*/
 
    			default:
    			console.log(request_code + ' does not exist in request_code.');
    			console.log(message);
    			connection.end();
    			break;
-   			*/
+   			
    		}
 
    });
