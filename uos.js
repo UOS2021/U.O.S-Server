@@ -614,12 +614,25 @@ app.post('/post', function(req, res, next){
    			console.log(message);
    			break;
    		}
-
+r
    	//connection.end();
    });
 
 // express 서버 시작
-
+app.post('/menu', function(req, res, next){
+	var message = req.body.message;
+	var id = message.id;
+	console.log('받는 아이디 : '+id);
+	
+	//이 이후부터는 너가 작성해서//
+	res_data_string = {response_code: "A000", message: {menu:"테스트"}};
+   	var res_data_json = JSON.stringify(res_data_string);
+	console.log('보내는 값 : ' + res_data_json)
+	
+	//아래와 같이 res.json(나한테 넘겨줄 값);
+	res.json(res_data_json);
+	
+});
 http.createServer(app).listen(app.get('port'), app.get('host'), ()=>{
 	console.log('Express server running at ' + app.get('host') + ":" + app.get('port'));
 });
