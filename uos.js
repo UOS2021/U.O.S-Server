@@ -1,6 +1,7 @@
 // express 기본 모듈 불러오기
 var express = require('express'), http = require('http'), path = require('path'), mysql = require('mysql'), QRCode = require('qrcode');
 const fs = require('fs');
+var async = require('async');
 
 // mysql 기본설정
 const conn = {
@@ -97,15 +98,18 @@ app.post('/post', function(req, res, next){
 	var request_code = req.body.request_code;
 	var message = req.body.message;
 
+	console.log(message);
 	switch (request_code) {
 		case '0000':
 		console.log(message);
+		connection.end();
 		break;
 		case '0001':
 		var check_overlap_text = "select * from customer_account where id=?";
 		var res_data_string ='';
 
-		connection.query(check_overlap_text, message.id , function(err, result, fields){
+		
+		connection.query(check_overlap_text, message.customer_id, function(err, result, fields){
 			if(result.length > 0){
 				console.log('아이디 중복');
 				res_data_string = {response_code: "0002"};
@@ -114,7 +118,7 @@ app.post('/post', function(req, res, next){
 			}
 			else{
 				var insert_text = "INSERT INTO `customer_account` (`id`, `pw`, `name`, `phone`)"
-				+ "VALUES ('" + message.id + "','" + message.pw + "', '" + message.name + "', '" + message.phone +"');";
+				+ "VALUES ('" + message.customer_id + "','" + message.pw + "', '" + message.name + "', '" + message.phone +"');";
 				connection.query(insert_text, function (err, result, fields){
 					if(err){
 						console.log(err);
@@ -122,17 +126,20 @@ app.post('/post', function(req, res, next){
 					res_data_string = {response_code: "0001"};
 					var res_data_json = JSON.stringify(res_data_string);
 					res.json(res_data_json);
+
 				});
 			}
 
-		});
+			connection.end();
 
+		});
+		
 		break;
 
 		case '0002':
 		var check_overlap_text = "select * from uospartner_account where id=?";
 		var res_data_string ='';
-		connection.query(check_overlap_text, message.id , function(err, result, fields){
+		connection.query(check_overlap_text, message.uospartner_account , function(err, result, fields){
 			if(result.length > 0){
 				console.log('아이디 중복');
 				res_data_string = {response_code: "0002"};
@@ -171,13 +178,11 @@ app.post('/post', function(req, res, next){
 					});
 				});
 			}
-
+			connection.end();
 		});
 
 		break;
 		case '0003':
-
-		case '0004':
 		var check_overlap_text = "";
 		if(message.type == 'customer'){
 			check_overlap_text = "select * from customer_account where id=?";
@@ -191,6 +196,8 @@ app.post('/post', function(req, res, next){
 		}
 
 		var res_data_string ='';
+
+		
 
 		connection.query(check_overlap_text, message.id , function(err, result, fields){
 			if(err){
@@ -234,14 +241,38 @@ app.post('/post', function(req, res, next){
 					res_data_string = { response_code: "0005" };
 
 				}
+
 				var res_data_json = JSON.stringify(res_data_string);
 				res.json(res_data_json);
+				connection.end();
+
 
 			});
+
+
+
 		break;
 
-		case '0005':
+		case '0004':
+		var select_query = "";
+		if(message.type == 'customer'){
+			select_query = "select * from customer_account where id=?";
+		}
+		else if(message.type == 'uospartner'){
+			select_query = "select * from uospartner_account where id=?";
+		}
+		else{
+			console.log('type 오류');
+		}
+
+		connection.query(select_query, message.id , function(err, result, fields){
+
+
+		});
+
 		var update_query = "";
+
+
 		if(message.type == 'customer'){
 			update_query = "update customer_account set pw='" + message.change_pw +  "' where id=?";
 		}
@@ -256,20 +287,20 @@ app.post('/post', function(req, res, next){
 			var res_data_string ='';
 			if(err){
 				console.log('비밀번호 변경 실패');
-				res_data_string = {response_code: "0015"};
+				res_data_string = {response_code: "0014"};
 			}
 			else{
 				console.log('비밀번호 변경 성공');
-				res_data_string = {response_code: "0014"};
+				res_data_string = {response_code: "0013"};
 			}
 
 			var res_data_json = JSON.stringify(res_data_string);
 			res.json(res_data_json);
-
+			connection.end();
 		});
 		break;
 
-		case '0006':
+		case '0005':
 		var update_query = "";
 		if(message.type == 'customer'){
 			update_query = "update customer_account set phone='" + message.change_phone +  "' where id=?";
@@ -284,21 +315,20 @@ app.post('/post', function(req, res, next){
 			var res_data_string ='';
 			if(err){
 				console.log('휴대폰 번호 변경 실패');
-				res_data_string = {response_code: "0017"};
+				res_data_string = {response_code: "0015"};
 			}
 			else{
 				console.log('휴대폰 번호 변경 성공');
-				res_data_string = {response_code: "0016"};
+				res_data_string = {response_code: "0015"};
 			}
-
 			var res_data_json = JSON.stringify(res_data_string);
 			res.json(res_data_json);
-
+			connection.end();
 		});
 
 		break;
 
-		case '0007':
+		case '0006':
 		var delete_query = "";
 		if(message.type == 'customer'){
 			delete_query = "delete from customer_account where id=?";
@@ -313,79 +343,77 @@ app.post('/post', function(req, res, next){
 			var res_data_string ='';
 			if(err){
 				console.log('회원 탈퇴 실패');
-				res_data_string = {response_code: "0019"};
+				res_data_string = {response_code: "0017"};
 			}
 			else{
 				console.log('회원 탈퇴 성공');
-				res_data_string = {response_code: "0018"};
+				res_data_string = {response_code: "0016"};
 			}
 
 			var res_data_json = JSON.stringify(res_data_string);
 			res.json(res_data_json);
-
+			connection.end();
 		});
 		break;
-		case '0008':
+		case '0007':
 		var select_query = "select * from customer_account where id=?";
-
-		connection.query(select_query, message.id , function(err, result, fields){
+		connection.query(select_query, message.customer_id , function(err, result, fields){
 			var res_data_string ='';
 			if(err || result[0].card_num == null ){
 				console.log('카드 조회 실패');
-				res_data_string = {response_code: "0025"};
+				res_data_string = {response_code: "0021"};
 			}
 			else{
 				console.log('카드 조회 성공');
-				res_data_string = {response_code: "0024", message: {num: result[0].card_num, cvc: result[0].cvc, due_date: result[0].due_date}};
+				res_data_string = {response_code: "0020", message: {num: result[0].card_num, cvc: result[0].cvc, due_date: result[0].due_date}};
 			}
 
 			var res_data_json = JSON.stringify(res_data_string);
 			res.json(res_data_json);
-
+			connection.end();
 		});
 		break;
 
-		case '0009':
+		case '0008':
 		var update_query = "update customer_account set card_num='" + message.card.num +  "', cvc='" + message.card.cvc + "', card_pw='" + message.card.pw +"', due_date='" + message.card.due_date +"' where id=?";
    			//var update_query = "update customer_account set card_num='" + message.card.num +  "', cvc='" + message.card.cvc + "', card_pw='" + message.card.pw + "', due_date='" + message.card.due_date + "' where id=?";
-   			connection.query(update_query, message.id , function(err, result, fields){
+   			connection.query(update_query, message.customer_id , function(err, result, fields){
    				var res_data_string ='';
    				if(err){
    					console.log('카드 등록 실패');
-   					console.log(message);
-   					res_data_string = {response_code: "0021"};
+   					res_data_string = {response_code: "0018"};
    				}
    				else{
    					console.log('카드 등록 성공');
-   					res_data_string = {response_code: "0020"};
+   					res_data_string = {response_code: "0018"};
    				}
 
    				var res_data_json = JSON.stringify(res_data_string);
    				res.json(res_data_json);
-   				
+   				connection.end();
    			});
    			break;
-   			case '0010':
+   			case '0009':
    			var update_query = "update customer_account set card_num=NULL, cvc=NULL, card_pw=NULL, due_date=NULL where id=?";
    			
-   			connection.query(update_query, message.id , function(err, result, fields){
+   			connection.query(update_query, message.customer_id , function(err, result, fields){
    				var res_data_string ='';
    				if(err){
    					console.log('카드 제거 실패');
-   					res_data_string = {response_code: "0023"};
+   					res_data_string = {response_code: "0019"};
    				}
    				else{
    					console.log('카드 제거 성공');
-   					res_data_string = {response_code: "0022"};
+   					res_data_string = {response_code: "0019"};
    				}
 
    				var res_data_json = JSON.stringify(res_data_string);
    				res.json(res_data_json);
-   				
+   				connection.end();
    			});
    			break;
 
-   			case '0011' :
+   			case '0010' :
 
    			//주문 버퍼
 
@@ -407,21 +435,22 @@ app.post('/post', function(req, res, next){
    					console.log("주문 버퍼 추가");
 
    				}
+   				connection.end();
    			});
    			
    			break;
 
-   			case '0013':
+   			case '0012':
    			var select_query = "select * from order_details where id=? order by num desc";
    			
-   			connection.query(select_query, message.id , function(err, result, fields){
+   			connection.query(select_query, message.customer_id , function(err, result, fields){
    				var res_data_string ='';
    				if(err || result == ""){
    					console.log('주문 내역 없음');
-   					res_data_string = {response_code: "0013", message: { order_list: [] }};
+   					res_data_string = {response_code: "0012", message: { order_list: [] }};
 
    					var res_data_json = JSON.stringify(res_data_string);
-   					res.json(res_data_json);	
+   					res.json(res_data_json);
    				}
    				else{
    					
@@ -434,7 +463,7 @@ app.post('/post', function(req, res, next){
    						order_list_json = { date: result[i].date, company_name: result[i].company_name, order: result[i].orderlist };
    						order_list = order_list + "," + ((JSON.stringify(order_list_json)).replace('"[', '[')).replace(']"', "]");
    					}
-   					res_data_string = (("{response_code: \"0013\", message: { order_list: [" + order_list + "] }}").replace('"[', '[')).replace(']"', "]");
+   					res_data_string = (("{response_code: \"0012\", message: { order_list: [" + order_list + "] }}").replace('"[', '[')).replace(']"', "]");
    					//console.log(res_data_string.replace("\\", ""));
 
    					//var res_data_json = JSON.stringify(res_data_string);
@@ -442,7 +471,7 @@ app.post('/post', function(req, res, next){
    				}
 
    				
-   				
+   				connection.end();
    			});
    			break;
    			case '0014':
@@ -485,6 +514,7 @@ app.post('/post', function(req, res, next){
 
 
    				}
+   				connection.end();
    			});
 
    			break;
@@ -502,16 +532,16 @@ app.post('/post', function(req, res, next){
    					if(message.state0_num < result.length){
    						var response_obj = new Object();
    						response_obj.response_code = "B000";
-	
+
    						var order_array_arr = new Array();
 
    						if(result.length != 0){
    							for(var i = 0; i < result.length; i++){
    								var obj = new Object();
-   								obj.order_code = result[0].order_code;
-   								obj.state = result[0].state;
-   								obj.order_list = result[0].orderlist;
-   								obj.date = result[0].date;
+   								obj.order_code = result[i].order_code;
+   								obj.state = result[i].state;
+   								obj.order_list = result[i].orderlist;
+   								obj.date = result[i].date;
 
    								order_array_arr.push(obj);
    							}
@@ -528,9 +558,20 @@ app.post('/post', function(req, res, next){
    						res.json(res_data);
    					}
    				}
+   				connection.end();
    			});
 
    			break;
+
+   			case '000Z':
+
+   				/* 유현승 */
+
+
+   			connection.end();
+   			break;
+
+   			/*
 
    			case '000C':
 
@@ -603,7 +644,7 @@ app.post('/post', function(req, res, next){
    				}
 
 
-   				
+   				connection.end();
    			});
 
    			break;
@@ -612,27 +653,15 @@ app.post('/post', function(req, res, next){
    			default:
    			console.log(request_code + ' does not exist in request_code.');
    			console.log(message);
+   			connection.end();
    			break;
+   			*/
    		}
-r
-   	//connection.end();
+
    });
 
 // express 서버 시작
-app.post('/menu', function(req, res, next){
-	var message = req.body.message;
-	var id = message.id;
-	console.log('받는 아이디 : '+id);
-	
-	//이 이후부터는 너가 작성해서//
-	res_data_string = {response_code: "A000", message: {menu:"테스트"}};
-   	var res_data_json = JSON.stringify(res_data_string);
-	console.log('보내는 값 : ' + res_data_json)
-	
-	//아래와 같이 res.json(나한테 넘겨줄 값);
-	res.json(res_data_json);
-	
-});
+
 http.createServer(app).listen(app.get('port'), app.get('host'), ()=>{
 	console.log('Express server running at ' + app.get('host') + ":" + app.get('port'));
 });
