@@ -25,7 +25,8 @@ function login(){
 			var data = JSON.parse(result);
 			if(data.response_code == "0003"){
 				sessionStorage.setItem("id",userid);
-				sessionStorage.setItem("pw",userpw);
+				sessionStorage.setItem("company_type",data.message.company_type);
+				console.log(data.message.company_name);
 				location.href="/pos/list.html";
 			}
 			else{
