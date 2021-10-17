@@ -3,9 +3,10 @@ function init(){
 	{
 		// "request_code": "000A",
 		"message" : {
-			"id" : sessionStorage.getItem("id")
+			"id" : sessionStorage.getItem("id"),
+			"company_type" : sessionStorage.getItem("company_type")
 		}
-	};
+	}
 	var req = $.ajax({
 		url : "/menu",
 		data : param,
@@ -20,9 +21,11 @@ function init(){
 $('#myTab a').on('click', function (e) {
 	e.preventDefault();
     $(this).tab('show');
+	console.log(this.innerHTML);
     document.getElementById("preview").src = '';
     $("#file").val('');
 });
+
 $('#modal_open').on('click', function(){
     $('#myModal').modal('show');
 	console.log("click open");
@@ -51,6 +54,10 @@ $('input[type="file"]').change(function(e) {
     reader.readAsDataURL(this.files[0]); // 이미지 url
 });
 
-$(document).ready(function(){	
+$(document).ready(function(){
+	if(sessionStorage.getItem("company_type")=="영화관"){
+		var newa= "<a class='nav-link' href='/pos/movies'><div class='sb-nav-link-icon'><i class='fas fa-tachometer-alt'></i></div>영화 관리</a>"
+		$('#nav_side').append(newa);
+	}
 	init();
 });

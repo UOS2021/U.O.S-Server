@@ -25,7 +25,7 @@
     <div id="layoutSidenav_nav">
         <nav class="sb-sidenav accordion sb-sidenav-dark " id="sidenavAccordion">
             <div class="sb-sidenav-menu">
-                <div class="nav">
+                <div class="nav" id="nav_side">
                     <div class="sb-sidenav-menu-heading">Core</div>
                     <a class="nav-link" href="/pos/list">
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
@@ -48,8 +48,6 @@
         <main>
             <div class="container-fluid px-4">
                 <h1 class="mt-4 uof-h1">QR코드 관리
-                    <a class="btn btn-primary float-end px-5" onclick="make_qr();">QR코드 생성</a>
-                    <a class="btn btn-primary float-end px-5" onclick="delete_qr();">QR코드 삭제</a>
                 </h1>
                 <div class="mx-auto w-50" id="div_qr">
 					<h3 id="no_qr">
