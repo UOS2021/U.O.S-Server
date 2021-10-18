@@ -149,8 +149,26 @@
                     </div>
                     <div class="col-lg-3 uof-margin">
                         <!-- Search widget-->
-                            <a class="btn btn-danger float-end px-5 w-50 uof_size" onclick="delete_category();">카테고리 삭제</a>
-                            <a class="btn btn-success float-end px-5 w-50 uof_size" onclick="add_category();">카테고리 추가</a>
+                            <a class="btn btn-danger float-end px-5 w-50 uof_size" id="category_delete">카테고리 삭제</a>
+                            <a class="btn btn-success float-end px-5 w-50 uof_size" id="category_open">카테고리 추가</a>
+						<div class="modal fade bd-example-modal-lg" id="category" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="category" class="col-form-label">추가할 카테고리 명:</label>
+                                                <input type="text" class="form-control" id="category_name">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="category_close">닫기</button>
+                                        <button type="button" class="btn btn-primary" id="category_add">추가</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card mb-4 mt-5">
                             <div class="card-body">
                                 <div class="input-group">
@@ -160,7 +178,7 @@
                             </div>
                         </div>
                         <div class="card">
-                            <button type="button" class="btn btn-primary" id="modal_open" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" onclick="add_menu();">메뉴추가</button>
+                            <button type="button" class="btn btn-primary" id="modal_open" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">메뉴추가</button>
                         </div>
                         <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">

@@ -33,10 +33,35 @@ $('#modal_open').on('click', function(){
 $('#modal_close').on('click', function(){
     $('#myModal').modal('hide');
 });
-$('#modal_menu_add').on('click', function(){ //메뉴추가하는 스크립트
 
+$('#category_open').on('click', function(){
+    $('#category').modal('show');
+});
+$('#category_close').on('click', function(){
+    $('#category').modal('hide');
+});
+
+$('#modal_menu_add').on('click', function(){ //메뉴추가하는 스크립트
+	var preview = document.getElementById('preview').src;
+	var name = document.getElementById('name').value;
+	var price = document.getElementById('price').value;
+	var explaination = document.getElementById('explaination').value;
 
 });
+
+$('#category_add').on('click', function(){ //카테고리 추가하는 스크립트
+	var category_name = document.getElementById('category_name').value;
+	
+	
+});
+
+$('#category_delete').on('click', function(){ //카테고리 삭제하는 스크립트
+	
+	
+	
+});
+
+
 $(document).on("click", ".browse", function() {
     var file = $(this).parents().find(".file");
     file.trigger("click");

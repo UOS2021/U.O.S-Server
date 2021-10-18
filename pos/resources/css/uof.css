@@ -23,3 +23,25 @@
   visibility: hidden;
   position: absolute;
 }
+
+.enable{
+	background-color : #666;
+}
+.enable:hover{
+	background-color : red;	
+}
+.disable {
+	background-color : #bbb;
+}
+
+.line{
+	overflow : hidden;
+}
+.seat{
+	margin : 2px;
+	float: left;
+	width:30px;
+	height : 30px;
+	border-radius:3px;
+}
+
