@@ -86,6 +86,9 @@ router.route('/pos/list').get(function(req, res){
 	res.redirect('/pos/list.html');
 });
 
+router.route('/pos/movies').get(function(req, res){
+	res.redirect('/pos/movies.html');
+});
 
 app.use('/', router);
 
