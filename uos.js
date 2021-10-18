@@ -2,6 +2,11 @@
 var express = require('express'), http = require('http'), path = require('path'), mysql = require('mysql'), QRCode = require('qrcode');
 const fs = require('fs');
 
+var FCM = require('fcm-node');
+// api 토큰
+var serverKey = "AAAAjJLRggY:APA91bE2xhI3ZkbiFx1y3o3WugxQlkM8Aub9c77-3n5qyQ9ROF62h8XPKzvKRPUZB1dwNYiexcD9vjpYnQ4bwsdLF75ya9YxISoPnyk1Oc2NBN0IIlVkGM0bDNZdyDM_uBP0Ys05nL_b";
+var fcm = new FCM(serverKey);
+
 // mysql 기본설정
 const conn = {
 	host: 'localhost',
@@ -265,40 +270,73 @@ app.post('/post', function(req, res, next){
 					}
 				}
 				if(check == 'true'){
-					if(request_code == '0003'){
-						console.log('로그인 성공');
-						var companyName = "";
-						if(message.type == 'uospartner' || message.type == 'pos'){
-							companyName = result[0].company_name;
-							if(message.type == 'pos'){
-								
+					
+					console.log('로그인 성공');
+					if(message.type == "customer"){
+						res_data_string = {
+							response_code: "0003",
+							message: {
+								name: result[0].name,
+								phone: result[0].phone
 							}
-						}
-						res_data_string = { response_code: "0003", message: { name: result[0].name, phone: result[0].phone, type: message.type, company_name: companyName, company_type: result[0].company_type } }; }
-
-
-						else{
-							console.log('비밀번호 적합');
-							res_data_string = { response_code: "0004" };
-						}
+						};
+						var update_query = "update customer_account set fcm_token='" + message.fcm_token +"' where id=?";
+						connection.query(update_query, message.id , function(err, result, fields){
+							if(err){
+								console.log('fcm token 업데이트 실패');
+								console.log(err);
+							}
+							else{
+								console.log(message.id + ' fcm token 업데이트 성공');
+							}
+						});
 					}
-					else{
-						console.log(request_code + ' 비밀번호 부적합');
-						res_data_string = { response_code: "0006" };
+					else if(message.type == "uospartner"){
+						var readFile = fs.readFileSync('assets/qrcode/' + message.id +'.jpg');
+						var encode = Buffer.from(readFile).toString('base64');
+						res_data_string = {
+							response_code: "0004",
+							message: {
+								name: result[0].name,
+								phone: result[0].phone,
+								company_name: result[0].company_name,
+								qr_img: encode
+							}
+						};
+						
 					}
+					else if(message.type == "pos"){
+						res_data_string = {
+							response_code: "0003",
+							message: {
+								name: result[0].name,
+								company_name: result[0].company_name,
+								company_type: result[0].company_type
+							}
+						};
+					}
+					
 				}
+
+
+
 				else{
-					console.log('없는 id');
-					res_data_string = { response_code: "0005" };
-
+					console.log(request_code + ' 비밀번호 부적합');
+					res_data_string = { response_code: "0006" };
 				}
+			}
+			else{
+				console.log('없는 id');
+				res_data_string = { response_code: "0005" };
 
-				var res_data_json = JSON.stringify(res_data_string);
-				res.json(res_data_json);
-				connection.end();
+			}
+
+			var res_data_json = JSON.stringify(res_data_string);
+			res.json(res_data_json);
+			connection.end();
 
 
-			});
+		});
 
 
 
@@ -467,10 +505,24 @@ app.post('/post', function(req, res, next){
    			case '0010' :
 
    			//주문 버퍼
+   			var date = new Date();
+   			var year = date.getFullYear();
+   			var month = ("0" + (1 + date.getMonth())).slice(-2);
+   			var day = ("0" + date.getDate()).slice(-2);
+   			var hours = ("0" + date.getHours()).slice(-2);
+   			var minutes = ("0" + date.getMinutes()).slice(-2);
+   			var seconds = ("0" + date.getSeconds()).slice(-2);
 
+   			var now_date = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
+
+   			var order_arr = message.order;
+   			var price = 0;
+   			order_arr.forEach(function(element){
+   				price += element.price * element.count;
+   			});
    			
-   			var insert_text = "INSERT INTO `order_buffer` (`uospartner_id`, `customer_id`, `fcm_token`, `card`, `orderlist`)"
-   			+ "VALUES ('" + message.uospartner_id + "','" + message.customer_id + "', '" + message.fcm_token + "', '" + JSON.stringify(message.card) + "', '" + JSON.stringify(message.order) + "');";
+   			var insert_text = "INSERT INTO `order_buffer` (`state`, `date`, `customer_id`, `uospartner_id`, `company_name`, `card`, `orderlist`, `price`) "
+   			+ "VALUES ( 0, '" + now_date + "','" + message.customer_id + "','" + message.uospartner_id + "','" + message.company_name + "','" + JSON.stringify(message.card) + "','" + JSON.stringify(message.order) + "',"+price+");";
    			connection.query(insert_text, function (err, result, fields){
 
    				if(err){
@@ -495,23 +547,44 @@ app.post('/post', function(req, res, next){
    			break;
 
    			case '0011' :
-   			var update_query = "update order_buffer set state=4 where order_code=?";
    			
-   			connection.query(update_query, message.order_code , function(err, result, fields){
-   				var res_data_string ='';
+   			var select_query = "select * from order_buffer where order_code=?";
+   			connection.query(select_query, message.order_code , function(err, result, fields){
    				if(err){
-   					console.log('주문 취소 실패');
-   					res_data_string = {response_code: "0022"};
+   					console.log("에러발생 또는 매장에서 주문 거부함");
    				}
    				else{
-   					console.log('주문이 취소되었습니다.');
-   					res_data_string = {response_code: "0022"};
-   				}
+   					var res_data_string ='';
+   					if(result[0].state == 0){
+   						var update_query = "update order_buffer set state=4 where order_code=?";
+   						connection.query(update_query, message.order_code , function(err, result, fields){
+   							
+   							if(err){
+   								console.log('주문 취소 실패');
+   								res_data_string = {response_code: "0030"};
+   							}
+   							else{
 
-   				var res_data_json = JSON.stringify(res_data_string);
-   				res.json(res_data_json);
+   								console.log('주문이 취소되었습니다.');
+   								res_data_string = {response_code: "0022"};
+   							}
+
+   							var res_data_json = JSON.stringify(res_data_string);
+   							res.json(res_data_json);
+   							
+   						});
+   						
+   					}
+   					else{
+   						console.log('이미 접수돼서 주문 취소 실패');
+   						res_data_string = {response_code: "0030"};
+   						var res_data_json = JSON.stringify(res_data_string);
+   						res.json(res_data_json);
+   					}
+   				}
    				connection.end();
    			});
+   			
    			break;
 
    			case '0012':
@@ -537,17 +610,16 @@ app.post('/post', function(req, res, next){
 
    					var order_list_array = new Array();
    					for(var i =0; i < result.length; i++){
-   						if(result[i].state != 0){
-   							var obj = new Object();
-   							obj.state = result[i].state;
-   							obj.date = result[i].date;
-   							obj.company_name = result[i].company_name;
-   							obj.total_price = result[i].price;
-   							obj.order_code = result[i].order_code;
-   							obj.product_list = eval(result[i].orderlist);
+   						var obj = new Object();
+   						obj.state = result[i].state;
+   						obj.date = result[i].date;
+   						obj.company_name = result[i].company_name;
+   						obj.total_price = result[i].price;
+   						obj.order_code = result[i].order_code;
+   						obj.product_list = eval(result[i].orderlist);
 
-   							order_list_array.push(obj);
-   						}
+   						order_list_array.push(obj);
+   						
    					}
 
    					response_obj.message = {
@@ -564,10 +636,23 @@ app.post('/post', function(req, res, next){
    				connection.end();
    			});
    			break;
-   			case '0014':
+   			
+
+   			case '0013':
+   			var select_query = "select * from order_buffer where uospartner_id=?";
+   			
+   			connection.query(select_query, message.uospartner_id , function(err, result, fields){
+
+
+   			});
+
    			var res_data_string = { response_code: "0007", message: { company: { name: "companyname", type: "pc" }, category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc", image: "img" }], set_list: [{ name: "setname", price: 1000, desc: "desc", conf: "conf", image: "img", category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc" }] }] }] }] } };
 
    			res.json(res_data_string);
+   			break;
+
+   			case '0014':
+
    			break;
 
    			case '0015':
@@ -593,7 +678,7 @@ app.post('/post', function(req, res, next){
 
    					var order_list_array = new Array();
    					for(var i =0; i < result.length; i++){
-   						if(0 <= result[i].state == 1 && result[i].state <= 2){
+   						if(1 <= result[i].state && result[i].state <= 2){
    							var obj = new Object();
    							obj.state = result[i].state;
    							obj.date = result[i].date;
@@ -618,6 +703,26 @@ app.post('/post', function(req, res, next){
 
    				
    				connection.end();
+   			});
+   			break;
+
+   			case '0017': 
+   			var update_query = "update customer_account set fcm_token=NULL where id=?";
+   			connection.query(update_query, message.customer_id , function(err, result, fields){
+
+   				if(err){
+   					console.log('로그아웃 실패');
+   					res_data_string = {response_code: "0027"};
+   				}
+   				else{
+
+   					console.log(message.customer_id + '로그아웃 되었습니다.');
+   					res_data_string = { response_code: "0027" };
+   				}
+
+   				var res_data_json = JSON.stringify(res_data_string);
+   				res.json(res_data_json);
+
    			});
    			break;
 
@@ -661,18 +766,20 @@ app.post('/post', function(req, res, next){
    			break;
 
    			case '000B':
+   			// select order_code, uospartner_id, state from order_buffer where uospartner_id="testidpc" and (state=1 or state=2)and order_code > (select order_code from order_buffer where uospartner_id="testidpc" and (state=1 or state=2) limit 1 offset 4);
+   			var index = message.state0_num - 1;
+   			var select_query = "select * from order_buffer where uospartner_id=? and (state=0 or state=4) and order_code > (select order_code from order_buffer where uospartner_id=? and (state=0 or state=4) limit 1 offset "+ index +")";
 
-   			var select_query = "select * from order_buffer where uospartner_id=? and (state=? or state=?)";
-   			connection.query(select_query, [message.id, 0, 4] , function(err, result, fields){
+   			//var select_query = "select * from order_buffer where uospartner_id=? and (state=? or state=?)";
+   			connection.query(select_query, [message.id, message.id] , function(err, result, fields){
    				if(err){
    					console.log("sql질의 에러");
    				}
    				else {
    					var check = false;
    					var response_obj = new Object();
-
    					// 추가 된 거 있을 때
-   					if(Number(message.state0_num) < result.length){
+   					if(result.length > 0){
    						check = true;
 
    						response_obj.response_code = "B000";
@@ -711,7 +818,7 @@ app.post('/post', function(req, res, next){
    					}
 
    					//추가 된 거 없을 때
-   					else if(Number(message.state0_num) == result.length){
+   					else {
    						response_obj.response_code = "C000";
    						res.json(response_obj);
    					}
@@ -724,17 +831,85 @@ app.post('/post', function(req, res, next){
 
    			// 주문 수락 버튼
    			case '000C' :
-   			var update_query = "update order_buffer set state=1 where order_code=?";
-   			
-   			connection.query(update_query, message.customer_id , function(err, result, fields){
+   			var update_query = "update order_buffer set state=1 where order_code=" + message.order_code + ";";
+   			var select_query = "select company_name, customer_id from order_buffer where order_code=" + message.order_code + ";";
+   			var company_name = "";
+   			connection.query(select_query, function(err, result, fields){
+   				company_name = result[0].company_name;
+   				console.log("됨!");
+   			});
+
+
+   			connection.query(update_query, function(err, result, fields){
    				var res_data_string ='';
    				if(err){
-   					console.log('카드 제거 실패');
+   					console.log('주문 수락 실패 ');
+   					console.log(err);
    					res_data_string = {response_code: "0019"};
    				}
    				else{
-   					console.log('카드 제거 성공');
+   					console.log('주문 수락 성공');
+   					console.log(result);
    					res_data_string = {response_code: "0019"};
+
+   					var select_query2 = "select fcm_token from customer_account where id=(select customer_id from order_buffer where order_code=" + message.order_code + ");";
+   					connection.query(select_query2, function(err, result2, fields){
+   						if(err){
+   							console.log(err);
+   						}
+   						else{
+   							console.log("성공! " + company_name);
+   							var send_message = {
+   								to: result2[0].fcm_token,
+   								collapse_key: "",
+   								data: {
+   									"response_code": "0010",
+   									"company_name": company_name,
+   									"order_code" : message.order_code
+   								}
+   							};
+
+   							fcm.send(send_message, function(err, response) {
+   								if (err) {
+   									console.log("Something has gone wrong");
+   								} else {
+   									console.log("Successfully sent with response: ", response);
+   								}
+   							});
+   						}
+   					});
+   					/*
+   					var customer_id = result2[0].customer_id;
+   					var select_query2 = "select fcm_token from customer_account where id=?";
+
+   					connection.query(select_query2, customer_id, function(err, result3, fields){
+   						if(err){
+   							console.log("sql 에러2");
+   							console.log(err);
+   						}
+   						else{
+   							var send_message = {
+   								to: result3[0].fcm_token,
+   								collapse_key: "",
+   								data: {
+   									"response_code": "0010",
+   									"company_name": result2[0].company_name,
+   									"order_code" : message.order_code
+   								}
+   							};
+
+   							fcm.send(send_message, function(err, response) {
+   								if (err) {
+   									console.log("Something has gone wrong");
+   								} else {
+   									console.log("Successfully sent with response: ", response);
+   								}
+   							});
+   						}
+   					});
+   					*/
+   					
+   					
    				}
 
    				var res_data_json = JSON.stringify(res_data_string);
