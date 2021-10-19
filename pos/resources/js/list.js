@@ -53,7 +53,7 @@ function init(){
 				}
 			}
 			else{
-				list_attr_add('#finished_order_list',cnt_finish,order_array[i].order_code,order_array[i].order_list,order_array[i].date,order_array[i].state);
+				list_attr_add('#finished_order_list',cnt_finish,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
 				cnt_finish++;
 			}
 		}
