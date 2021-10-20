@@ -46,7 +46,7 @@ app.use(bodyParser.json());
 
 
 router.route('/').get(function(req, res){
-  
+
   /*
   QRCode.toDataURL(url_text,function(err, url){
     console.log(url);
@@ -89,6 +89,10 @@ router.route('/pos/menus').get(function(req, res){
 
 router.route('/pos/list').get(function(req, res){
   res.redirect('/pos/list.html');
+});
+
+router.route('/pos/movies').get(function(req, res){
+  res.redirect('/pos/movies.html');
 });
 
 
@@ -210,7 +214,7 @@ app.post('/post', function(req, res, next){
           });
         }
         else {
-          
+
           if(message.company.type == "피시방"){
             company_type = "pc";
           }
@@ -267,7 +271,7 @@ app.post('/post', function(req, res, next){
           }
         }
         if(check == 'true'){
-          
+
           console.log('로그인 성공');
           if(message.type == "customer"){
             res_data_string = {
@@ -555,7 +559,7 @@ app.post('/post', function(req, res, next){
             if(result[0].state == 0){
               var update_query = "update order_buffer set state=4 where order_code=?";
               connection.query(update_query, message.order_code , function(err, result, fields){
-                
+
                 if(err){
                   console.log('주문 취소 실패');
                   res_data_string = {response_code: "0030"};
@@ -598,7 +602,7 @@ app.post('/post', function(req, res, next){
             res.json(res_data_json);
           }
           else{
-            
+
             console.log('주문 내역 성공');
 
 
@@ -666,7 +670,7 @@ app.post('/post', function(req, res, next){
             res.json(res_data_json);
           }
           else{
-            
+
             console.log('주문 내역 성공');
 
 
@@ -831,36 +835,46 @@ app.post('/post', function(req, res, next){
         var update_query = "update order_buffer set state=1 where order_code=" + message.order_code + ";";
         var select_query = "select company_name, customer_id from order_buffer where order_code=" + message.order_code + ";";
         var company_name = "";
+        var fcm_token = "";
+
         connection.query(select_query, function(err, result, fields){
           company_name = result[0].company_name;
           console.log("됨!");
         });
 
-
-        connection.query(update_query, function(err, result, fields){
-          var res_data_string ='';
+        var select_query2 = "select fcm_token from customer_account where id=(select customer_id from order_buffer where order_code=" + message.order_code + ");";
+        connection.query(select_query2, function(err, result, fields){
           if(err){
-            console.log('주문 수락 실패 ');
             console.log(err);
+            console.log('주문 수락 실패2');
             res_data_string = {response_code: "0019"};
+          }
+          else{
+            fcm_token = result[0].fcm_token;
+          }
+        });
 
 
+        connection.query(update_query, function(err1, result1, fields){
+          var res_data_string ='';
+          if(err1){
+            console.log(err1);
+            console.log('주문 수락 실패1');
+            res_data_string = {response_code: "0019"};
             // select_query2 삽입
           }
           else{
             console.log('주문 수락 성공');
-            console.log(result);
+            console.log(result1);
             res_data_string = {response_code: "0019"};
 
-            var select_query2 = "select fcm_token from customer_account where id=(select customer_id from order_buffer where order_code=" + message.order_code + ");";
-            connection.query(select_query2, function(err, result2, fields){
-              if(err){
-                console.log(err);
-              }
-              else{
-                console.log("성공! " + company_name);
+
+            var select_query3 = "select state from order_buffer where order_code=" + message.order_code + ";";
+            connection.query(select_query3, function(err2, result2, fields){
+              
+              if(result2[0].state != 4){
                 var send_message = {
-                  to: result2[0].fcm_token,
+                  to: fcm_token,
                   collapse_key: "",
                   data: {
                     "response_code": "0010",
@@ -878,6 +892,8 @@ app.post('/post', function(req, res, next){
                 });
               }
             });
+
+
           }
 
           var res_data_json = JSON.stringify(res_data_string);
