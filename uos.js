@@ -95,6 +95,10 @@ router.route('/pos/movies').get(function(req, res){
   res.redirect('/pos/movies.html');
 });
 
+router.route('/pos/corona').get(function(req, res){
+  res.redirect('/pos/corona.html');
+});
+
 app.use('/', router);
 
 
