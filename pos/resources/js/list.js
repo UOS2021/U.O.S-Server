@@ -65,7 +65,7 @@ function btn_accept(where,order_code){
 	// console.log(order_code);
 	let param =
 	{
-		"request_code": "00AA", //request_code 알아서 설정해줘 V누르면
+		"request_code": "000C", //request_code 알아서 설정해줘 V누르면
 		"message" : {
 			"order_code" : order_code,
 		}

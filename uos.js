@@ -835,7 +835,7 @@ app.post('/post', function(req, res, next){
 
         // 주문 수락 버튼
         case '000C' :
-        var update_query = "update order_buffer set state=1 where order_code=" + message.order_code + ";";
+        var update_query = "update order_buffer set state=2 where order_code=" + message.order_code + ";";
         var select_query = "select company_name, customer_id from order_buffer where order_code=" + message.order_code + ";";
         var company_name = "";
         var fcm_token = "";
