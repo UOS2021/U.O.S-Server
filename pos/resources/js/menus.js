@@ -43,6 +43,7 @@ $('#category_close').on('click', function(){
 
 $('#modal_menu_add').on('click', function(){ //메뉴추가하는 스크립트
 	var preview = document.getElementById('preview').src;
+	console.log(preview);
 	var name = document.getElementById('name').value;
 	var price = document.getElementById('price').value;
 	var explaination = document.getElementById('explaination').value;
