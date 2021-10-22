@@ -1,14 +1,13 @@
 function init(){
 	let param =
 	{
-		// "request_code": "000A",
+		"request_code": "000Z",
 		"message" : {
 			"id" : sessionStorage.getItem("id"),
-			"company_type" : sessionStorage.getItem("company_type")
 		}
 	}
 	var req = $.ajax({
-		url : "/menu",
+		url : "/post",
 		data : param,
 		type : 'POST',
 		dataType : 'json'
