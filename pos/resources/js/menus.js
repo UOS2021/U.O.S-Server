@@ -1,3 +1,4 @@
+var test;
 function init(){
 	let param =
 	{
@@ -13,17 +14,55 @@ function init(){
 		dataType : 'json'
 	});
 	req.done(function(data, status){
-
-		console.log(data);//받는 data		
+		console.log("TEST");
+		console.log(data);//받는 data
+		test = data;
+		var i,j,category_row,content_row;
+		for(i=0;i<data.length;i++){
+			if(i==0){
+				category_row = "<li class='nav-item'><a class='nav-link active' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='true'>"+data[i].category+"</a></li>";
+				content_row = "<div class='tab-pane mt-4 active' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+				for(j=0;j<data[i].product_list.length;j++){
+					content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
+					content_row+="<img class='card-img-top' src=''>";
+					content_row+="<div class='card-body'>";
+					content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
+					content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
+					content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
+					content_row+="</div>";
+					content_row+="</div>";
+				}
+				content_row+="</div>";
+			}
+			else{
+				category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='false'>"+data[i].category+"</a></li>";
+				content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+				for(j=0;j<data[i].product_list.length;j++){
+					content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
+					content_row+="<img class='card-img-top' src=''>";
+					content_row+="<div class='card-body'>";
+					content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
+					content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
+					content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
+					content_row+="</div>";
+					content_row+="</div>";
+				}
+				content_row+="</div>";
+			}
+			$('#myTab').append(category_row);
+			$('#myTab_content').append(content_row);
+		}
+		
+		$('#myTab a').on('click', function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+			console.log(this.innerHTML);
+			document.getElementById("preview").src = '';
+			$("#file").val('');
+		});
 	});
 }
-$('#myTab a').on('click', function (e) {
-	e.preventDefault();
-    $(this).tab('show');
-	console.log(this.innerHTML);
-    document.getElementById("preview").src = '';
-    $("#file").val('');
-});
+
 
 $('#modal_open').on('click', function(){
     $('#myModal').modal('show');
