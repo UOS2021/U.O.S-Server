@@ -194,8 +194,14 @@ function list_attr_add(table,no, order_code, menu, time,state){
 	else if (state==2){
 		rows = "<button class='btn btn-info' id='"+order_code+"' type='button' onclick='customer_accept(this,"+order_code+")'>수령 완료</button>";
 	}
-	else{
+	else if(state==3){
 		rows = "<button class='btn btn-secondary' type='button' disabled>완료 된 주문</button>";
+	}
+	else if(state==4){
+		rows = "<button class='btn btn-secondary' type='button' disabled>취소 된 주문</button>";
+	}
+	else if(state==5){
+		rows = "<button class='btn btn-secondary' type='button' disabled>거절 한 주문</button>";
 	}
 	t.row.add([no,order_code,menu,time,rows]).draw(false);
 }
