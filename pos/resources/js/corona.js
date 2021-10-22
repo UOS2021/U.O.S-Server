@@ -60,8 +60,7 @@ function init(){
 			cnt_finish++;
 		}
 		
-	});
-}
+});
 
 $(document).ready(function(){
     	
