@@ -18,9 +18,11 @@ function list_attr_add(table,no, order_code, menu, time,state){
 function init(){
 	cnt_now = 0;
 	cnt_finish = 0;
+}
+
 	let param =
 	{
-		"request_code": "000F",
+		"request_code": "000G",
 		"message" : {
 			"id" : sessionStorage.getItem("id")
 		}
