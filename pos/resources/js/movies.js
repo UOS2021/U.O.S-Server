@@ -23,20 +23,18 @@ var seat_alpha = 65;
 function init(){
 	let param =
 	{
-		// "request_code": "000A",
+		"request_code": "000Y",
 		"message" : {
-			"id" : sessionStorage.getItem("id"),
-			"company_type" : sessionStorage.getItem("company_type")
+			"id" : sessionStorage.getItem("id")
 		}
 	}
 	var req = $.ajax({
-		url : "/menu",
+		url : "/post",
 		data : param,
 		type : 'POST',
 		dataType : 'json'
 	});
 	req.done(function(data, status){
-
 		console.log(data);//받는 data		
 	});
 	
