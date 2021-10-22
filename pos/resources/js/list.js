@@ -107,6 +107,7 @@ function btn_reject(order_code){
 	req.done(function(data, status){
 		alert("주문 거절 완료");
 		var t = $('#new_order_list').DataTable();
+		var t1 = $('finished_order_list').DataTable();
 		var i;
 		for(i=0;i<t.rows()[0].length;i++){
 			if(t.row(i).data()[1]==order_code){
@@ -115,6 +116,27 @@ function btn_reject(order_code){
 				break;
 			}
 		}
+		var max_name = "";
+		var max_price = -1;
+		for(var j=0;j<eval(data.message.order_list).length;j++){
+			if(max_price < eval(data.message.order_list)[j].price){
+				max_name = eval(data.message.order_list)[j].menu;
+				max_price = eval(data.message.order_list)[j].price;
+			}
+		}
+		var menu_name;
+		if(eval(data.message.order_list).length == 1){
+			if(eval(data.message.order_list)[0].type==1)
+				menu_name = max_name+" 및 "+eval(data.message.order_list)[0].submenu;
+			else
+				menu_name = max_name;
+				
+		}
+		else{
+			menu_name = max_name+" 외 "+eval(data.message.order_list).length+"개 상품";
+		}
+		list_attr_add('#finished_order_list',cnt_finish,data.message.order_code,menu_name,data.message.date,data.message.state);
+		cnt_finish++;
 	});
 }
 			 
