@@ -1020,11 +1020,92 @@ app.post('/post', function(req, res, next){
 
 
 
-        case '000Z':
+        case '000Y': // 영화관 데이터 전송
+		
+		  
+
+
+        connection.end();
+        break;
+
+        case '000Z': // 음식점, PC방 데이터 전송
+		  
+		var sql = `SELECT * FROM restaurant_${message.id}`;
+		let results = sync_connection.query(sql);
+
+		var category_list = new Array();
+
+		for (var result of results) {
+			var categoryName = result.category;
+			var type = result.type;
+			var name = result.name;
+			var price = result.price;
+			var description = result.description;
+			var image = result.image;
+			var conf = result.conf;
+			var category_list_json = result.category_list;
+
+			// 카테고리 중복 확인
+			var index = category_list.findIndex(function(item, i) {
+				return item.category == categoryName;
+			});
+
+			// 카테고리 중복 시
+			if (index != -1) {
+				if (type == "product") {
+					var product = new Object();
+					product['name'] = name;
+					product['price'] = price;
+					product['desc'] = description;
+					product['image'] = "imgdata";
+
+					category_list[index].product_list.push(product);
+				} else if (type == "set") {
+					var set = new Object();
+					set['name'] = name;
+					set['price'] = price;
+					set['desc'] = description;
+					set['image'] = "imgdata";
+					set['conf'] = conf;
+					set['category_list'] = category_list_json;
+
+					category_list[index].set_list.push(set);
+				}
+			} else { // 카테고리 중복 아닐 시
+				var category = new Object();
+				category_list.push(category);
+				var set_list = new Array();
+				var product_list = new Array();
+
+				category['category'] = categoryName;
+				category['set_list'] = set_list;
+				category['product_list'] = product_list;
+
+				// 단품
+				if (type == "product") {
+					var product = new Object();
+					product['name'] = name;
+					product['price'] = price;
+					product['desc'] = description;
+					product['image'] = "imgdata";
+
+					product_list.push(product);
+				} else if (type == "set") { // 세트
+					var set = new Object();
+					set['name'] = name;
+					set['price'] = price;
+					set['desc'] = description;
+					set['image'] = "imgdata";
+					set['conf'] = conf;
+					set['category_list'] = category_list_json;
+
+					set_list.push(set);
+				}
+			}
+		}
 
         /* 유현승 */
-
-
+		res.json(category_list);
         connection.end();
         break;
 
