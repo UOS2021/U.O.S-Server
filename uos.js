@@ -874,7 +874,7 @@ app.post('/post', function(req, res, next){
 
             var select_query3 = "select state from order_buffer where order_code=" + message.order_code + ";";
             connection.query(select_query3, function(err2, result2, fields){
-              
+
               if(result2[0].state != 4){
                 var send_message = {
                   to: fcm_token,
@@ -904,6 +904,61 @@ app.post('/post', function(req, res, next){
           connection.end();
         });
         break;
+
+        //주문 거절
+        case '000C' :
+
+        break;
+
+        //조리 완료
+        case '000D' :
+
+        break;
+
+        //수령 완료
+        case '000E' :
+
+        break;
+
+        //코로나 데이터 보내기
+        case '000F' :
+        var select_query = "select * from order_buffer where uospartner_id=? and state=3";
+
+        connection.query(select_query, message.id, function(err, result, fields){
+          if(err){
+            console.log("sql질의 에러");
+          }
+          else {
+
+            var response_obj = new Object();
+            response_obj.response_code = "A000";
+
+            var order_array_arr = new Array();
+
+            if(result.length != 0){
+              for(var i = 0; i < result.length; i++){
+                var obj = new Object();
+                obj.order_code = result[i].order_code;
+                obj.state = result[i].state;
+                obj.order_list = result[i].orderlist;
+                obj.date = result[i].date;
+
+                order_array_arr.push(obj);
+              }
+            }
+            
+
+            response_obj.message = { order_array : order_array_arr };
+
+            res.json(response_obj);
+
+
+          }
+          connection.end();
+        });
+        break;
+
+
 
         case '000Z':
 
