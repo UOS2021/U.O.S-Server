@@ -25,7 +25,6 @@ function init(){
 	});
 	req.done(function(data, status){
 		/* for문으로 주문현황 리스트에 주문들 추가 */
-		
 		var i;
 		var order_array = data.message.order_array;
 		for(i=0;i<order_array.length;i++){
@@ -42,8 +41,7 @@ function init(){
 				if(eval(order_array[i].order_list)[0].type==1)
 					menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
 				else
-					menu_name = max_name;
-					
+					menu_name = max_name;	
 			}
 			else{
 				menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
