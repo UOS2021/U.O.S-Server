@@ -908,14 +908,18 @@ app.post('/post', function(req, res, next){
         //주문 거절
         case '000D' :
 
-        var select_query1 = "select company_name from order_buffer where order_code=" + message.order_code + ";";
+        var select_query1 = "select * from order_buffer where order_code=" + message.order_code + ";";
         var select_query2 = "select fcm_token from customer_account where id=(select customer_id from order_buffer where order_code=" + message.order_code + ");";
         var update_query = "update order_buffer set state=5 where order_code=" + message.order_code + ";";
         var fcm_token = "";
         var company_name = "";
+        var order_list = "";
+        var date = "";
 
         connection.query(select_query1, function(err, result, fields){
           company_name = result[0].company_name;
+          order_list = result[0].orderlist;
+          date = result[0].date;
           console.log("됨!");
         });
 
@@ -951,7 +955,13 @@ app.post('/post', function(req, res, next){
           });
 
           var response_obj = new Object();
-          response_obj.message = { response_code : "D000" };
+          response_obj.response_code = "D000";
+          response_obj.message = {
+            "order_code" : message.order_code,
+            "state" : 5,
+            "order_list" : order_list,
+            "date" : date
+          };
 
           res.json(response_obj);
 
