@@ -771,7 +771,7 @@ app.post('/post', function(req, res, next){
 
         case '000B':
         // select order_code, uospartner_id, state from order_buffer where uospartner_id="testidpc" and (state=1 or state=2)and order_code > (select order_code from order_buffer where uospartner_id="testidpc" and (state=1 or state=2) limit 1 offset 4);
-        var index = message.state0_num - 1;
+        var index = message.state0_num;
         var select_query = "select * from order_buffer where uospartner_id=? and (state=0 or state=4) and order_code > (select order_code from order_buffer where uospartner_id=? and (state=0 or state=4) limit 1 offset "+ index +")";
 
         //var select_query = "select * from order_buffer where uospartner_id=? and (state=? or state=?)";
@@ -835,7 +835,7 @@ app.post('/post', function(req, res, next){
 
         // 주문 수락 버튼
         case '000C' :
-        var update_query = "update order_buffer set state=2 where order_code=" + message.order_code + ";";
+        var update_query = "update order_buffer set state=1 where order_code=" + message.order_code + ";";
         var select_query = "select company_name, customer_id from order_buffer where order_code=" + message.order_code + ";";
         var company_name = "";
         var fcm_token = "";
