@@ -228,11 +228,31 @@ function repeat_request000B(){
 			var order_array = data.message.order_array;
 			if(order_array!=undefined){
 				for(i=0;i<order_array.length;i++){
+					var max_name = "";
+					var max_price = -1;
+					for(var j=0;j<eval(order_array[i].order_list).length;j++){
+						if(max_price < eval(order_array[i].order_list)[j].price){
+							max_name = eval(order_array[i].order_list)[j].menu;
+							max_price = eval(order_array[i].order_list)[j].price;
+						}
+					}
+					var menu_name;
+					if(eval(order_array[i].order_list).length == 1){
+						if(eval(order_array[i].order_list)[0].type==1)
+							menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
+						else
+							menu_name = max_name;
+
+					}
+					else{
+						menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
+					}
 					if(order_array[i].state==0){
 						alert("새로운 주문이 접수되었습니다.");
-						list_attr_add('#new_order_list',i,order_array[i].order_code,order_array[i].order_list,order_array[i].date,order_array[i].state);
+						state0_num++;
+						list_attr_add('#new_order_list',cnt_now,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
+						cnt_now++;
 					}
-					state0_num++;
 				}
 			}
 			if(data.message.order_codes!=undefined){
