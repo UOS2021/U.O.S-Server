@@ -93,7 +93,7 @@ function btn_reject(order_code){
 	
 	let param =
 	{
-		"request_code": "00AB", //request_code 알아서 설정해줘 X누르면
+		"request_code": "000D", //request_code 알아서 설정해줘 X누르면
 		"message" : {
 			"order_code" : order_code,
 		}

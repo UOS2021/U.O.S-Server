@@ -20,7 +20,7 @@ function init(){
 	cnt_finish = 0;
 	let param =
 	{
-		"request_code": "000F",
+		"request_code": "000G",
 		"message" : {
 			"id" : sessionStorage.getItem("id")
 		}
