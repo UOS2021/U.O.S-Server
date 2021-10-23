@@ -18,11 +18,11 @@ const conn = {
 };
 
 var sync_connection = new sync_mysql({
-    host: 'localhost',
-    port: '3306',
-    user: 'root',
-    password: '112antkglok!',
-    database: 'uos'
+  host: 'localhost',
+  port: '3306',
+  user: 'root',
+  password: '112antkglok!',
+  database: 'uos'
 });
 
 // express 미들웨어 불러오기
@@ -780,67 +780,84 @@ app.post('/post', function(req, res, next){
 
         case '000B':
         // select order_code, uospartner_id, state from order_buffer where uospartner_id="testidpc" and (state=1 or state=2)and order_code > (select order_code from order_buffer where uospartner_id="testidpc" and (state=1 or state=2) limit 1 offset 4);
-        var index = message.state0_num;
-        var select_query = "select * from order_buffer where uospartner_id=? and (state=0 or state=4) and order_code > (select order_code from order_buffer where uospartner_id=? and (state=0 or state=4) limit 1 offset "+ index +")";
-
+        var state0_index = message.state0_num;
+        //var select_query = "select * from order_buffer where uospartner_id=? and (state=0 or state=4) and order_code > (select order_code from order_buffer where uospartner_id=? and (state=0 or state=4) limit 1 offset "+ state0_index +")";
+        var select_query1 = "select * from order_buffer where uospartner_id=? and state=0 and order_code > (select order_code from order_buffer where uospartner_id=? and state=0 limit 1 offset "+ state0_index +")";
         //var select_query = "select * from order_buffer where uospartner_id=? and (state=? or state=?)";
-        connection.query(select_query, [message.id, message.id] , function(err, result, fields){
-          if(err){
-            console.log("sql질의 에러");
+        connection.query(select_query1, [message.id, message.id] , function(err1, result1, fields){
+          console.log(result1);
+          if(err1){
+            console.log("sql질의 에러1");
           }
           else {
-            var check = false;
-            var response_obj = new Object();
-            // 추가 된 거 있을 때
-            if(result.length > 0){
-              check = true;
-
-              response_obj.response_code = "B000";
-
-              var order_array_arr = new Array();
-              var cancel_order_code_arr = new Array();
-
-              for(var i = 0; i < result.length; i++){
-                if(result[i].state == 0){
-                  var obj = new Object();
-                  obj.order_code = result[i].order_code;
-                  obj.state = result[i].state;
-                  obj.order_list = result[i].orderlist;
-                  obj.date = result[i].date;
-                  order_array_arr.push(obj);
-                }
-                else if(result[i].state == 4){
-                  cancel_order_code_arr.push(result[i].order_code);
-                }
-              }
-
-              if(order_array_arr.length == 0){
-                response_obj.message = { order_codes : cancel_order_code_arr };
-              }
-              else if(cancel_order_code_arr.length == 0){
-                response_obj.message = { order_array : order_array_arr };
+            var state4_index = message.state4_num;
+            var select_query2 = "select * from order_buffer where uospartner_id=? and state=4 and order_code > (select order_code from order_buffer where uospartner_id=? and state=4 limit 1 offset "+ state4_index +")";
+            connection.query(select_query2, [message.id, message.id] , function(err2, result2, fields){
+              if(err2){
+                console.log("sql질의 에러2");
               }
               else{
-                response_obj.message = {
-                  order_codes : cancel_order_code_arr,
-                  order_array : order_array_arr
-                };
+                var response_obj = new Object();
+                var order_array_arr = new Array();
+                var cancel_order_code_arr = new Array();
+
+                function createResponseState0(){
+                  for(var i = 0; i < result.length; i++){
+                    if(result[i].state == 0){
+                      var obj = new Object();
+                      obj.order_code = result[i].order_code;
+                      obj.state = result[i].state;
+                      obj.order_list = result[i].orderlist;
+                      obj.date = result[i].date;
+                      order_array_arr.push(obj);
+                    }
+                  }
+                }
+
+                function createResponseState4(){
+                  for(var i = 0; i < result.length; i++){
+                    if(result[i].state == 4){
+                      cancel_order_code_arr.push(result[i].order_code);
+                    }
+                  }
+                }
+
+                if(result1.length == 0 && result2.length == 0){
+                  response_obj.response_code = "C000";
+                  res.json(response_obj);
+                }
+                else if(result1.length == 0 && result2.length !=0 ){
+                  response_obj.response_code = "B000";
+                  createResponseState4();
+                  response_obj.message = { order_codes : cancel_order_code_arr };
+                  res.json(response_obj);
+                }
+                else if(result2.length != 0 && result2.length == 0){
+                  response_obj.response_code = "B000";
+                  createResponseState0();
+                  response_obj.message = { order_array : order_array_arr };
+                  res.json(response_obj);
+                }
+                else{
+                  response_obj.response_code = "B000";
+                  createResponseState0();
+                  createResponseState4();
+                  response_obj.message = {
+                    order_array : order_array_arr,
+                    order_codes : cancel_order_code_arr
+                  };
+                  res.json(response_obj);
+                }
               }
 
-              res.json(response_obj);
-            }
+            });
 
-            //추가 된 거 없을 때
-            else {
-              response_obj.response_code = "C000";
-              res.json(response_obj);
-            }
           }
 
           connection.end();
         });
 
-        break;
+break;
 
         // 주문 수락 버튼
         case '000C' :
@@ -1028,14 +1045,14 @@ app.post('/post', function(req, res, next){
         break;
 
 
-		  
+
 
         case '000Y': // 영화관 데이터 전송
-		var sql1 = `SELECT * FROM movie_${message.id}; `;
-		var sql2 = `SELECT * FROM movie_${message.id}_food; `;
+        var sql1 = `SELECT * FROM movie_${message.id}; `;
+        var sql2 = `SELECT * FROM movie_${message.id}_food; `;
 
-		var movie_result = sync_connection.query(sql1);
-		var food_result = sync_connection.query(sql2);
+        var movie_result = sync_connection.query(sql1);
+        var food_result = sync_connection.query(sql2);
 
 		// 보낼 데이터
 		var response_data = new Object();
@@ -1141,29 +1158,29 @@ app.post('/post', function(req, res, next){
 			}
 		}
 
-		  
+
 		// response		  
 		res.json(response_data);
-        connection.end();
+    connection.end();
 
-        break;
+    break;
 
         case '000Z': // 음식점, PC방 데이터 전송
-		  
-		var sql = `SELECT * FROM restaurant_${message.id}`;
-		let results = sync_connection.query(sql);
 
-		var category_list = new Array();
+        var sql = `SELECT * FROM restaurant_${message.id}`;
+        let results = sync_connection.query(sql);
 
-		for (var result of results) {
-			var categoryName = result.category;
-			var type = result.type;
-			var name = result.name;
-			var price = result.price;
-			var description = result.description;
-			var image = result.image;
-			var conf = result.conf;
-			var category_list_json = result.category_list;
+        var category_list = new Array();
+
+        for (var result of results) {
+         var categoryName = result.category;
+         var type = result.type;
+         var name = result.name;
+         var price = result.price;
+         var description = result.description;
+         var image = result.image;
+         var conf = result.conf;
+         var category_list_json = result.category_list;
 
 			// 카테고리 중복 확인
 			var index = category_list.findIndex(function(item, i) {
@@ -1224,10 +1241,10 @@ app.post('/post', function(req, res, next){
 			}
 		}
 
-        /* 유현승 */
-		res.json(category_list);
-        connection.end();
-        break;
+    /* 유현승 */
+    res.json(category_list);
+    connection.end();
+    break;
 
         /*
 
