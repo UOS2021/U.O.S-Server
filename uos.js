@@ -699,17 +699,16 @@ app.post('/post', function(req, res, next){
 
     }
 
-
     // 매장정보 및 주문가능목록 전송
     case '0013': {  
-		var sql = `SELECT * FROM uospartner_account`;
+		var sql = `SELECT * FROM uospartner_account WHERE id='${message.uospartner_id}'`;
 		var results = sync_connection.query(sql);
 		var company_type = results[0].company_type;
 		console.log(company_type);
 		
       // 영화관
       if(company_type == "영화관"){
-        var sql1 = `SELECT * FROM movie_${message.id}; `;
+        var sql1 = `SELECT * FROM movie_${message.uospartner_id}; `;
         var sql2 = `SELECT * FROM movie_${message.id}_food; `;
 
         var movie_result = sync_connection.query(sql1);
@@ -717,20 +716,20 @@ app.post('/post', function(req, res, next){
 
         // 보낼 데이터
         var response_data = new Object();
-        var message = new Object();
+        var message_obj = new Object();
         var category_list = new Array();
         var movie_list = new Array();
         var company_obj = new Object();
-        response_data.message = message;
+        response_data.message = message_obj;
         response_data.response_code = '0007';
 
-        message.company = company_obj;
-        message.category_list = category_list;
-        message.movie_list = movie_list;
+        message_obj.company = company_obj;
+        message_obj.category_list = category_list;
+        message_obj.movie_list = movie_list;
         
         // 회사 정보 데이터 삽입
-        var sql = `SELECT * FROM uospartner_account WHERE id='${message.id}'`;
-        let company_results = sync_connection.query(sql);
+        var sql3 = `SELECT * FROM uospartner_account WHERE id='${message.uospartner_id}'`;
+        let company_results = sync_connection.query(sql3);
         var company_name = company_results[0].company_name;
         var company_type = company_results[0].company_type;
         company_obj.name = company_name;
@@ -746,8 +745,8 @@ app.post('/post', function(req, res, next){
           var height = result.height;
 
           // 좌석 정보 가져오기
-          var sql = `SELECT * FROM movie_${message.id}_${num}`;
-          var seat_list = sync_connection.query(sql);
+          var sql4 = `SELECT * FROM movie_${message.uospartner_id}_${num}`;
+          var seat_list = sync_connection.query(sql4);
 
           var movie = new Object();
           movie.movie = movieName;
@@ -841,23 +840,116 @@ app.post('/post', function(req, res, next){
         
       } 
       // 피시방
-      else {
-        var sql = `SELECT * FROM restaurant_${message.id}`;
+      else if(company_type == "피시방") {
+        var sql = `SELECT * FROM pc_${message.uospartner_id}`;
         let results = sync_connection.query(sql);
         
         var response_data = new Object();
-        var message = new Object();
+        var message_obj = new Object();
         response_data.response_code = '0007';
-        response_data.message = message;
+        response_data.message = message_obj;
         
         var category_list = new Array();
         var company_obj = new Object();
-        message.category_list = category_list;
-        message.company = company_obj;
+        message_obj.category_list = category_list;
+        message_obj.company = company_obj;
 
         // 회사 정보 데이터 삽입
-        var sql = `SELECT * FROM uospartner_account WHERE id='${message.id}'`;
-        let company_results = sync_connection.query(sql);
+        var sql1 = `SELECT * FROM uospartner_account WHERE id='${message.uospartner_id}'`;
+        let company_results = sync_connection.query(sql1);
+        var company_name = company_results[0].company_name;
+        var company_type = company_results[0].company_type;
+        company_obj.name = company_name;
+        company_obj.type = company_type;
+        
+        // 피시방 정보 데이터 삽입
+        for (var result of results) {
+          var categoryName = result.category;
+          var type = result.type;
+          var name = result.name;
+          var price = result.price;
+          var description = result.description;
+          var image = result.image;
+          var conf = result.conf;
+          var category_list_json = result.category_list;
+
+          // 카테고리 중복 확인
+          var index = category_list.findIndex(function(item, i) {
+            return item.category == categoryName;
+          });
+
+          // 카테고리 중복 시
+          if (index != -1) {
+            if (type == "product") {
+              var product = new Object();
+              product['name'] = name;
+              product['price'] = price;
+              product['desc'] = description;
+              product['image'] = "imgdata";
+
+              category_list[index].product_list.push(product);
+            } else if (type == "set") {
+              var set = new Object();
+              set['name'] = name;
+              set['price'] = price;
+              set['desc'] = description;
+              set['image'] = "imgdata";
+              set['conf'] = conf;
+              set['category_list'] = category_list_json;
+
+              category_list[index].set_list.push(set);
+            }
+          } else { // 카테고리 중복 아닐 시
+            var category = new Object();
+            category_list.push(category);
+            var set_list = new Array();
+            var product_list = new Array();
+
+            category['category'] = categoryName;
+            category['set_list'] = set_list;
+            category['product_list'] = product_list;
+
+            // 단품
+            if (type == "product") {
+              var product = new Object();
+              product['name'] = name;
+              product['price'] = price;
+              product['desc'] = description;
+              product['image'] = "imgdata";
+
+              product_list.push(product);
+            } else if (type == "set") { // 세트
+              var set = new Object();
+              set['name'] = name;
+              set['price'] = price;
+              set['desc'] = description;
+              set['image'] = "imgdata";
+              set['conf'] = conf;
+              set['category_list'] = category_list_json;
+
+              set_list.push(set);
+            }
+          }
+        }
+      }
+	  // 음식점
+	  else{
+		var sql = `SELECT * FROM restaurant_${message.uospartner_id}`;
+        let results = sync_connection.query(sql);
+        
+        var response_data = new Object();
+        var message_obj = new Object();
+        response_data.response_code = '0007';
+        response_data.message = message_obj;
+        
+        var category_list = new Array();
+        var company_obj = new Object();
+        message_obj.category_list = category_list;
+        message_obj.company = company_obj;
+
+        // 회사 정보 데이터 삽입
+        var sql1 = `SELECT * FROM uospartner_account WHERE id='${message.uospartner_id}'`;
+        let company_results = sync_connection.query(sql1);
         var company_name = company_results[0].company_name;
         var company_type = company_results[0].company_type;
         company_obj.name = company_name;
@@ -932,7 +1024,7 @@ app.post('/post', function(req, res, next){
             }
           }
         }
-      }
+	  }
       
       res.json(response_data);
       connection.end();
@@ -1414,141 +1506,322 @@ app.post('/post', function(req, res, next){
 		  });
 		  break;
 	}
-
-
-	// 영화관 영화 삭제
-    case '000T':{ // 영화관 영화 삭제
-      var movie = message.movie;
-      var time = message.time;
-
-      var sql = `SELECT * FROM movie_${id} WHERE time='${time}' and movie='${movie}'`;
+		  
+		  
+	// 음식점
+	// 음식점 데이터 전송
+    case '00A1': {
+      var sql = `SELECT * FROM restaurant_${message.id}`;
       let results = sync_connection.query(sql);
-      var num = results[0].num;
-      console.log(num);
 
-      var sql1 = `DELETE FROM movie_${id} WHERE time='${time}' and movie='${movie}'`;
-      let results1 = sync_connection.query(sql1);
-      console.log(results1);
-      console.log('영화 삭제 완료');
+      var category_list = new Array();
 
-      // 영화 좌석 테이블 삭제
-      var sql2 = `DROP TABLE movie_${id}_${num}`;
-      let results2 = sync_connection.query(sql2);
-      console.log("좌석 테이블 삭제");
+      for (var result of results) {
+        var categoryName = result.category;
+        var type = result.type;
+        var name = result.name;
+        var price = result.price;
+        var description = result.description;
+        var image = result.image;
+        var conf = result.conf;
+        var category_list_json = result.category_list;
 
-      connection.end();
-      break;
-    }
-    
-    // 영화관 영화 추가
-    case '000U':{ // 영화관 영화 추가
-      var movie = message.movie;
-      var theater = message.theater;
-      var time = message.time;
-      var width = message.width;
-      var height = message.height;
-      var price = message.price;
+        // 카테고리 중복 확인
+        var index = category_list.findIndex(function(item, i) {
+          return item.category == categoryName;
+        });
 
-      // 영화 추가
-      var sql = `INSERT INTO movie_${id} (movie, theater, TIME, width, height) VALUES('${movie}','${theater}','${time}',${width},${height})`;
-      var results = sync_connection.query(sql);
-      console.log("영화 추가 완료");
+        // 카테고리 중복 시
+        if (index != -1) {
+          if (type == "product") {
+            var product = new Object();
+            product['name'] = name;
+            product['price'] = price;
+            product['desc'] = description;
+            product['image'] = "imgdata";
 
-      // 추가된 영화 num 가져오기
-      var num = results.insertId
-      console.log(num);
+            category_list[index].product_list.push(product);
+          } else if (type == "set") {
+            var set = new Object();
+            set['name'] = name;
+            set['price'] = price;
+            set['desc'] = description;
+            set['image'] = "imgdata";
+            set['conf'] = conf;
+            set['category_list'] = category_list_json;
 
-      // 영화 시트 테이블 추가
-      var sql = `CREATE TABLE movie_${id}_${num}(
-      num INT UNSIGNED NOT NULL AUTO_INCREMENT,
-      code VARCHAR(50) NULL DEFAULT NULL,
-      state VARCHAR(50) NULL DEFAULT NULL,
-      price VARCHAR(50) NULL DEFAULT NULL,
-      PRIMARY KEY (num)
-      )`;
-      var results = sync_connection.query(sql);
-      console.log("시트 테이블 추가 완료");
+            category_list[index].set_list.push(set);
+          }
+        } else { // 카테고리 중복 아닐 시
+          var category = new Object();
+          category_list.push(category);
+          var set_list = new Array();
+          var product_list = new Array();
 
-      // 영화 시트 추가
-      var param = [];
-      for (var i = 0; i < height; i++) {
-        for (var j = 0; j < width; j++) {
-          var row = new Array();
-          var code = String.fromCharCode(i + 65) + (j + 1).toString();
-          row.push(code);
-          row.push(price.toString());
-          row.push('0');
-          param.push(row);
+          category['category'] = categoryName;
+          category['set_list'] = set_list;
+          category['product_list'] = product_list;
+
+          // 단품
+          if (type == "product") {
+            var product = new Object();
+            product['name'] = name;
+            product['price'] = price;
+            product['desc'] = description;
+            product['image'] = "imgdata";
+
+            product_list.push(product);
+          } else if (type == "set") { // 세트
+            var set = new Object();
+            set['name'] = name;
+            set['price'] = price;
+            set['desc'] = description;
+            set['image'] = "imgdata";
+            set['conf'] = conf;
+            set['category_list'] = category_list_json;
+
+            set_list.push(set);
+          }
         }
       }
 
-      var sql = `INSERT INTO movie_cccccccc_${num} (code, price, state) VALUES ?`;
-      connection.query(sql, [param], function(err, rows) {
-        if (err) console.log(err);
-        else {
-          console.log(results);
-          console.log("시트 테이블 데이터 추가 완료");
-        }
-      });
-
+      /* 유현승 */
+      res.json(category_list);
       connection.end();
       break;
     }
-    
-    // 음식점 카테고리 삭제
-    case '000V':{ // 음식점 카테고리 삭제
+		  
+	// 음식점 메뉴 추가
+    case '00A2':{
       var category = message.category;
-      
-      var sql = `DELETE FROM ${id} WHERE category='${category}'`;
-      let results = sync_connection.query(sql);
-      console.log("카테고리 삭제 완료");
-
-      connection.end();
-      break;
-    }
-    
-    //음식점 메뉴 삭제
-    case '000W':{ // 음식점 메뉴 삭제
-        var category = message.category;
-        var name = message.name;
-        
-        var sql = `DELETE FROM ${id} WHERE category='${category}' and name='${name}' `;
-        let results = sync_connection.query(sql);
-        console.log("메뉴 삭제 완료");
-        connection.end();
-        break;
-    }
-      
-    // 음식점 주문 추가
-    case '000X':{
-      var category = data.category;
-      var type = data.type;
-      var name = data.name;
-      var price = data.price;
-      var description = data.description;
-      var conf = data.conf;
-      var category_list = JSON.stringify(data.category_list);
+      var type = message.type;
+      var name = message.name;7
+      var price = message.price;
+      var description = message.description;
+      var conf = message.conf;
+      var category_list = JSON.stringify(message.category_list);
+	  var image_src = message.image_src;
 
         // 단품 추가
         if (type == "product") {
-          var sql = `INSERT INTO restaurant_testid1234 (category,type, name, price, description) VALUES ('${category}','${type}','${name}','${price}','${description}')`;
+          var sql = `INSERT INTO restaurant_${message.id} (category,type, name, price, desc	ription) VALUES ('${category}','${type}','${name}','${price}','${description}')`;
           let results = sync_connection.query(sql);
           console.log("메뉴 추가 완료");
 
       } else if (type == "set") { // 세트 메뉴 추가
-        var sql = `INSERT INTO restaurant_testid1234 (category,type, name, price, description, conf, category_list) VALUES ('${category}','${type}','${name}','${price}','${description}','${conf}','${category_list}')`;
+        var sql = `INSERT INTO restaurant_${message.id} (category,type, name, price, description, conf, category_list) VALUES ('${category}','${type}','${name}','${price}','${description}','${conf}','${category_list}')`;
         let results = sync_connection.query(sql);
         console.log("메뉴 추가 완료");
       }
+		
+		// 이미지 추가
+		let image_decode = Buffer.from(image_src, 'base64');
+		// let makeDecodeFile = fs.writeFileSync('')
+		
+	  res.json({status:"GOOD"});
+	  
+      connection.end();
+      break;
+    }
+		  
+	//음식점 메뉴 삭제
+    case '00A3':{ // 음식점 메뉴 삭제
+        var category = message.category;
+        var name = message.name;
+        
+        var sql = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
+        let results = sync_connection.query(sql);
+        console.log("메뉴 삭제 완료");
+		res.json({status:"GOOD"});
+		
+        connection.end();
+        break;
+    }
+		  
+	// 음식점 카테고리 삭제
+    case '00A4':{
+      var category = message.category;
+	        
+      var sql = `DELETE FROM resturant_${message.id} WHERE category='${message.category}'`;
+      let results = sync_connection.query(sql);
+      console.log("카테고리 삭제 완료");
+ 	  res.json({status:"GOOD"});
+
+      connection.end();
+      break;
+    }
+		  
+	// 음식점 카테고리 변경
+    case '00A5':{
+      var category = message.category;
+	  var change = message.change;
+	        
+      var sql = `UPDATE restaurant_${message.id} SET category='${change}' WHERE category='${category}'`;
+      let results = sync_connection.query(sql);
+      console.log("카테고리 변경 완료");
+		res.json({status:"GOOD"});
+
+      connection.end();
+      break;
+    }
+		  
+	// 피시방
+	// 피시방 데이터 전송
+    case '00B1': {
+      var sql = `SELECT * FROM pc_${message.id}`;
+      let results = sync_connection.query(sql);
+
+      var category_list = new Array();
+
+      for (var result of results) {
+        var categoryName = result.category;
+        var type = result.type;
+        var name = result.name;
+        var price = result.price;
+        var description = result.description;
+        var image = result.image;
+        var conf = result.conf;
+        var category_list_json = result.category_list;
+
+        // 카테고리 중복 확인
+        var index = category_list.findIndex(function(item, i) {
+          return item.category == categoryName;
+        });
+
+        // 카테고리 중복 시
+        if (index != -1) {
+          if (type == "product") {
+            var product = new Object();
+            product['name'] = name;
+            product['price'] = price;
+            product['desc'] = description;
+            product['image'] = "imgdata";
+
+            category_list[index].product_list.push(product);
+          } else if (type == "set") {
+            var set = new Object();
+            set['name'] = name;
+            set['price'] = price;
+            set['desc'] = description;
+            set['image'] = "imgdata";
+            set['conf'] = conf;
+            set['category_list'] = category_list_json;
+
+            category_list[index].set_list.push(set);
+          }
+        } else { // 카테고리 중복 아닐 시
+          var category = new Object();
+          category_list.push(category);
+          var set_list = new Array();
+          var product_list = new Array();
+
+          category['category'] = categoryName;
+          category['set_list'] = set_list;
+          category['product_list'] = product_list;
+
+          // 단품
+          if (type == "product") {
+            var product = new Object();
+            product['name'] = name;
+            product['price'] = price;
+            product['desc'] = description;
+            product['image'] = "imgdata";
+
+            product_list.push(product);
+          } else if (type == "set") { // 세트
+            var set = new Object();
+            set['name'] = name;
+            set['price'] = price;
+            set['desc'] = description;
+            set['image'] = "imgdata";
+            set['conf'] = conf;
+            set['category_list'] = category_list_json;
+
+            set_list.push(set);
+          }
+        }
+      }
+
+      /* 유현승 */
+      res.json(category_list);
+      connection.end();
+      break;
+    }
+		  
+	// 피시방 메뉴 추가
+    case '00B2':{
+      var category = message.category;
+      var type = message.type;
+      var name = message.name;7
+      var price = message.price;
+      var description = message.description;
+      var conf = message.conf;
+      var category_list = JSON.stringify(message.category_list);
+
+        // 단품 추가
+        if (type == "product") {
+          var sql = `INSERT INTO pc_${message.id} (category,type, name, price, description) VALUES ('${category}','${type}','${name}','${price}','${description}')`;
+          let results = sync_connection.query(sql);
+          console.log("메뉴 추가 완료");
+
+      } else if (type == "set") { // 세트 메뉴 추가
+        var sql = `INSERT INTO pc_${message.id} (category,type, name, price, description, conf, category_list) VALUES ('${category}','${type}','${name}','${price}','${description}','${conf}','${category_list}')`;
+        let results = sync_connection.query(sql);
+        console.log("메뉴 추가 완료");
+      }
+		
+		res.json({status:"GOOD"});
 
 
       connection.end();
       break;
     }
+		  
+	// 피시방 메뉴 삭제
+    case '00B3':{ // 음식점 메뉴 삭제
+        var category = message.category;
+        var name = message.name;
+        
+        var sql = `DELETE FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
+        let results = sync_connection.query(sql);
+        console.log("메뉴 삭제 완료");
+		res.json({status:"GOOD"});
+		
+        connection.end();
+        break;
+    }
+		  
+	// 피시방 카테고리 삭제
+    case '00B4':{
+      var category = message.category;
+	        
+      var sql = `DELETE FROM pc_${message.id} WHERE category='${category}'`;
+      let results = sync_connection.query(sql);
+      console.log("카테고리 삭제 완료");
+
+		res.json({status:"GOOD"});
+      connection.end();
+      break;
+    }    
+		  
+	// 피시방 카테고리 변경
+    case '00B5':{
+      var category = message.category;
+	  var change = message.change;
+	  console.log(category,change);
+      var sql = `UPDATE pc_${message.id} SET category='${change}' WHERE category='${category}'`;
+      let results = sync_connection.query(sql);
+      console.log("카테고리 변경 완료");
+
+		res.json({status:"GOOD"});
+      connection.end();
+      break;
+    }
     
+	// 영화관
     // 영화관 데이터 전송
-    case '000Y': {
-      var sql1 = `SELECT * FROM movie_${message.id}; `;
+    case '00C1': {
+      var sql1 = `SELECT * FROM movie_${message.id} ORDER BY movie, theater, time ASC; `;
       var sql2 = `SELECT * FROM movie_${message.id}_food; `;
 
       var movie_result = sync_connection.query(sql1);
@@ -1665,88 +1938,157 @@ app.post('/post', function(req, res, next){
 
       break;
     }
+		  
+	// 영화관 영화 추가
+    case '00C2':{ // 영화관 영화 추가
+      var movie = message.movie;
+      var theater = message.theater;
+      var time = message.time;
+      var width = message.width;
+      var height = message.height;
+      var price = message.price;
 
-    // 음식점, PC방 데이터 전송
-    case '000Z': {
-      var sql = `SELECT * FROM restaurant_${message.id}`;
-      let results = sync_connection.query(sql);
+      // 영화 추가
+      var sql = `INSERT INTO movie_${id} (movie, theater, TIME, width, height) VALUES('${movie}','${theater}','${time}',${width},${height})`;
+      var results = sync_connection.query(sql);
+      console.log("영화 추가 완료");
 
-      var category_list = new Array();
+      // 추가된 영화 num 가져오기
+      var num = results.insertId
+      console.log(num);
 
-      for (var result of results) {
-        var categoryName = result.category;
-        var type = result.type;
-        var name = result.name;
-        var price = result.price;
-        var description = result.description;
-        var image = result.image;
-        var conf = result.conf;
-        var category_list_json = result.category_list;
+      // 영화 시트 테이블 추가
+      var sql = `CREATE TABLE movie_${id}_${num}(
+      num INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      code VARCHAR(50) NULL DEFAULT NULL,
+      state VARCHAR(50) NULL DEFAULT NULL,
+      price VARCHAR(50) NULL DEFAULT NULL,
+      PRIMARY KEY (num)
+      )`;
+      var results = sync_connection.query(sql);
+      console.log("시트 테이블 추가 완료");
 
-        // 카테고리 중복 확인
-        var index = category_list.findIndex(function(item, i) {
-          return item.category == categoryName;
-        });
-
-        // 카테고리 중복 시
-        if (index != -1) {
-          if (type == "product") {
-            var product = new Object();
-            product['name'] = name;
-            product['price'] = price;
-            product['desc'] = description;
-            product['image'] = "imgdata";
-
-            category_list[index].product_list.push(product);
-          } else if (type == "set") {
-            var set = new Object();
-            set['name'] = name;
-            set['price'] = price;
-            set['desc'] = description;
-            set['image'] = "imgdata";
-            set['conf'] = conf;
-            set['category_list'] = category_list_json;
-
-            category_list[index].set_list.push(set);
-          }
-        } else { // 카테고리 중복 아닐 시
-          var category = new Object();
-          category_list.push(category);
-          var set_list = new Array();
-          var product_list = new Array();
-
-          category['category'] = categoryName;
-          category['set_list'] = set_list;
-          category['product_list'] = product_list;
-
-          // 단품
-          if (type == "product") {
-            var product = new Object();
-            product['name'] = name;
-            product['price'] = price;
-            product['desc'] = description;
-            product['image'] = "imgdata";
-
-            product_list.push(product);
-          } else if (type == "set") { // 세트
-            var set = new Object();
-            set['name'] = name;
-            set['price'] = price;
-            set['desc'] = description;
-            set['image'] = "imgdata";
-            set['conf'] = conf;
-            set['category_list'] = category_list_json;
-
-            set_list.push(set);
-          }
+      // 영화 시트 추가
+      var param = [];
+      for (var i = 0; i < height; i++) {
+        for (var j = 0; j < width; j++) {
+          var row = new Array();
+          var code = String.fromCharCode(i + 65) + (j + 1).toString();
+          row.push(code);
+          row.push(price.toString());
+          row.push('0');
+          param.push(row);
         }
       }
 
-      /* 유현승 */
-      res.json(category_list);
+      var sql = `INSERT INTO movie_${message.id}_${num} (code, price, state) VALUES ?`;
+      connection.query(sql, [param], function(err, rows) {
+        if (err) console.log(err);
+        else {
+          console.log(results);
+          console.log("시트 테이블 데이터 추가 완료");
+        }
+      });
+
+		res.json({status:"GOOD"});
       connection.end();
       break;
     }
+		  
+	// 영화관 영화 삭제
+    case '00C3':{ // 영화관 영화 삭제
+      var movie = message.movie;
+      var time = message.time;
+
+      var sql = `SELECT * FROM movie_${id} WHERE time='${time}' and movie='${movie}'`;
+      let results = sync_connection.query(sql);
+      var num = results[0].num;
+      console.log(num);
+
+      var sql1 = `DELETE FROM movie_${id} WHERE time='${time}' and movie='${movie}'`;
+      let results1 = sync_connection.query(sql1);
+      console.log(results1);
+      console.log('영화 삭제 완료');
+
+      // 영화 좌석 테이블 삭제
+      var sql2 = `DROP TABLE movie_${id}_${num}`;
+      let results2 = sync_connection.query(sql2);
+      console.log("좌석 테이블 삭제");
+
+		res.json({status:"GOOD"});
+      connection.end();
+      break;
+    }
+		  
+	// 영화관 음식 메뉴 추가
+    case '00C4':{
+      var category = message.category;
+      var type = message.type;
+      var name = message.name;
+      var price = message.price;
+      var description = message.description;
+      var conf = message.conf;
+      var category_list = JSON.stringify(message.category_list);
+
+        // 단품 추가
+        if (type == "product") {
+          var sql = `INSERT INTO movie_${message.id}_food (category,type, name, price, description) VALUES ('${category}','${type}','${name}','${price}','${description}')`;
+          let results = sync_connection.query(sql);
+          console.log("메뉴 추가 완료");
+
+      } else if (type == "set") { // 세트 메뉴 추가
+        var sql = `INSERT INTO movie_${message.id}_food (category,type, name, price, description, conf, category_list) VALUES ('${category}','${type}','${name}','${price}','${description}','${conf}','${category_list}')`;
+        let results = sync_connection.query(sql);
+        console.log("메뉴 추가 완료");
+      }
+	
+	  res.json({test:"GOOD"});
+      connection.end();
+      break;
+    }
+		  
+	// 영화관 음식 메뉴 삭제
+    case '00C5':{
+        var category = message.category;
+        var name = message.name;
+        
+        var sql = `DELETE FROM movie_${message.id}_food WHERE category='${category}' and name='${name}' `;
+        let results = sync_connection.query(sql);
+        console.log("메뉴 삭제 완료");
+		
+		res.json({status:"GOOD"});
+        connection.end();
+        break;
+    }
+		  
+	// 영화관 음식 카테고리 삭제
+    case '00C6':{
+      var category = message.category;
+	        
+      var sql = `DELETE FROM movie_${message.id}_food WHERE category='${message.category}'`;
+      let results = sync_connection.query(sql);
+      console.log("카테고리 삭제 완료");
+	  console.log(results);
+		res.json({status:"GOOD"});
+      connection.end();
+      break;
+    }
+		  
+	// 영화관 음식 카테고리 변경
+    case '00C7':{
+      var category = message.category;
+	  var change = message.change;
+	        
+      var sql = `UPDATE movie_${message.id}_food SET category='${change}' WHERE category='${category}'`;
+      let results = sync_connection.query(sql);
+      console.log("카테고리 변경 완료");
+
+		res.json({status:"GOOD"});
+      connection.end();
+      break;
+    }
+
+    
 
     
     default: {

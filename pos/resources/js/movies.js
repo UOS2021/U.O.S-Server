@@ -23,7 +23,7 @@ var seat_alpha = 65;
 function init(){
 	let param =
 	{
-		"request_code": "000Y",
+		"request_code": "00C1",
 		"message" : {
 			"id" : sessionStorage.getItem("id")
 		}
