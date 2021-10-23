@@ -1,6 +1,7 @@
 // express 기본 모듈 불러오기
 var express = require('express'), http = require('http'), path = require('path'), mysql = require('mysql'), QRCode = require('qrcode');
 const fs = require('fs');
+var sync_mysql = require('sync-mysql');
 
 var FCM = require('fcm-node');
 // api 토큰
@@ -15,6 +16,14 @@ const conn = {
   password: '112antkglok!',
   database: 'uos'
 };
+
+var sync_connection = new sync_mysql({
+    host: 'localhost',
+    port: '3306',
+    user: 'root',
+    password: '112antkglok!',
+    database: 'uos'
+});
 
 // express 미들웨어 불러오기
 var static = require('serve-static');
@@ -1019,13 +1028,124 @@ app.post('/post', function(req, res, next){
         break;
 
 
-
-        case '000Y': // 영화관 데이터 전송
-		
 		  
 
+        case '000Y': // 영화관 데이터 전송
+		var sql1 = `SELECT * FROM movie_${message.id}; `;
+		var sql2 = `SELECT * FROM movie_${message.id}_food; `;
 
+		var movie_result = sync_connection.query(sql1);
+		var food_result = sync_connection.query(sql2);
+
+		// 보낼 데이터
+		var response_data = new Object();
+		var category_list = new Array();
+		var movie_list = new Array();
+
+		response_data.category_list = category_list;
+		response_data.movie_list = movie_list;
+
+		// 영화 정보 데이터
+		for (var result of movie_result) {
+			var num = result.num;
+			var movieName = result.movie;
+			var theater = result.theater;
+			var time = result.time;
+			var width = result.width;
+			var height = result.height;
+
+			// 좌석 정보 가져오기
+			var sql = `SELECT * FROM movie_${message.id}_${num}`;
+			var seat_list = sync_connection.query(sql);
+
+			var movie = new Object();
+			movie.movie = movieName;
+			movie.theater = theater;
+			movie.time = time;
+			movie.width = width;
+			movie.height = height;
+			movie.seat_list = seat_list;
+
+			movie_list.push(movie);
+		}
+
+		// 음식 정보 데이터
+		for (var result of food_result) {
+			var categoryName = result.category;
+			var type = result.type;
+			var name = result.name;
+			var price = result.price;
+			var description = result.description;
+			var image = result.image;
+			var conf = result.conf;
+			var category_list_json = result.category_list;
+
+			// 카테고리 중복 확인
+			var index = category_list.findIndex(function(item, i) {
+				return item.category == categoryName;
+			});
+
+			// 카테고리 중복 시
+			if (index != -1) {
+				category_list[index];
+
+				if (type == "product") {
+					var product = new Object();
+					product['name'] = name;
+					product['price'] = price;
+					product['desc'] = description;
+					product['image'] = "imgdata";
+
+					category_list[index].product_list.push(product);
+				} else if (type == "set") {
+					var set = new Object();
+					set['name'] = name;
+					set['price'] = price;
+					set['desc'] = description;
+					set['image'] = "imgdata";
+					set['conf'] = conf;
+					set['category_list'] = category_list_json;
+
+					category_list[index].set_list.push(set);
+				}
+			} else { // 카테고리 중복 아닐 시
+				var category = new Object();
+				category_list.push(category);
+				var set_list = new Array();
+				var product_list = new Array();
+
+				category['category'] = categoryName;
+				category['set_list'] = set_list;
+				category['product_list'] = product_list;
+
+				// 단품
+				if (type == "product") {
+					var product = new Object();
+					product['name'] = name;
+					product['price'] = price;
+					product['desc'] = description;
+					product['image'] = "imgdata";
+
+					product_list.push(product);
+				} else if (type == "set") { // 세트
+					var set = new Object();
+					set['name'] = name;
+					set['price'] = price;
+					set['desc'] = description;
+					set['image'] = "imgdata";
+					set['conf'] = conf;
+					set['category_list'] = category_list_json;
+
+					set_list.push(set);
+				}
+			}
+		}
+
+		  
+		// response		  
+		res.json(response_data);
         connection.end();
+
         break;
 
         case '000Z': // 음식점, PC방 데이터 전송
