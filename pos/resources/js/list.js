@@ -147,7 +147,7 @@ function btn_reject(order_code){
 function menu_wait(where,order_code){
 	let param =
 	{
-		"request_code": "00AC", //request_code 알아서 설정해줘 조리완료
+		"request_code": "000E", //request_code 알아서 설정해줘 조리완료
 		"message" : {
 			"order_code" : order_code,
 		}
@@ -175,7 +175,7 @@ function menu_wait(where,order_code){
 function customer_accept(where, order_code){
 	let param =
 	{
-		"request_code": "00AD", //request_code 알아서 설정해줘 수령완료
+		"request_code": "000F", //request_code 알아서 설정해줘 수령완료
 		"message" : {
 			"order_code" : order_code,
 		}
