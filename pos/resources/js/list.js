@@ -2,6 +2,7 @@ var new_order_list;
 var cnt_now;
 var cnt_finish;
 var state0_num = 0;
+var state4_num = 4;
 var ee;
 
 function init(){
@@ -50,6 +51,9 @@ function init(){
 				cnt_now++;
 				if(order_array[i].state == 0){
 					state0_num++;
+				}
+				else if(order_array[i].state == 4){
+					state4_num++;
 				}
 			}
 			else{
@@ -143,7 +147,7 @@ function btn_reject(order_code){
 function menu_wait(where,order_code){
 	let param =
 	{
-		"request_code": "00AC", //request_code 알아서 설정해줘 조리완료
+		"request_code": "000E", //request_code 알아서 설정해줘 조리완료
 		"message" : {
 			"order_code" : order_code,
 		}
@@ -171,7 +175,7 @@ function menu_wait(where,order_code){
 function customer_accept(where, order_code){
 	let param =
 	{
-		"request_code": "00AD", //request_code 알아서 설정해줘 수령완료
+		"request_code": "000F", //request_code 알아서 설정해줘 수령완료
 		"message" : {
 			"order_code" : order_code,
 		}
@@ -235,7 +239,8 @@ function repeat_request000B(){
 		"request_code": "000B",
 		"message" : {
 			"id" : sessionStorage.getItem("id"),
-			"state0_num" : state0_num
+			"state0_num" : state0_num,
+			"state4_num" : state4_num
 		}
 	};
 	var req = $.ajax({
@@ -281,6 +286,9 @@ function repeat_request000B(){
 						list_attr_add('#new_order_list',cnt_now,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
 						cnt_now++;
 					}
+
+					state4_num++;
+
 				}
 			}
 			if(data.message.order_codes!=undefined){
