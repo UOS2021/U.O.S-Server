@@ -700,140 +700,359 @@ app.post('/post', function(req, res, next){
   }
 
 
-  case '0013': {
-    var select_query = "select * from order_buffer where uospartner_id=?";
+  // 매장정보 및 주문가능목록 전송
+  case '0013': {  
+      // 영화관
+      if(message.company.type == "영화관"){
+        var sql1 = `SELECT * FROM movie_${message.id}; `;
+        var sql2 = `SELECT * FROM movie_${message.id}_food; `;
 
-    connection.query(select_query, message.uospartner_id , function(err, result, fields){
+        var movie_result = sync_connection.query(sql1);
+        var food_result = sync_connection.query(sql2);
+
+        // 보낼 데이터
+        var response_data = new Object();
+        var message = new Object();
+        var category_list = new Array();
+        var movie_list = new Array();
+        var company_obj = new Object();
+        response_data.message = message;
+        response_data.response_code = '0007';
+
+        message.company = company_obj;
+        message.category_list = category_list;
+        message.movie_list = movie_list;
+        
+        // 회사 정보 데이터 삽입
+        var sql = `SELECT * FROM uospartner_account WHERE id='${message.id}'`;
+        let company_results = sync_connection.query(sql);
+        var company_name = company_results[0].company_name;
+        var company_type = company_results[0].company_type;
+        company_obj.name = company_name;
+        company_obj.type = company_type;
+
+        // 영화 정보 데이터 삽입
+        for (var result of movie_result) {
+          var num = result.num;
+          var movieName = result.movie;
+          var theater = result.theater;
+          var time = result.time;
+          var width = result.width;
+          var height = result.height;
+
+          // 좌석 정보 가져오기
+          var sql = `SELECT * FROM movie_${message.id}_${num}`;
+          var seat_list = sync_connection.query(sql);
+
+          var movie = new Object();
+          movie.movie = movieName;
+          movie.theater = theater;
+          movie.time = time;
+          movie.width = width;
+          movie.height = height;
+          movie.seat_list = seat_list;
+
+          movie_list.push(movie);
+        }
+
+        // 음식 정보 데이터 삽입
+        for (var result of food_result) {
+          var categoryName = result.category;
+          var type = result.type;
+          var name = result.name;
+          var price = result.price;
+          var description = result.description;
+          var image = result.image;
+          var conf = result.conf;
+          var category_list_json = result.category_list;
+
+          // 카테고리 중복 확인
+          var index = category_list.findIndex(function(item, i) {
+            return item.category == categoryName;
+          });
+
+          // 카테고리 중복 시
+          if (index != -1) {
+            category_list[index];
+
+            if (type == "product") {
+              var product = new Object();
+              product['name'] = name;
+              product['price'] = price;
+              product['desc'] = description;
+              product['image'] = "imgdata";
+
+              category_list[index].product_list.push(product);
+            } else if (type == "set") {
+              var set = new Object();
+              set['name'] = name;
+              set['price'] = price;
+              set['desc'] = description;
+              set['image'] = "imgdata";
+              set['conf'] = conf;
+              set['category_list'] = category_list_json;
+
+              category_list[index].set_list.push(set);
+            }
+          } else { // 카테고리 중복 아닐 시
+            var category = new Object();
+            category_list.push(category);
+            var set_list = new Array();
+            var product_list = new Array();
+
+            category['category'] = categoryName;
+            category['set_list'] = set_list;
+            category['product_list'] = product_list;
+
+            // 단품
+            if (type == "product") {
+              var product = new Object();
+              product['name'] = name;
+              product['price'] = price;
+              product['desc'] = description;
+              product['image'] = "imgdata";
+
+              product_list.push(product);
+            } else if (type == "set") { // 세트
+              var set = new Object();
+              set['name'] = name;
+              set['price'] = price;
+              set['desc'] = description;
+              set['image'] = "imgdata";
+              set['conf'] = conf;
+              set['category_list'] = category_list_json;
+
+              set_list.push(set);
+            }
+          }
+        }
 
 
-    });
+        // response     
+        res.json(response_data);
+        connection.end();
 
-    var res_data_string = { response_code: "0007", message: { company: { name: "companyname", type: "pc" }, category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc", image: "img" }], set_list: [{ name: "setname", price: 1000, desc: "desc", conf: "conf", image: "img", category_list: [{ category: "category", product_list:[{ name: "productname", price: 1000, desc: "desc" }] }] }] }] } };
-    var res_string = JSON.stringify(res_data_string);
-    res.json(res_string);
-    break;
+        break;
+        
+      } 
+      // 피시방
+      else {
+        var sql = `SELECT * FROM restaurant_${message.id}`;
+        let results = sync_connection.query(sql);
+        
+        var response_data = new Object();
+        var message = new Object();
+        response_data.response_code = '0007';
+        response_data.message = message;
+        
+        var category_list = new Array();
+        var company_obj = new Object();
+        message.category_list = category_list;
+        message.company = company_obj;
 
-  }
+        // 회사 정보 데이터 삽입
+        var sql = `SELECT * FROM uospartner_account WHERE id='${message.id}'`;
+        let company_results = sync_connection.query(sql);
+        var company_name = company_results[0].company_name;
+        var company_type = company_results[0].company_type;
+        company_obj.name = company_name;
+        company_obj.type = company_type;
+        
+        // 음식 정보 데이터 삽입
+        for (var result of results) {
+          var categoryName = result.category;
+          var type = result.type;
+          var name = result.name;
+          var price = result.price;
+          var description = result.description;
+          var image = result.image;
+          var conf = result.conf;
+          var category_list_json = result.category_list;
 
-  case '0014': {
+          // 카테고리 중복 확인
+          var index = category_list.findIndex(function(item, i) {
+            return item.category == categoryName;
+          });
 
-    break;
-  }
+          // 카테고리 중복 시
+          if (index != -1) {
+            if (type == "product") {
+              var product = new Object();
+              product['name'] = name;
+              product['price'] = price;
+              product['desc'] = description;
+              product['image'] = "imgdata";
 
-  case '0015': {
-    var select_query = "select * from order_buffer where customer_id=? order by state desc";
+              category_list[index].product_list.push(product);
+            } else if (type == "set") {
+              var set = new Object();
+              set['name'] = name;
+              set['price'] = price;
+              set['desc'] = description;
+              set['image'] = "imgdata";
+              set['conf'] = conf;
+              set['category_list'] = category_list_json;
 
-    connection.query(select_query, message.customer_id , function(err, result, fields){
-      var res_data_string ='';
-      if(err || result == ""){
-        console.log('주문 내역 없음!');
-        console.log(result);
-        res_data_string = {response_code: "0025", message: { order_list: [] }};
+              category_list[index].set_list.push(set);
+            }
+          } else { // 카테고리 중복 아닐 시
+            var category = new Object();
+            category_list.push(category);
+            var set_list = new Array();
+            var product_list = new Array();
+
+            category['category'] = categoryName;
+            category['set_list'] = set_list;
+            category['product_list'] = product_list;
+
+            // 단품
+            if (type == "product") {
+              var product = new Object();
+              product['name'] = name;
+              product['price'] = price;
+              product['desc'] = description;
+              product['image'] = "imgdata";
+
+              product_list.push(product);
+            } else if (type == "set") { // 세트
+              var set = new Object();
+              set['name'] = name;
+              set['price'] = price;
+              set['desc'] = description;
+              set['image'] = "imgdata";
+              set['conf'] = conf;
+              set['category_list'] = category_list_json;
+
+              set_list.push(set);
+            }
+          }
+        }
+      }
+      
+      res.json(response_data);
+      connection.end();
+      break;
+    } 
+
+    case '0014': {
+
+      break;
+    }
+
+    case '0015': {
+      var select_query = "select * from order_buffer where customer_id=? order by state desc";
+
+      connection.query(select_query, message.customer_id , function(err, result, fields){
+        var res_data_string ='';
+        if(err || result == ""){
+          console.log('주문 내역 없음!');
+          console.log(result);
+          res_data_string = {response_code: "0025", message: { order_list: [] }};
+
+          var res_data_json = JSON.stringify(res_data_string);
+          res.json(res_data_json);
+        }
+        else{
+
+          console.log('주문 내역 성공');
+
+
+          var response_obj = new Object();
+          response_obj.response_code = "0025";
+
+          var order_list_array = new Array();
+          for(var i =0; i < result.length; i++){
+            if(1 <= result[i].state && result[i].state <= 2){
+              var obj = new Object();
+              obj.state = result[i].state;
+              obj.date = result[i].date;
+              obj.company_name = result[i].company_name;
+              obj.total_price = result[i].price;
+              obj.order_code = result[i].order_code;
+              obj.product_list = eval(result[i].orderlist);
+
+              order_list_array.push(obj);
+            }
+          }
+
+          response_obj.message = {
+            order_list : order_list_array
+          };
+          console.log("(0015 주문내역)");
+          console.log(response_obj);
+
+          var res_string = JSON.stringify(response_obj);
+          res.json(res_string);
+        }
+
+
+        connection.end();
+      });
+      break;
+    }
+
+    case '0017': {
+      var update_query = "update customer_account set fcm_token=NULL where id=?";
+      connection.query(update_query, message.customer_id , function(err, result, fields){
+
+        if(err){
+          console.log('로그아웃 실패');
+          res_data_string = {response_code: "0027"};
+        }
+        else{
+
+          console.log(message.customer_id + '로그아웃 되었습니다.');
+          res_data_string = { response_code: "0027" };
+        }
 
         var res_data_json = JSON.stringify(res_data_string);
         res.json(res_data_json);
-      }
-      else{
 
-        console.log('주문 내역 성공');
+      });
+      break;
+    }
 
+    case '000A' : {
 
-        var response_obj = new Object();
-        response_obj.response_code = "0025";
+      var select_query = "select * from order_buffer where uospartner_id=?";
 
-        var order_list_array = new Array();
-        for(var i =0; i < result.length; i++){
-          if(1 <= result[i].state && result[i].state <= 2){
-            var obj = new Object();
-            obj.state = result[i].state;
-            obj.date = result[i].date;
-            obj.company_name = result[i].company_name;
-            obj.total_price = result[i].price;
-            obj.order_code = result[i].order_code;
-            obj.product_list = eval(result[i].orderlist);
-
-            order_list_array.push(obj);
-          }
+      connection.query(select_query, message.id, function(err, result, fields){
+        if(err){
+          console.log("sql질의 에러");
         }
+        else {
 
-        response_obj.message = {
-          order_list : order_list_array
-        };
-        console.log("(0015 주문내역)");
-        console.log(response_obj);
+          var response_obj = new Object();
+          response_obj.response_code = "A000";
 
-        var res_string = JSON.stringify(response_obj);
-        res.json(res_string);
-      }
+          var order_array_arr = new Array();
 
+          if(result.length != 0){
+            for(var i = 0; i < result.length; i++){
+              var obj = new Object();
+              obj.order_code = result[i].order_code;
+              obj.state = result[i].state;
+              obj.order_list = result[i].orderlist;
+              obj.date = result[i].date;
 
-      connection.end();
-    });
-    break;
-  }
-
-  case '0017': {
-    var update_query = "update customer_account set fcm_token=NULL where id=?";
-    connection.query(update_query, message.customer_id , function(err, result, fields){
-
-      if(err){
-        console.log('로그아웃 실패');
-        res_data_string = {response_code: "0027"};
-      }
-      else{
-
-        console.log(message.customer_id + '로그아웃 되었습니다.');
-        res_data_string = { response_code: "0027" };
-      }
-
-      var res_data_json = JSON.stringify(res_data_string);
-      res.json(res_data_json);
-
-    });
-    break;
-  }
-
-  case '000A' : {
-
-    var select_query = "select * from order_buffer where uospartner_id=?";
-
-    connection.query(select_query, message.id, function(err, result, fields){
-      if(err){
-        console.log("sql질의 에러");
-      }
-      else {
-
-        var response_obj = new Object();
-        response_obj.response_code = "A000";
-
-        var order_array_arr = new Array();
-
-        if(result.length != 0){
-          for(var i = 0; i < result.length; i++){
-            var obj = new Object();
-            obj.order_code = result[i].order_code;
-            obj.state = result[i].state;
-            obj.order_list = result[i].orderlist;
-            obj.date = result[i].date;
-
-            order_array_arr.push(obj);
+              order_array_arr.push(obj);
+            }
           }
+
+
+          response_obj.message = { order_array : order_array_arr };
+
+          res.json(response_obj);
+
+
         }
+        connection.end();
+      });
 
+      break;
+    }
 
-        response_obj.message = { order_array : order_array_arr };
-
-        res.json(response_obj);
-
-
-      }
-      connection.end();
-    });
-
-    break;
-  }
-
-  case '000B': {
+    case '000B': {
         // select order_code, uospartner_id, state from order_buffer where uospartner_id="testidpc" and (state=1 or state=2)and order_code > (select order_code from order_buffer where uospartner_id="testidpc" and (state=1 or state=2) limit 1 offset 4);
         var state0_index = message.state0_num;
         //var select_query = "select * from order_buffer where uospartner_id=? and (state=0 or state=4) and order_code > (select order_code from order_buffer where uospartner_id=? and (state=0 or state=4) limit 1 offset "+ state0_index +")";
