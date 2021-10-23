@@ -708,7 +708,7 @@ app.post('/post', function(req, res, next){
 		console.log(company_type);
 		
       // 영화관
-      if(message.company.type == "영화관"){
+      if(company_type == "영화관"){
         var sql1 = `SELECT * FROM movie_${message.id}; `;
         var sql2 = `SELECT * FROM movie_${message.id}_food; `;
 
