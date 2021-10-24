@@ -155,7 +155,7 @@ $('#modal_close').on('click', function(){
     $('#myModal').modal('hide');
 });
 $('#modal_menu_add').on('click', function(){ //메뉴추가하는 스크립트
-
+	
 
 });
 $(document).on("click", ".browse", function() {

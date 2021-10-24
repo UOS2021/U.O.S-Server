@@ -58,62 +58,25 @@
                         <h1 class="mt-4 uof-h1">영화 목록 관리
                         </h1>
                         <ul class="nav nav-tabs" id="myTab" role = "tablist">
-							<!-- <li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">레미제라블</a>
-								<ul class="dropdown-menu">
-								 	<li><a class="dropdown-item" href="#set">10월 20일 13:00</a></li>
-									<li><a class="dropdown-item" href="#wapper">10월 21일 17:00</a></li>
-								
-								 	<li><a class="dropdown-item" href="#set">10월 17일 13:00</a></li>
-									<li><a class="dropdown-item" href="#wapper">10월 19일 17:00</a></li>
-								</ul>
-							</li>
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">어벤져스</a>
-								<ul class="dropdown-menu">
-									<h6 class="dropdown-header">1관</h6>
-								 	<li><a class="dropdown-item" href="#set">10월 20일 13:00</a></li>
-								</ul>
-							</li> -->
+							
                         </ul>
 
                         <div class="tab-content" id="myTab_content">
 
-                            <!-- <div class="tab-pane mt-4 active" id="set" role="tabpanel" aria-labelledby="set-tab">
-                                <div class="card mx-2 my-2 border" style="float:left">
-                                    <div class="card-body" id="set_body">
-										
-                                    </div>
-                                </div>
-                            </div>
-							
-                            <div class="tab-pane mt-4" id="wapper" role="tabpanel" aria-labelledby="set-tab">
-                                <div class="card mx-2 my-2 border" style="width: 18rem;float:left">
-                                    <img class="card-img-top" src="resources/assets/img/hamb1.jpg" alt="Card image cap">
-                                    <div class="card-body">
-                                        <h5 class="card-title">창녕 갈릭 버거 세트</h5>
-                                        <h5 class="card-subtitle">8,500원</h5>
-                                        <p class="card-text">100% 국내산 창녕 햇마늘로 만든 토핑과 마늘 아이올리 30g의 풍미가 육즙을 꽉 가둬낸 순쇠고기 패티 2장과 만나 조화를 이뤄 풍부한 맛</p>
-                                    </div>
-                                </div>
-                            </div> -->
 							
                         </div>
                     </div>
                     <div class="col-lg-3 uof-margin">
                         <!-- Search widget-->
-                            <a class="btn btn-danger float-end px-5 w-50 uof_size" onclick="delete_category();">카테고리 삭제</a>
-                            <a class="btn btn-success float-end px-5 w-50 uof_size" onclick="add_category();">카테고리 추가</a>
                         <div class="card mb-4 mt-5">
                             <div class="card-body">
                                 <div class="input-group">
-                                    <input class="form-control" type="text" placeholder="변경할 카테고리 이름" aria-label="변경할 카테고리 이름" aria-describedby="button-search">
-                                    <button class="btn btn-primary" id="button-search" type="button" onclick="change_category();">변경</button>
+                                    <button class="btn btn-primary" id="button-search" type="button" onclick="change_modification();">수정 사항 변경</button>
                                 </div>
                             </div>
                         </div>
                         <div class="card">
-                            <button type="button" class="btn btn-primary" id="modal_open" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" onclick="add_menu();">메뉴추가</button>
+                            <button type="button" class="btn btn-primary" id="modal_open" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" onclick="add_movie();">영화추가</button>
                         </div>
                         <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
