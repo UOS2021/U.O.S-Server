@@ -179,7 +179,7 @@ app.post('/post', function(req, res, next){
 
             var text = message.company.license_img;
             var bitmap = Buffer.from(text.toString(), 'base64');
-            fs.writeFileSync('qrcode.jpg', bitmap);
+            fs.writeFileSync('assets/uospartner/license_img/' + message.uospartner_id + '.jpg', bitmap);
 
             var res_data_string = {response_code: "0001"};
             var res_data_json = JSON.stringify(res_data_string);
@@ -1404,7 +1404,7 @@ app.post('/post', function(req, res, next){
 			  to: fcm_token,
 			  collapse_key: "",
 			  data: {
-				"response_code": "0010",
+				"response_code": "0028",
 				"company_name": company_name,
 				"order_code" : message.order_code
 			  }
