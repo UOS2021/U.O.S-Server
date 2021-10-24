@@ -1993,9 +1993,15 @@ case '0008': {
       var width = message.width;
       var height = message.height;
       var price = message.price;
+		
+		console.log(movie);
+		console.log(theater);
+		console.log(time);
+		console.log(width);
+		console.log(height);
 
       // 영화 추가
-      var sql = `INSERT INTO movie_${id} (movie, theater, TIME, width, height) VALUES('${movie}','${theater}','${time}',${width},${height})`;
+      var sql = `INSERT INTO movie_${message.id} (movie, theater, time, width, height) VALUES('${movie}','${theater}','${time}',${width},${height})`;
       var results = sync_connection.query(sql);
       console.log("영화 추가 완료");
 
@@ -2004,7 +2010,7 @@ case '0008': {
       console.log(num);
 
       // 영화 시트 테이블 추가
-      var sql = `CREATE TABLE movie_${id}_${num}(
+      var sql = `CREATE TABLE movie_${message.id}_${num}(
       num INT UNSIGNED NOT NULL AUTO_INCREMENT,
       code VARCHAR(50) NULL DEFAULT NULL,
       state VARCHAR(50) NULL DEFAULT NULL,
@@ -2046,18 +2052,18 @@ case '0008': {
       var movie = message.movie;
       var time = message.time;
 
-      var sql = `SELECT * FROM movie_${id} WHERE time='${time}' and movie='${movie}'`;
+      var sql = `SELECT * FROM movie_${message.id} WHERE time='${time}' and movie='${movie}'`;
       let results = sync_connection.query(sql);
       var num = results[0].num;
       console.log(num);
 
-      var sql1 = `DELETE FROM movie_${id} WHERE time='${time}' and movie='${movie}'`;
+      var sql1 = `DELETE FROM movie_${message.id} WHERE time='${time}' and movie='${movie}'`;
       let results1 = sync_connection.query(sql1);
       console.log(results1);
       console.log('영화 삭제 완료');
 
       // 영화 좌석 테이블 삭제
-      var sql2 = `DROP TABLE movie_${id}_${num}`;
+      var sql2 = `DROP TABLE movie_${message.id}_${num}`;
       let results2 = sync_connection.query(sql2);
       console.log("좌석 테이블 삭제");
 

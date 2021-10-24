@@ -70,13 +70,12 @@
                         <!-- Search widget-->
                         <div class="card mb-4 mt-5">
                             <div class="card-body">
-                                <div class="input-group">
-                                    <button class="btn btn-primary" id="button-search" type="button" onclick="change_modification();">수정 사항 변경</button>
-                                </div>
+                            <a class="btn btn-danger float-end px-5 w-50 uof_size" style = "font-size:1em; height:100%;"id="movie_delete">영화 삭제</a>
+                        <a class="btn btn-success float-end px-5 w-50 uof_size" style = "font-size:1em; height:100%;" id="movie_modify">변경 내용 저장</a>
                             </div>
                         </div>
                         <div class="card">
-                            <button type="button" class="btn btn-primary" id="modal_open" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" onclick="add_movie();">영화추가</button>
+                            <button type="button" class="btn btn-primary" id="modal_open" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">영화추가</button>
                         </div>
                         <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
@@ -88,51 +87,42 @@
 										<form>
 											<div class="form-group">
                                             	<label for="name" class="col-form-label" style="font-size:1.5rem;">영화제목</label>
-                                                <input type="text" class="form-control" id="name">
+                                                <input type="text" class="form-control" id="movie_name">
                                             </div>
 										    <div class="row">
 												<div class="col">
                                                 	<label for="name" class="col-form-label">가로 높이</label>
-													<input type="text" class="form-control" placeholder="">
+													<input type="text" class="form-control" placeholder="" id="movie_width">
 												</div>
 												<div class="col">
                                                 	<label for="name" class="col-form-label">세로 높이</label>
-											    	<input type="text" class="form-control" placeholder="">
+											    	<input type="text" class="form-control" placeholder="" id="movie_height">
 											  	</div>
 										    </div>
 											<div class="form-group">
-                                            	<label for="name" class="col-form-label">날짜</label>
-                                                <input type="date" class="form-control" id="name">
+                                            	<label for="name" class="col-form-label">위치(관)</label>
+                                                <input type="text" class="form-control" id="movie_location" >
 											</div>
-											<div class="form-group">
+											<div class="row">
+												<div class="col">
+													<label for="name" class="col-form-label">날짜</label>
+													<input type="date" class="form-control" id="movie_date" >
+												</div>
+												<div class="col">
                                             	<label for="name" class="col-form-label">시간</label>
-                                                <input type="time" class="form-control" id="name">
+                                                <input type="time" class="form-control" id="movie_time">
+												</div>
 											</div>
+                                            	
 											<div class="form-group">
                                             	<label for="name" class="col-form-label">좌석당 가격</label>
-                                                <input type="text" class="form-control" id="name">
+                                                <input type="text" class="form-control" id="movie_price">
                                             </div>
 										</form>
-                                        <!-- <form>
-                                            <div class="form-group">
-                                                <label for="name" class="col-form-label">이름:</label>
-                                                <input type="text" class="form-control" id="name">
-                                                <label for="name" class="col-form-label">이름:</label>
-                                                <input type="text" class="form-control" id="name">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="price" class="col-form-label">가격:</label>
-                                                <textarea class="form-control" id="price"></textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="explaination" class="col-form-label">설명:</label>
-                                                <textarea class="form-control" id="explaination"></textarea>
-                                            </div>
-                                        </form> -->
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="modal_close">닫기</button>
-                                        <button type="button" class="btn btn-primary" id="modal_menu_add">메뉴추가</button>
+                                        <button type="button" class="btn btn-primary" id="modal_movie_add">메뉴추가</button>
                                     </div>
                                 </div>
                             </div>

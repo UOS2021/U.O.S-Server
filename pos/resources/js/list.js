@@ -190,7 +190,7 @@ function customer_accept(where, order_code){
 		var i;
 		for(i=0;i<t.rows()[0].length;i++){
 			if(t.row(i).data()[1]==order_code){
-				list_attr_add('#finished_order_list',cnt_finish,t.row(i).data()[1],t.row(i).data()[2],t.row(i).data()[3],4);
+				list_attr_add('#finished_order_list',cnt_finish,t.row(i).data()[1],t.row(i).data()[2],t.row(i).data()[3],3);
 				t.row(i).remove().draw(false);
 				cnt_now--;
 				cnt_finish++;
