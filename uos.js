@@ -179,7 +179,7 @@ app.post('/post', function(req, res, next){
 
             var text = message.company.license_img;
             var bitmap = Buffer.from(text.toString(), 'base64');
-            fs.writeFileSync('assets/uospartner/license_img/' + message.uospartner_id + '.jpg', bitmap);
+            fs.writeFileSync('qrcode.jpg', bitmap);
 
             var res_data_string = {response_code: "0001"};
             var res_data_json = JSON.stringify(res_data_string);
@@ -246,7 +246,9 @@ app.post('/post', function(req, res, next){
               }
             });
           }
-
+			
+			// 계정별 이미지 폴더 생성
+			fs.mkdirSync(`./assets/images/${message.uospartner_id}`);
 
         }
         connection.end();
@@ -562,7 +564,7 @@ app.post('/post', function(req, res, next){
         price += element.price * element.count;
       });
 
-      var select_query = "select company_name from uospartner_account where id=?;";
+      var select_query = "select company_name, company_type from uospartner_account where id=?;";
       connection.query(select_query, message.uospartner_id, function (err1, result1, fields){
         var company_name = result1[0].company_name;
         var insert_text = "INSERT INTO `order_buffer` (`state`, `date`, `customer_id`, `uospartner_id`, `company_name`, `card`, `orderlist`, `price`) "
@@ -580,6 +582,12 @@ app.post('/post', function(req, res, next){
           else{
             res_data_string = {response_code: "0023"};
             console.log("주문 버퍼 추가 및 결제 성공");
+			  
+			  // 영화관 좌석 비활성화
+			  if(message.order[0].type==2){
+				  let theater_order = message.order[0];
+				  
+			  }
 
             var res_data_json = JSON.stringify(res_data_string);
             res.json(res_data_json);
@@ -1404,7 +1412,7 @@ app.post('/post', function(req, res, next){
 			  to: fcm_token,
 			  collapse_key: "",
 			  data: {
-				"response_code": "0028",
+				"response_code": "0010",
 				"company_name": company_name,
 				"order_code" : message.order_code
 			  }
@@ -1525,7 +1533,7 @@ app.post('/post', function(req, res, next){
         var description = result.description;
         var conf = result.conf;
         var category_list_json = result.category_list;
-        var image = `./pos/resources/images/${message.id}/${result.id}.jpg`;
+        var image = `./assets/images/${message.id}/${result.id}.jpg`;
 
         // 카테고리 중복 확인
         var index = category_list.findIndex(function(item, i) {
@@ -1620,7 +1628,7 @@ app.post('/post', function(req, res, next){
 		
 		// 이미지 추가
 		let image_decode = Buffer.from(image_src, 'base64');
-		let makeImageFile = fs.writeFileSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`, image_decode);
+		let makeImageFile = fs.writeFileSync(`./assets/images/${message.id}/${menu_id}.jpg`, image_decode);
 		
 		
 		
@@ -1641,7 +1649,7 @@ app.post('/post', function(req, res, next){
 		var sql = `SELECT * FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
 		let results2 = sync_connection.query(sql);
 		menu_id = results2[0].id;
-		fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
+		fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
         
 		// 메뉴 삭제
         var sql = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
@@ -1665,7 +1673,7 @@ app.post('/post', function(req, res, next){
 		let results2 = sync_connection.query(sql);
 		for(let result of results2){
 			let menu_id = result.id;
-			fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
+			fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
 		}
 	        
       var sql = `DELETE FROM resturant_${message.id} WHERE category='${message.category}'`;
@@ -1707,7 +1715,7 @@ app.post('/post', function(req, res, next){
         var description = result.description;
         var conf = result.conf;
         var category_list_json = result.category_list;
-        var image = `./pos/resources/images/${message.id}/${result.id}.jpg`;
+        var image = `./assets/images/${message.id}/${result.id}.jpg`;
 
         // 카테고리 중복 확인
         var index = category_list.findIndex(function(item, i) {
@@ -1802,7 +1810,7 @@ app.post('/post', function(req, res, next){
 		
 		// 이미지 추가
 		let image_decode = Buffer.from(image_src, 'base64');
-		let makeImageFile = fs.writeFileSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`, image_decode);
+		let makeImageFile = fs.writeFileSync(`./assets/images/${message.id}/${menu_id}.jpg`, image_decode);
 		
 		res.json({status:"GOOD"});
 
@@ -1821,7 +1829,7 @@ app.post('/post', function(req, res, next){
 		var sql = `SELECT * FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
 		let results2 = sync_connection.query(sql);
 		menu_id = results2[0].id;
-		fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
+		fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
         
 		// 메뉴 삭제
         var sql = `DELETE FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
@@ -1842,7 +1850,7 @@ app.post('/post', function(req, res, next){
 		let results2 = sync_connection.query(sql);
 		for(let result of results2){
 			let menu_id = result.id;
-			fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
+			fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
 		}
 	        
       var sql = `DELETE FROM pc_${message.id} WHERE category='${category}'`;
@@ -1918,7 +1926,7 @@ app.post('/post', function(req, res, next){
         var description = result.description;
         var conf = result.conf;
         var category_list_json = result.category_list;
-        var image = `./pos/resources/images/${message.id}/${result.id}.jpg`;
+        var image = `./assets/images/${message.id}/${result.id}.jpg`;
 
         // 카테고리 중복 확인
         var index = category_list.findIndex(function(item, i) {
@@ -2099,7 +2107,7 @@ app.post('/post', function(req, res, next){
 		
 		// 이미지 추가
 		let image_decode = Buffer.from(image_src, 'base64');
-		let makeImageFile = fs.writeFileSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`, image_decode);
+		let makeImageFile = fs.writeFileSync(`./assets/images/${message.id}/${menu_id}.jpg`, image_decode);
 	
 	  res.json({test:"GOOD"});
       connection.end();
@@ -2116,7 +2124,7 @@ app.post('/post', function(req, res, next){
 		var sql = `SELECT * FROM movie_${message.id}_food WHERE category='${category}' and name='${name}' `;
 		let results2 = sync_connection.query(sql);
 		menu_id = results2[0].id;
-		fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
+		fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
         
         var sql = `DELETE FROM movie_${message.id}_food WHERE category='${category}' and name='${name}' `;
         let results = sync_connection.query(sql);
@@ -2136,7 +2144,7 @@ app.post('/post', function(req, res, next){
 		let results2 = sync_connection.query(sql);
 		for(let result of results2){
 			let menu_id = result.id;
-			fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
+			fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
 		}
 	        
       var sql = `DELETE FROM movie_${message.id}_food WHERE category='${message.category}'`;
@@ -2161,6 +2169,8 @@ app.post('/post', function(req, res, next){
       connection.end();
       break;
     }
+		  
+	// 영화관 
     
     default: {
       console.log(request_code + ' does not exist in request_code.');
