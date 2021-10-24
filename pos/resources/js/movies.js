@@ -18,7 +18,6 @@ var seats = [
 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
 ];
-var seat_alpha = 65;
 var test;
 function init(){
 	let param =
@@ -58,6 +57,32 @@ function init(){
 			for(j=0;j<data.movie_list.length;j++){
 				if(data.movie_list[j].movie==movie_names[i]){
 					movie_rows+="<li><a class='dropdown-item' href='#"+inko.ko2en(data.movie_list[j].movie)+j+"'>"+data.movie_list[j].theater+" "+data.movie_list[j].time+"</a></li>"
+					var seats = new Array(data.movie_list[j].seat_list.length/data.movie_list[j].width);
+					for ( var k =0;k<seats.length;k++){
+						seats[k] = new Array((data.movie_list[j].width)-1);
+					}
+					for (var k =0;k<data.movie_list[j].seat_list.length;k++){
+						seats[(data.movie_list[j].seat_list[k].code[0].charCodeAt(0))%65][parseInt(data.movie_list[j].seat_list[k].code.substr(1,3))-1] = 0;
+					}
+					var seat_alpha = 65;
+					$.each(seats,function(indexY,line){
+						var $line = $('<div><div style="float:left;width:60px">'+String.fromCharCode(seat_alpha)+"열"+'</div></div>').addClass('line');
+						$.each(line,function(indexX,seat){
+							var $output = $('<div></div>',{
+								'class' : 'seat',
+								'data-x' : indexX,
+								'data-y' : indexY
+							}).appendTo($line);
+
+							if(seat == 1) // 좌석값이 '1'이면 'enable'스타일 적용
+								$output.addClass('enable');
+							else if(seat == 2){
+								$output.addClass('disable');
+							}
+						});
+						$line.appendTo('#set_body');
+						seat_alpha++;
+					});
 				}
 			}
 			movie_rows+="</ul>";
