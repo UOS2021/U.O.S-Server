@@ -2,7 +2,7 @@ var new_order_list;
 var cnt_now;
 var cnt_finish;
 var state0_num = 0;
-var state4_num = 4;
+var state4_num = 0;
 var ee;
 
 function init(){
@@ -52,9 +52,7 @@ function init(){
 				if(order_array[i].state == 0){
 					state0_num++;
 				}
-				else if(order_array[i].state == 4){
-					state4_num++;
-				}
+				
 			}
 			else{
 				list_attr_add('#finished_order_list',cnt_finish,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
@@ -224,6 +222,7 @@ function list_attr_add(table,no, order_code, menu, time,state){
 		rows = "<button class='btn btn-secondary' type='button' disabled>완료 된 주문</button>";
 	}
 	else if(state==4){
+		state4_num++;
 		rows = "<button class='btn btn-secondary' type='button' disabled>취소 된 주문</button>";
 	}
 	else if(state==5){
@@ -286,9 +285,6 @@ function repeat_request000B(){
 						list_attr_add('#new_order_list',cnt_now,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
 						cnt_now++;
 					}
-
-					state4_num++;
-
 				}
 			}
 			if(data.message.order_codes!=undefined){
@@ -302,6 +298,8 @@ function repeat_request000B(){
 							break;
 						}
 					}
+					list_attr_add('#finished_order_list',cnt_finish,t.row(i).data()[1],t.row(i).data()[2],t.row(i).data()[3],4);
+					cnt_finish++;
 					state0_num--;
 				}
 			}
