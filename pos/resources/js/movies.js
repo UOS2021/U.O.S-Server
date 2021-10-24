@@ -55,7 +55,17 @@ function init(){
 			movie_rows+="<a class='nav-link dropdown-toggle' data-bs-toggle='dropdown' href='#' role='button' aria-expanded='false'>"+movie_names[i]+"</a>";
 			movie_rows+="<ul class='dropdown-menu'>";
 			for(j=0;j<data.movie_list.length;j++){
-				if(data.movie_list[j].movie==movie_names[i]){
+				if(j==0){
+					content_rows = "<div class = 'tab-pane mt-4 active' id='"+inko.ko2en(data.movie_list[j].movie)+j+"' role = 'tabpanel' aria-labelledby="+inko.ko2en(data.movie_list[j].movie)+j+"'>";
+						content_rows += "<div class='card mx-2 my-2 border' style='float:left'>";
+							content_rows += "<div class='card-body' id = '"+inko.ko2en(data.movie_list[j].movie)+j+"'>
+							content_rows += "</div>";
+						content_rows += "</div>";
+					content_rows += "</div>";
+					$('#myTab_content').append(content_rows);
+					
+					
+					if(data.movie_list[j].movie==movie_names[i]){
 					movie_rows+="<li><a class='dropdown-item' href='#"+inko.ko2en(data.movie_list[j].movie)+j+"'>"+data.movie_list[j].theater+" "+data.movie_list[j].time+"</a></li>"
 					var seats = new Array(data.movie_list[j].seat_list.length/data.movie_list[j].width);
 					for ( var k =0;k<seats.length;k++){
@@ -65,6 +75,7 @@ function init(){
 						seats[(data.movie_list[j].seat_list[k].code[0].charCodeAt(0))%65][parseInt(data.movie_list[j].seat_list[k].code.substr(1,3))-1] = 0;
 					}
 					var seat_alpha = 65;
+					var input_id = inko.ko2en(data.movie_list[j].movie)+j;
 					$.each(seats,function(indexY,line){
 						var $line = $('<div><div style="float:left;width:60px">'+String.fromCharCode(seat_alpha)+"열"+'</div></div>').addClass('line');
 						$.each(line,function(indexX,seat){
@@ -80,15 +91,16 @@ function init(){
 								$output.addClass('disable');
 							}
 						});
-						$line.appendTo('#set_body');
+						$line.appendTo();
 						seat_alpha++;
 					});
 				}
+				}
+				
 			}
 			movie_rows+="</ul>";
 			movie_rows+="</li>";
 			$('#myTab').append(movie_rows);
-			$('#myTab_content').append(content_rows);
 		}
 	});
 	
