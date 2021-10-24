@@ -34,7 +34,7 @@ function init(){
 		dataType : 'json'
 	});
 	req.done(function(data, status){
-		var i,j,now_theater,now_movie,movie_rows;
+		var i,j,now_theater,now_movie,movie_rows,content_rows;
 		console.log(data.movie_list);//받는 data	
 		test=data.movie_list;
 		now_movie = data.movie_list[0].movie;
@@ -88,6 +88,7 @@ function init(){
 			movie_rows+="</ul>";
 			movie_rows+="</li>";
 			$('#myTab').append(movie_rows);
+			$('#myTab_content').append(content_rows);
 		}
 	});
 	
