@@ -1404,7 +1404,7 @@ app.post('/post', function(req, res, next){
 			  to: fcm_token,
 			  collapse_key: "",
 			  data: {
-				"response_code": "0010",
+				"response_code": "0028",
 				"company_name": company_name,
 				"order_code" : message.order_code
 			  }
