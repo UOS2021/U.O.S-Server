@@ -299,10 +299,10 @@ function repeat_request000B(){
 							break;
 						}
 					}
-					if(!check){
+					if(!check){	
+						list_attr_add('#finished_order_list',cnt_finish,t.row(i).data()[1],t.row(i).data()[2],t.row(i).data()[3],4);
 						t.row(i).remove().draw(false);
 						cnt_now--;
-						list_attr_add('#finished_order_list',cnt_finish,t.row(i-1).data()[1],t.row(i-1).data()[2],t.row(i-1).data()[3],4);
 						cnt_finish++;
 						state0_num--;
 					}
