@@ -19,7 +19,7 @@ var seats = [
 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
 ];
 var seat_alpha = 65;
-
+var test;
 function init(){
 	let param =
 	{
@@ -35,7 +35,20 @@ function init(){
 		dataType : 'json'
 	});
 	req.done(function(data, status){
-		console.log(data);//받는 data		
+		var i,first_movie,first_theater,movie_rows;
+		console.log(data.movie_list);//받는 data	
+		test=data.movie_list;
+		first_movie = data[0].movie;
+		first_theater = data[0].theater;
+		movie_rows="<li class='nav-item dropdown'>";
+		movie_rows+="<a class='nav-link dropdown-toggle' data-bs-toggle='dropdown' href='#' role='button' aria-expanded='false'>"+first_movie+"</a>";
+		movie_rows+="<ul class='dropdown-menu'>";
+		for(i=0;i<data.length;i++){
+			if(first_movie==data[i].movie){
+				movie_rows+="<h6 class='dropdown-header'>"+data[i].theater+"</h6>";
+			}
+			
+		}
 	});
 	
 	$.each(seats,function(indexY,line){
@@ -55,7 +68,6 @@ function init(){
 		});
 		$line.appendTo('#set_body');
 		seat_alpha++;
-		console.log(seat_alpha);
 	});
 	
 }

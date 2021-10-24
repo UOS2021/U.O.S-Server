@@ -25,6 +25,54 @@ function menu_del(del_menu){
 			});
 		}
 	}
+	else if(sessionStorage.getItem("company_type")=='피시방'){
+		var con_test = confirm("선택한 메뉴를 삭제하시겠습니까?");
+		if(con_test){
+			let param =
+			{
+				"request_code": "00B3",
+				"message" : {
+					"id" : sessionStorage.getItem("id"),
+					"category" : selected_category,
+					"name" : del_menu
+				}
+			}
+			var req = $.ajax({
+				url : "/post",
+				data : param,
+				type : 'POST',
+				dataType : 'json'
+			});
+			req.done(function(data, status){
+				alert("메뉴가 삭제되었습니다.");
+				location.reload();
+			});
+		}
+	}
+	else{
+		var con_test = confirm("선택한 메뉴를 삭제하시겠습니까?");
+		if(con_test){
+			let param =
+			{
+				"request_code": "00A3",
+				"message" : {
+					"id" : sessionStorage.getItem("id"),
+					"category" : selected_category,
+					"name" : del_menu
+				}
+			}
+			var req = $.ajax({
+				url : "/post",
+				data : param,
+				type : 'POST',
+				dataType : 'json'
+			});
+			req.done(function(data, status){
+				alert("메뉴가 삭제되었습니다.");
+				location.reload();
+			});
+		}
+	}
 }
 function init(){
 	if(sessionStorage.getItem("company_type")=='영화관'){
@@ -75,6 +123,7 @@ function init(){
 						content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
 						content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 						content_row+="</div>";
 					}
@@ -125,6 +174,7 @@ function init(){
 						content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
 						content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 						content_row+="</div>";
 					}
@@ -140,6 +190,7 @@ function init(){
 						content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
 						content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 						content_row+="</div>";
 					}
@@ -190,6 +241,7 @@ function init(){
 						content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
 						content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 						content_row+="</div>";
 					}
@@ -205,6 +257,7 @@ function init(){
 						content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
 						content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 						content_row+="</div>";
 					}
