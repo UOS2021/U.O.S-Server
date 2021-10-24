@@ -187,18 +187,15 @@ function customer_accept(where, order_code){
 	req.done(function(data, status){
 		alert("수령완료");
 		var t = $('#new_order_list').DataTable();
-		var rows = "<button class='btn btn-info' id='"+order_code+"' type='button' onclick='customer_accept(this,"+order_code+")'>수령 완료</button>";
 		var i;
 		for(i=0;i<t.rows()[0].length;i++){
 			if(t.row(i).data()[1]==order_code){
+				list_attr_add('#finished_order_list',cnt_finish,t.row(i).data()[1],t.row(i).data()[2],t.row(i).data()[3],4);
 				t.row(i).remove().draw(false);
+				cnt_now--;
+				cnt_finish++;
 				break;
 			}
-		}
-		var order_array = data.message.order_array;
-		if(order_array.state==3){
-			list_attr_add('#finished_order_list',cnt_finish,order_array.order_code,order_array.order_list,order_array.date,order_array.state);
-			cnt_finish--;
 		}
 	});
 }
@@ -287,7 +284,7 @@ function repeat_request000B(){
 					}
 				}
 			}
-			if(data.message.order_codes!=undefined){
+			if(data.message.order_codes!=undefined ){
 				var t = $('#new_order_list').DataTable();
 				
 				for(i=0;i<t.rows()[0].length;i++){
