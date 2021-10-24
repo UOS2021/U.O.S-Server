@@ -1523,9 +1523,9 @@ app.post('/post', function(req, res, next){
         var name = result.name;
         var price = result.price;
         var description = result.description;
-        var image = result.image;
         var conf = result.conf;
         var category_list_json = result.category_list;
+        var image = `./pos/resources/images/${message.id}/${result.id}.jpg`;
 
         // 카테고리 중복 확인
         var index = category_list.findIndex(function(item, i) {
@@ -1539,7 +1539,7 @@ app.post('/post', function(req, res, next){
             product['name'] = name;
             product['price'] = price;
             product['desc'] = description;
-            product['image'] = "imgdata";
+            product['image'] = image;
 
             category_list[index].product_list.push(product);
           } else if (type == "set") {
@@ -1547,7 +1547,7 @@ app.post('/post', function(req, res, next){
             set['name'] = name;
             set['price'] = price;
             set['desc'] = description;
-            set['image'] = "imgdata";
+            set['image'] = image;
             set['conf'] = conf;
             set['category_list'] = category_list_json;
 
@@ -1569,7 +1569,7 @@ app.post('/post', function(req, res, next){
             product['name'] = name;
             product['price'] = price;
             product['desc'] = description;
-            product['image'] = "imgdata";
+            product['image'] = image;
 
             product_list.push(product);
           } else if (type == "set") { // 세트
@@ -1577,7 +1577,7 @@ app.post('/post', function(req, res, next){
             set['name'] = name;
             set['price'] = price;
             set['desc'] = description;
-            set['image'] = "imgdata";
+            set['image'] = image;
             set['conf'] = conf;
             set['category_list'] = category_list_json;
 
@@ -1602,22 +1602,27 @@ app.post('/post', function(req, res, next){
       var conf = message.conf;
       var category_list = JSON.stringify(message.category_list);
 	  var image_src = message.image_src;
+		var menu_id;
 
         // 단품 추가
         if (type == "product") {
           var sql = `INSERT INTO restaurant_${message.id} (category,type, name, price, desc	ription) VALUES ('${category}','${type}','${name}','${price}','${description}')`;
           let results = sync_connection.query(sql);
+			menu_id = results.insertId;
           console.log("메뉴 추가 완료");
 
       } else if (type == "set") { // 세트 메뉴 추가
         var sql = `INSERT INTO restaurant_${message.id} (category,type, name, price, description, conf, category_list) VALUES ('${category}','${type}','${name}','${price}','${description}','${conf}','${category_list}')`;
         let results = sync_connection.query(sql);
+		  menu_id = results.insertId;
         console.log("메뉴 추가 완료");
       }
 		
 		// 이미지 추가
 		let image_decode = Buffer.from(image_src, 'base64');
-		// let makeDecodeFile = fs.writeFileSync('')
+		let makeImageFile = fs.writeFileSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`, image_decode);
+		
+		
 		
 	  res.json({status:"GOOD"});
 	  
@@ -1629,10 +1634,22 @@ app.post('/post', function(req, res, next){
     case '00A3':{ // 음식점 메뉴 삭제
         var category = message.category;
         var name = message.name;
+		var menu_id;
+		
+		
+		// 이미지 삭제
+		var sql = `SELECT * FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
+		let results2 = sync_connection.query(sql);
+		menu_id = results2[0].id;
+		fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
         
+		// 메뉴 삭제
         var sql = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
         let results = sync_connection.query(sql);
         console.log("메뉴 삭제 완료");
+		
+		
+		
 		res.json({status:"GOOD"});
 		
         connection.end();
@@ -1642,6 +1659,14 @@ app.post('/post', function(req, res, next){
 	// 음식점 카테고리 삭제
     case '00A4':{
       var category = message.category;
+		
+		// 이미지 삭제
+		var sql1 = `SELECT * FROM resturant_${message.id} WHERE category='${message.category}'`;
+		let results2 = sync_connection.query(sql);
+		for(let result of results2){
+			let menu_id = result.id;
+			fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
+		}
 	        
       var sql = `DELETE FROM resturant_${message.id} WHERE category='${message.category}'`;
       let results = sync_connection.query(sql);
@@ -1680,9 +1705,9 @@ app.post('/post', function(req, res, next){
         var name = result.name;
         var price = result.price;
         var description = result.description;
-        var image = result.image;
         var conf = result.conf;
         var category_list_json = result.category_list;
+        var image = `./pos/resources/images/${message.id}/${result.id}.jpg`;
 
         // 카테고리 중복 확인
         var index = category_list.findIndex(function(item, i) {
@@ -1696,7 +1721,7 @@ app.post('/post', function(req, res, next){
             product['name'] = name;
             product['price'] = price;
             product['desc'] = description;
-            product['image'] = "imgdata";
+            product['image'] = image;
 
             category_list[index].product_list.push(product);
           } else if (type == "set") {
@@ -1704,7 +1729,7 @@ app.post('/post', function(req, res, next){
             set['name'] = name;
             set['price'] = price;
             set['desc'] = description;
-            set['image'] = "imgdata";
+            set['image'] = image;
             set['conf'] = conf;
             set['category_list'] = category_list_json;
 
@@ -1726,7 +1751,7 @@ app.post('/post', function(req, res, next){
             product['name'] = name;
             product['price'] = price;
             product['desc'] = description;
-            product['image'] = "imgdata";
+            product['image'] = image;
 
             product_list.push(product);
           } else if (type == "set") { // 세트
@@ -1734,7 +1759,7 @@ app.post('/post', function(req, res, next){
             set['name'] = name;
             set['price'] = price;
             set['desc'] = description;
-            set['image'] = "imgdata";
+            set['image'] = image;
             set['conf'] = conf;
             set['category_list'] = category_list_json;
 
@@ -1758,18 +1783,26 @@ app.post('/post', function(req, res, next){
       var description = message.description;
       var conf = message.conf;
       var category_list = JSON.stringify(message.category_list);
+	  var image_src = message.image_src;
+		var menu_id;
 
         // 단품 추가
         if (type == "product") {
           var sql = `INSERT INTO pc_${message.id} (category,type, name, price, description) VALUES ('${category}','${type}','${name}','${price}','${description}')`;
           let results = sync_connection.query(sql);
+			menu_id = results.insertId;
           console.log("메뉴 추가 완료");
 
       } else if (type == "set") { // 세트 메뉴 추가
         var sql = `INSERT INTO pc_${message.id} (category,type, name, price, description, conf, category_list) VALUES ('${category}','${type}','${name}','${price}','${description}','${conf}','${category_list}')`;
         let results = sync_connection.query(sql);
+		  menu_id = results.insertId;
         console.log("메뉴 추가 완료");
       }
+		
+		// 이미지 추가
+		let image_decode = Buffer.from(image_src, 'base64');
+		let makeImageFile = fs.writeFileSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`, image_decode);
 		
 		res.json({status:"GOOD"});
 
@@ -1782,7 +1815,15 @@ app.post('/post', function(req, res, next){
     case '00B3':{ // 음식점 메뉴 삭제
         var category = message.category;
         var name = message.name;
+		var menu_id;
+		
+		// 이미지 삭제
+		var sql = `SELECT * FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
+		let results2 = sync_connection.query(sql);
+		menu_id = results2[0].id;
+		fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
         
+		// 메뉴 삭제
         var sql = `DELETE FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
         let results = sync_connection.query(sql);
         console.log("메뉴 삭제 완료");
@@ -1795,6 +1836,14 @@ app.post('/post', function(req, res, next){
 	// 피시방 카테고리 삭제
     case '00B4':{
       var category = message.category;
+		
+		// 이미지 삭제
+		var sql1 = `SELECT * FROM resturant_${message.id} WHERE category='${message.category}'`;
+		let results2 = sync_connection.query(sql);
+		for(let result of results2){
+			let menu_id = result.id;
+			fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
+		}
 	        
       var sql = `DELETE FROM pc_${message.id} WHERE category='${category}'`;
       let results = sync_connection.query(sql);
@@ -1867,9 +1916,9 @@ app.post('/post', function(req, res, next){
         var name = result.name;
         var price = result.price;
         var description = result.description;
-        var image = result.image;
         var conf = result.conf;
         var category_list_json = result.category_list;
+        var image = `./pos/resources/images/${message.id}/${result.id}.jpg`;
 
         // 카테고리 중복 확인
         var index = category_list.findIndex(function(item, i) {
@@ -1885,7 +1934,7 @@ app.post('/post', function(req, res, next){
             product['name'] = name;
             product['price'] = price;
             product['desc'] = description;
-            product['image'] = "imgdata";
+            product['image'] = image;
 
             category_list[index].product_list.push(product);
           } else if (type == "set") {
@@ -1893,7 +1942,7 @@ app.post('/post', function(req, res, next){
             set['name'] = name;
             set['price'] = price;
             set['desc'] = description;
-            set['image'] = "imgdata";
+            set['image'] = image;
             set['conf'] = conf;
             set['category_list'] = category_list_json;
 
@@ -1915,7 +1964,7 @@ app.post('/post', function(req, res, next){
             product['name'] = name;
             product['price'] = price;
             product['desc'] = description;
-            product['image'] = "imgdata";
+            product['image'] = image;
 
             product_list.push(product);
           } else if (type == "set") { // 세트
@@ -1923,7 +1972,7 @@ app.post('/post', function(req, res, next){
             set['name'] = name;
             set['price'] = price;
             set['desc'] = description;
-            set['image'] = "imgdata";
+            set['image'] = image;
             set['conf'] = conf;
             set['category_list'] = category_list_json;
 
@@ -2030,18 +2079,27 @@ app.post('/post', function(req, res, next){
       var description = message.description;
       var conf = message.conf;
       var category_list = JSON.stringify(message.category_list);
+	  var image_src = message.image_src;
+		image_src.replace(`data:image/jpeg;base64,`, "");
+		var menu_id;
 
         // 단품 추가
         if (type == "product") {
           var sql = `INSERT INTO movie_${message.id}_food (category,type, name, price, description) VALUES ('${category}','${type}','${name}','${price}','${description}')`;
           let results = sync_connection.query(sql);
+		  menu_id = results.insertId;
           console.log("메뉴 추가 완료");
 
       } else if (type == "set") { // 세트 메뉴 추가
         var sql = `INSERT INTO movie_${message.id}_food (category,type, name, price, description, conf, category_list) VALUES ('${category}','${type}','${name}','${price}','${description}','${conf}','${category_list}')`;
         let results = sync_connection.query(sql);
+		  menu_id = results.insertId;
         console.log("메뉴 추가 완료");
       }
+		
+		// 이미지 추가
+		let image_decode = Buffer.from(image_src, 'base64');
+		let makeImageFile = fs.writeFileSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`, image_decode);
 	
 	  res.json({test:"GOOD"});
       connection.end();
@@ -2052,6 +2110,13 @@ app.post('/post', function(req, res, next){
     case '00C5':{
         var category = message.category;
         var name = message.name;
+		var menu_id;
+		
+		// 이미지 삭제
+		var sql = `SELECT * FROM movie_${message.id}_food WHERE category='${category}' and name='${name}' `;
+		let results2 = sync_connection.query(sql);
+		menu_id = results2[0].id;
+		fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
         
         var sql = `DELETE FROM movie_${message.id}_food WHERE category='${category}' and name='${name}' `;
         let results = sync_connection.query(sql);
@@ -2065,6 +2130,14 @@ app.post('/post', function(req, res, next){
 	// 영화관 음식 카테고리 삭제
     case '00C6':{
       var category = message.category;
+		
+		// 이미지 삭제
+		var sql1 = `SELECT * FROM movie_${message.id}_food WHERE category='${message.category}'`;
+		let results2 = sync_connection.query(sql);
+		for(let result of results2){
+			let menu_id = result.id;
+			fs.unlinkSync(`./pos/resources/images/${message.id}/${menu_id}.jpg`);
+		}
 	        
       var sql = `DELETE FROM movie_${message.id}_food WHERE category='${message.category}'`;
       let results = sync_connection.query(sql);
