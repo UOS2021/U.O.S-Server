@@ -768,7 +768,7 @@ app.post('/post', function(req, res, next){
           var description = result.description;
           var image = result.image;
           var conf = result.conf;
-          var category_list_json = result.category_list;
+        	var category_list_json = JSON.parse(result.category_list);
 
           // 카테고리 중복 확인
           var index = category_list.findIndex(function(item, i) {
@@ -871,7 +871,7 @@ app.post('/post', function(req, res, next){
           var description = result.description;
           var image = result.image;
           var conf = result.conf;
-          var category_list_json = result.category_list;
+        	var category_list_json = JSON.parse(result.category_list);
 
           // 카테고리 중복 확인
           var index = category_list.findIndex(function(item, i) {
@@ -964,7 +964,7 @@ app.post('/post', function(req, res, next){
           var description = result.description;
           var image = result.image;
           var conf = result.conf;
-          var category_list_json = result.category_list;
+        	var category_list_json = JSON.parse(result.category_list);
 
           // 카테고리 중복 확인
           var index = category_list.findIndex(function(item, i) {
