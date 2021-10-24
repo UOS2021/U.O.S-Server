@@ -1151,7 +1151,7 @@ app.post('/post', function(req, res, next){
 
     case '000B': {
         // select order_code, uospartner_id, state from order_buffer where uospartner_id="testidpc" and (state=1 or state=2)and order_code > (select order_code from order_buffer where uospartner_id="testidpc" and (state=1 or state=2) limit 1 offset 4);
-        var state0_index = message.state0_num;
+        var state0_index = message.state0_num-1;
         //var select_query = "select * from order_buffer where uospartner_id=? and (state=0 or state=4) and order_code > (select order_code from order_buffer where uospartner_id=? and (state=0 or state=4) limit 1 offset "+ state0_index +")";
         var select_query1 = "select * from order_buffer where uospartner_id=? and state=0 and order_code > (select order_code from order_buffer where uospartner_id=? and state=0 limit 1 offset "+ state0_index +")";
         //var select_query = "select * from order_buffer where uospartner_id=? and (state=? or state=?)";
@@ -1161,8 +1161,8 @@ app.post('/post', function(req, res, next){
             console.log("sql질의 에러1");
           }
           else {
-            var state4_index = message.state4_num;
-            var select_query2 = "select * from order_buffer where uospartner_id=? and state=4 and order_code > (select order_code from order_buffer where uospartner_id=? and state=4 limit 1 offset "+ state4_index +")";
+
+            var select_query2 = "select * from order_buffer where uospartner_id=? and (state=0 or state=1 or state=2)";
             connection.query(select_query2, [message.id, message.id] , function(err2, result2, fields){
               if(err2){
                 console.log("sql질의 에러2");
@@ -1172,38 +1172,38 @@ app.post('/post', function(req, res, next){
                 var order_array_arr = new Array();
                 var cancel_order_code_arr = new Array();
 
+                console.log("result1 : " + result1.length + ", result2" + result2.length);
+
                 function createResponseState0(){
-                  for(var i = 0; i < result.length; i++){
-                    if(result[i].state == 0){
+                  for(var i = 0; i < result1.length; i++){
+                    if(result1[i].state == 0){
                       var obj = new Object();
-                      obj.order_code = result[i].order_code;
-                      obj.state = result[i].state;
-                      obj.order_list = result[i].orderlist;
-                      obj.date = result[i].date;
+                      obj.order_code = result1[i].order_code;
+                      obj.state = result1[i].state;
+                      obj.order_list = result1[i].orderlist;
+                      obj.date = result1[i].date;
                       order_array_arr.push(obj);
                     }
                   }
                 }
 
                 function createResponseState4(){
-                  for(var i = 0; i < result.length; i++){
-                    if(result[i].state == 4){
-                      cancel_order_code_arr.push(result[i].order_code);
-                    }
+                  for(var i = 0; i < result2.length; i++){
+                      cancel_order_code_arr.push(result2[i].order_code);
                   }
                 }
 
-                if(result1.length == 0 && result2.length == 0){
+                if(result1.length == 0 && result2.length == message.state0_num){
                   response_obj.response_code = "C000";
                   res.json(response_obj);
                 }
-                else if(result1.length == 0 && result2.length !=0 ){
+                else if(result1.length == 0 && result2.length != message.state0_num ){
                   response_obj.response_code = "B000";
                   createResponseState4();
                   response_obj.message = { order_codes : cancel_order_code_arr };
                   res.json(response_obj);
                 }
-                else if(result1.length != 0 && result2.length == 0){
+                else if(result1.length != 0 && result2.length == message.state0_num){
                   response_obj.response_code = "B000";
                   createResponseState0();
                   response_obj.message = { order_array : order_array_arr };
@@ -1217,6 +1217,7 @@ app.post('/post', function(req, res, next){
                     order_array : order_array_arr,
                     order_codes : cancel_order_code_arr
                   };
+                  console.log(cancel_order_code_arr);
                   res.json(response_obj);
                 }
               }
