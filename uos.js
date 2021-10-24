@@ -2087,9 +2087,6 @@ app.post('/post', function(req, res, next){
       connection.end();
       break;
     }
-
-    
-
     
     default: {
       console.log(request_code + ' does not exist in request_code.');
