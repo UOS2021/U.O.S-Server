@@ -27,13 +27,12 @@
 .enable{
 	background-color : #666;
 }
-.enable:hover{
-	background-color : red;	
-}
 .disable {
 	background-color : #bbb;
 }
-
+.reserved{
+	background-color : red;
+}
 .line{
 	overflow : hidden;
 }

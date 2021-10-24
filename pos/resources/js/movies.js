@@ -1,25 +1,12 @@
-// var seats = [
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,2,2,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,2,2,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// 	[1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1],
-// ];
+var total_seat = [];
 var test;
 var selected_movie = [];
+var selected_index=0;
+
+function click_movie(index){
+	selected_index=index;
+	console.log(selected_index);
+}
 function init(){
 	let param =
 	{
@@ -51,6 +38,7 @@ function init(){
 				movie_names.push(now_movie);
 			}
 		}
+		selected_movie = [data.movie_list[0].movie,data.movie_list[0].theater+" "+data.movie_list[0].time];
 		for(i=0;i<cnt_name;i++){
 			movie_rows="<li class='nav-item dropdown'>";
 			movie_rows+="<a class='nav-link dropdown-toggle' data-bs-toggle='dropdown' href='#' role='button' aria-expanded='false'>"+movie_names[i]+"</a>";
@@ -81,14 +69,15 @@ function init(){
 						$('#myTab_content').append(content_rows);
 					}
 					
-					movie_rows+="<li><a class='dropdown-item' href='#"+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"'>"+data.movie_list[j].theater+" "+data.movie_list[j].time+"</a></li>"
+					movie_rows+="<li><a class='dropdown-item' onclick='click_movie("+j+")' href='#"+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"'>"+data.movie_list[j].theater+" "+data.movie_list[j].time+"</a></li>"
 					var seats = new Array(data.movie_list[j].seat_list.length/data.movie_list[j].width);
 					for ( var k =0;k<seats.length;k++){
 						seats[k] = new Array((data.movie_list[j].width)-1);
 					}
 					for (var k =0;k<data.movie_list[j].seat_list.length;k++){
-						seats[(data.movie_list[j].seat_list[k].code[0].charCodeAt(0))%65][parseInt(data.movie_list[j].seat_list[k].code.substr(1,3))-1] = 0;
+						seats[(data.movie_list[j].seat_list[k].code[0].charCodeAt(0))%65][parseInt(data.movie_list[j].seat_list[k].code.substr(1,3))-1] = parseInt(data.movie_list[j].seat_list[k].state);
 					}
+					total_seat.push(seats);
 					var seat_alpha = 65;
 					var input_id = '#'+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"_body";
 					$.each(seats,function(indexY,line){
@@ -96,13 +85,17 @@ function init(){
 						$.each(line,function(indexX,seat){
 							var $output = $('<div></div>',{
 								'class' : 'seat',
-								'data-x' : indexX,
-								'data-y' : indexY
+								'data_x' : indexX,
+								'data_y' : indexY,
+								'data_state' : seat,
 							}).appendTo($line);
-								if(seat == 0) // 좌석값이 '0'이면 'enable'스타일 적용
+							if(seat == 0) // 좌석값이 '0'이면 'enable'스타일 적용
 								$output.addClass('enable');
-							else if(seat == 1){
+							else if(seat == 1){ // 불가능
 								$output.addClass('disable');
+							}
+							else if(seat == 2){ // 예약된좌석
+								$output.addClass('reserved');
 							}
 						});
 						$line.appendTo(input_id);
@@ -152,6 +145,22 @@ $('#modal_open').on('click', function(){
     $('#myModal').modal('show');
 	console.log("click open");
 });
+$(document).on('click', '.seat', function (e) {
+	console.log($(this).attr('data_y')+","+$(this).attr('data_x'));
+	if($(this).attr('data_state')==0){
+		$(this).attr('data_state',1);
+		$(this).addClass('disable');
+		$(this).removeClass('enable');
+		total_seat[selected_index][$(this).attr('data_y')][$(this).attr('data_x')] = 1;
+	}
+	else if($(this).attr('data_state')==1){
+		$(this).attr('data_state',0);
+		$(this).removeClass('disable');
+		$(this).addClass('enable');
+		total_seat[selected_index][$(this).attr('data_y')][$(this).attr('data_x')] = 0;
+	}
+});
+
 $('#modal_close').on('click', function(){
     $('#myModal').modal('hide');
 });
@@ -184,8 +193,30 @@ $('#movie_delete').on('click', function(){
 });
 
 $('#movie_modify').on('click', function(){
-    $('#myModal').modal('hide');
+	var send_movie_data = total_seat[selected_index];
+	console.log(send_movie_data);
+	// let param =
+	// 	{
+	// 		"request_code": "00C3",
+	// 		"message" : {
+	// 			"id" : sessionStorage.getItem("id"),
+	// 			"movie" : movie_name,
+	// 			"time" : movie_time_send,
+	// 		}
+	// 	}
+	// console.log(param);
+	// 	var req = $.ajax({
+	// 		url : "/post",
+	// 		data : param,
+	// 		type : 'POST',
+	// 		dataType : 'json'
+	// 	});
+	// 	req.done(function(data, status){
+	// 		alert("영화 삭제 완료");
+	// 		location.reload();
+	// 	});
 });
+
 $('#modal_movie_add').on('click', function(){ //메뉴추가하는 스크립트
 	var name = document.getElementById('movie_name').value;
 	var width = document.getElementById('movie_width').value;
