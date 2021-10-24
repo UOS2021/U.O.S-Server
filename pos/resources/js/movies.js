@@ -58,18 +58,22 @@ function init(){
 					
 				if(data.movie_list[j].movie==movie_names[i]){
 					if(j==0){
-						content_rows = "<div class = 'tab-pane mt-4 active' id='"+inko.ko2en(data.movie_list[j].movie)+j+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data.movie_list[j].movie)+j+"_tab'>";
+						content_rows = "<div class = 'tab-pane mt-4 active' id='"+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data.movie_list[j].movie)+j+"_tab'>";
+								content_rows += "<h5 class='card-title'>"+data.movie_list[j].movie+"</h5>";
+								content_rows += "<h5 class='card-title'>"+data.movie_list[j].theater+" "+data.movie_list[j].time+"</h5>";
 							content_rows += "<div class='card mx-2 my-2 border' style='float:left'>";
-								content_rows += "<div class='card-body' id = '"+inko.ko2en(data.movie_list[j].movie)+j+"_body'>";
+								content_rows += "<div class='card-body' id = '"+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"_body'>";
 								content_rows += "</div>";
 							content_rows += "</div>";
 						content_rows += "</div>";
 						$('#myTab_content').append(content_rows);
 					}
 					else{
-						content_rows = "<div class = 'tab-pane mt-4' id='"+inko.ko2en(data.movie_list[j].movie)+j+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data.movie_list[j].movie)+j+"_tab'>";
+						content_rows = "<div class = 'tab-pane mt-4' id='"+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data.movie_list[j].movie)+j+"_tab'>";
+								content_rows += "<h5 class='card-title'>"+data.movie_list[j].movie+"</h5>";
+								content_rows += "<h5 class='card-title'>"+data.movie_list[j].theater+" "+data.movie_list[j].time+"</h5>";
 							content_rows += "<div class='card mx-2 my-2 border' style='float:left'>";
-								content_rows += "<div class='card-body' id = '"+inko.ko2en(data.movie_list[j].movie)+j+"_body'>";
+								content_rows += "<div class='card-body' id = '"+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"_body'>";
 								content_rows += "</div>";
 							content_rows += "</div>";
 						content_rows += "</div>";
@@ -114,8 +118,6 @@ function init(){
 			e.preventDefault();
 			$(this).tab('show');
 			console.log(this.innerHTML);
-			document.getElementById("preview").src = '';
-			$("#file").val('');
 		});
 	});
 	

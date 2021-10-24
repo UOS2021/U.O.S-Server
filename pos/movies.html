@@ -82,11 +82,41 @@
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">추가할 메뉴 정보</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">추가할 영화 정보</h5>
                                     </div>
                                     <div class="modal-body">
-                                        <form>
+										<form>
+											<div class="form-group">
+                                            	<label for="name" class="col-form-label" style="font-size:1.5rem;">영화제목</label>
+                                                <input type="text" class="form-control" id="name">
+                                            </div>
+										    <div class="row">
+												<div class="col">
+                                                	<label for="name" class="col-form-label">가로 높이</label>
+													<input type="text" class="form-control" placeholder="">
+												</div>
+												<div class="col">
+                                                	<label for="name" class="col-form-label">세로 높이</label>
+											    	<input type="text" class="form-control" placeholder="">
+											  	</div>
+										    </div>
+											<div class="form-group">
+                                            	<label for="name" class="col-form-label">날짜</label>
+                                                <input type="date" class="form-control" id="name">
+											</div>
+											<div class="form-group">
+                                            	<label for="name" class="col-form-label">시간</label>
+                                                <input type="time" class="form-control" id="name">
+											</div>
+											<div class="form-group">
+                                            	<label for="name" class="col-form-label">좌석당 가격</label>
+                                                <input type="text" class="form-control" id="name">
+                                            </div>
+										</form>
+                                        <!-- <form>
                                             <div class="form-group">
+                                                <label for="name" class="col-form-label">이름:</label>
+                                                <input type="text" class="form-control" id="name">
                                                 <label for="name" class="col-form-label">이름:</label>
                                                 <input type="text" class="form-control" id="name">
                                             </div>
@@ -98,7 +128,7 @@
                                                 <label for="explaination" class="col-form-label">설명:</label>
                                                 <textarea class="form-control" id="explaination"></textarea>
                                             </div>
-                                        </form>
+                                        </form> -->
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="modal_close">닫기</button>

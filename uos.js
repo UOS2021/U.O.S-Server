@@ -848,8 +848,11 @@ case '0008': {
           }
         }
 
+		  
+		  
 
         // response     
+		response_data = JSON.stringify(response_data);
         res.json(response_data);
         connection.end();
 
@@ -948,6 +951,11 @@ case '0008': {
             }
           }
         }
+		  
+	  response_data = JSON.stringify(response_data);
+      res.json(response_data);
+      connection.end();
+      break;
       }
     // 음식점
     else{
@@ -1043,6 +1051,7 @@ case '0008': {
         }
       }
       
+	  response_data = JSON.stringify(response_data);
       res.json(response_data);
       connection.end();
       break;
