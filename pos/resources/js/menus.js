@@ -307,6 +307,7 @@ $('#modal_menu_add').on('click', function(){ //메뉴추가하는 스크립트
 	var conf = null;
 	var category_list = null;
 	var preview = document.getElementById('preview').src;
+	console.log(preview);
 	if(sessionStorage.getItem("company_type")=='영화관'){
 		let param =
 		{

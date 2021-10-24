@@ -35,19 +35,34 @@ function init(){
 		dataType : 'json'
 	});
 	req.done(function(data, status){
-		var i,first_movie,first_theater,movie_rows;
+		var i,j,now_theater,now_movie,movie_rows;
 		console.log(data.movie_list);//받는 data	
 		test=data.movie_list;
-		first_movie = data[0].movie;
-		first_theater = data[0].theater;
-		movie_rows="<li class='nav-item dropdown'>";
-		movie_rows+="<a class='nav-link dropdown-toggle' data-bs-toggle='dropdown' href='#' role='button' aria-expanded='false'>"+first_movie+"</a>";
-		movie_rows+="<ul class='dropdown-menu'>";
-		for(i=0;i<data.length;i++){
-			if(first_movie==data[i].movie){
-				movie_rows+="<h6 class='dropdown-header'>"+data[i].theater+"</h6>";
+		now_movie = data.movie_list[0].movie;
+		now_theater = data.movie_list[0].theater;
+		
+		var cnt_name=1;
+		var movie_names = [];
+		movie_names.push(now_movie);
+		for(i=0;i<data.movie_list.length;i++){
+			if(data.movie_list[i].movie != now_movie){
+				cnt_name++;
+				now_movie = data.movie_list[i].movie;
+				movie_names.push(now_movie);
 			}
-			
+		}
+		for(i=0;i<cnt_name;i++){
+			movie_rows="<li class='nav-item dropdown'>";
+			movie_rows+="<a class='nav-link dropdown-toggle' data-bs-toggle='dropdown' href='#' role='button' aria-expanded='false'>"+movie_names[i]+"</a>";
+			movie_rows+="<ul class='dropdown-menu'>";
+			for(j=0;j<data.movie_list.length;j++){
+				if(data.movie_list[j].movie==movie_names[i]){
+					movie_rows+="<li><a class='dropdown-item' href='#"+inko.ko2en(data.movie_list[j].movie)+j+"'>"+data.movie_list[j].theater+" "+data.movie_list[j].time+"</a></li>"
+				}
+			}
+			movie_rows+="</ul>";
+			movie_rows+="</li>";
+			$('#myTab').append(movie_rows);
 		}
 	});
 	
