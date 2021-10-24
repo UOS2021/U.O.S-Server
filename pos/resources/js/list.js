@@ -288,24 +288,24 @@ function repeat_request000B(){
 				}
 			}
 			if(data.message.order_codes!=undefined){
-				for(i=0;i<data.message.order_codes.length;i++){
-					var t = $('#new_order_list').DataTable();
-					var i,a,j;
-					var check=0;
-					for(j=0;j<t.rows()[0].length;j++){
-						if(t.row(j).data()[1]==data.message.order_codes[j]){
+				var t = $('#new_order_list').DataTable();
+				
+				for(i=0;i<t.rows()[0].length;i++){
+					var j;
+					var check = 0;
+					for(j=0;j<data.message.order_codes.length;j++){
+						if(t.row(i).data()[1]==data.message.order_codes[j]){
 							check=1;
 							break;
 						}
 					}
 					if(!check){
-						t.row(j).remove().draw(false);
+						t.row(i).remove().draw(false);
 						cnt_now--;
-						list_attr_add('#finished_order_list',cnt_finish,t.row(j).data()[1],t.row(j).data()[2],t.row(j).data()[3],4);
+						list_attr_add('#finished_order_list',cnt_finish,t.row(i).data()[1],t.row(i).data()[2],t.row(i).data()[3],4);
 						cnt_finish++;
 						state0_num--;
 					}
-					
 				}
 			}
 		}
