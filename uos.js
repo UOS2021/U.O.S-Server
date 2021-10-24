@@ -246,13 +246,13 @@ app.post('/post', function(req, res, next){
               }
             });
           }
-			
+
 			// 계정별 이미지 폴더 생성
 			fs.mkdirSync(`./assets/images/${message.uospartner_id}`);
 
-        }
-        connection.end();
-      });
+    }
+    connection.end();
+  });
 
 break;
 
@@ -591,19 +591,19 @@ case '0008': {
           else{
             res_data_string = {response_code: "0023"};
             console.log("주문 버퍼 추가 및 결제 성공");
-			  
+
 			  // 영화관 좌석 비활성화
 			  if(message.order[0].type==2){
-				  let theater_order = message.order[0];
-				  
-			  }
+          let theater_order = message.order[0];
 
-            var res_data_json = JSON.stringify(res_data_string);
-            res.json(res_data_json);
+        }
 
-          }
+        var res_data_json = JSON.stringify(res_data_string);
+        res.json(res_data_json);
 
-        });
+      }
+
+    });
 
         connection.end();
       });
@@ -1390,111 +1390,57 @@ case '0008': {
   }
 
 		//조리 완료
-<<<<<<< HEAD
-	case '000E' : {
-		  var select_query = "select company_name from order_buffer where order_code=" + message.order_code + ";";
-		  var company_name = "";
-		  var fcm_token = "";
+    case '000E' : {
+      var select_query = "select company_name from order_buffer where order_code=" + message.order_code + ";";
+      var company_name = "";
+      var fcm_token = "";
 
-		  connection.query(select_query, function(err, result, fields){
-			company_name = result[0].company_name;
-			console.log("됨!");
-		  });
+      connection.query(select_query, function(err, result, fields){
+       company_name = result[0].company_name;
+       console.log("됨!");
+     });
 
-		  var select_query2 = "select fcm_token from customer_account where id=(select customer_id from order_buffer where order_code=" + message.order_code + ");";
-		  connection.query(select_query2, function(err, result, fields){
-			if(err){
-			  console.log(err);
-			  console.log('주문 수락 실패2');
-			  res_data_string = {response_code: "0019"};
-			}
-			else{
-			  fcm_token = result[0].fcm_token;
-			}
-		  });
+      var select_query2 = "select fcm_token from customer_account where id=(select customer_id from order_buffer where order_code=" + message.order_code + ");";
+      connection.query(select_query2, function(err, result, fields){
+       if(err){
+         console.log(err);
+         console.log('주문 수락 실패2');
+         res_data_string = {response_code: "0019"};
+       }
+       else{
+         fcm_token = result[0].fcm_token;
+       }
+     });
 
-		  var update_query = "update order_buffer set state=2 where order_code=" + message.order_code + ";";
-		  connection.query(update_query, message.order_code, function(err, result, fields){
-			var response_obj  = new Object();
-			response_obj.message = { "response_code" : "000E" };
+      var update_query = "update order_buffer set state=2 where order_code=" + message.order_code + ";";
+      connection.query(update_query, message.order_code, function(err, result, fields){
+       var response_obj  = new Object();
+       response_obj.message = { "response_code" : "000E" };
 
-			var send_message = {
-			  to: fcm_token,
-			  collapse_key: "",
-			  data: {
-				"response_code": "0010",
-				"company_name": company_name,
-				"order_code" : message.order_code
-			  }
-			};
+       var send_message = {
+         to: fcm_token,
+         collapse_key: "",
+         data: {
+          "response_code": "0028",
+          "company_name": company_name,
+          "order_code" : message.order_code
+        }
+      };
 
-			fcm.send(send_message, function(err, response) {
-			  if (err) {
-				console.log("Something has gone wrong");
-			  } else {
-				console.log("Successfully sent with response: ", response);
-			  }
-			});
-
-			res.json(response_obj);
-			connection.end();
-		  });
-
-		  break;
-	}
-=======
-   case '000E' : {
-    var select_query = "select company_name from order_buffer where order_code=" + message.order_code + ";";
-    var company_name = "";
-    var fcm_token = "";
-
-    connection.query(select_query, function(err, result, fields){
-     company_name = result[0].company_name;
-     console.log("됨!");
-   });
-
-    var select_query2 = "select fcm_token from customer_account where id=(select customer_id from order_buffer where order_code=" + message.order_code + ");";
-    connection.query(select_query2, function(err, result, fields){
-     if(err){
-       console.log(err);
-       console.log('주문 수락 실패2');
-       res_data_string = {response_code: "0019"};
-     }
-     else{
-       fcm_token = result[0].fcm_token;
-     }
-   });
-
-    var update_query = "update order_buffer set state=2 where order_code=" + message.order_code + ";";
-    connection.query(update_query, message.order_code, function(err, result, fields){
-     var response_obj  = new Object();
-     response_obj.message = { "response_code" : "000E" };
-
-     var send_message = {
-       to: fcm_token,
-       collapse_key: "",
-       data: {
-        "response_code": "0028",
-        "company_name": company_name,
-        "order_code" : message.order_code
+      fcm.send(send_message, function(err, response) {
+       if (err) {
+        console.log("Something has gone wrong");
+      } else {
+        console.log("Successfully sent with response: ", response);
       }
-    };
+    });
 
-    fcm.send(send_message, function(err, response) {
-     if (err) {
-      console.log("Something has gone wrong");
-    } else {
-      console.log("Successfully sent with response: ", response);
+      res.json(response_obj);
+      connection.end();
+    });
+
+      break;
     }
-  });
-
-    res.json(response_obj);
-    connection.end();
-  });
-
-    break;
-  }
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
 
 		//수령 완료
    case '000F' : {
@@ -1580,17 +1526,6 @@ case '0008': {
   }
 
 
-<<<<<<< HEAD
-      for (var result of results) {
-        var categoryName = result.category;
-        var type = result.type;
-        var name = result.name;
-        var price = result.price;
-        var description = result.description;
-        var conf = result.conf;
-        var category_list_json = result.category_list;
-        var image = `./assets/images/${message.id}/${result.id}.jpg`;
-=======
 	// 음식점
 	// 음식점 데이터 전송
   case '00A1': {
@@ -1608,7 +1543,6 @@ case '0008': {
       var image = result.image;
       var conf = result.conf;
       var category_list_json = result.category_list;
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
 
         // 카테고리 중복 확인
         var index = category_list.findIndex(function(item, i) {
@@ -1676,40 +1610,28 @@ case '0008': {
     }
 
 	// 음식점 메뉴 추가
-<<<<<<< HEAD
+
     case '00A2':{
       var category = message.category;
       var type = message.type;
-      var name = message.name;7
+      var name = message.name;
       var price = message.price;
       var description = message.description;
       var conf = message.conf;
       var category_list = JSON.stringify(message.category_list);
-	  var image_src = message.image_src;
-		var menu_id;
-=======
-  case '00A2':{
-    var category = message.category;
-    var type = message.type;
-    var name = message.name;7
-    var price = message.price;
-    var description = message.description;
-    var conf = message.conf;
-    var category_list = JSON.stringify(message.category_list);
-    var image_src = message.image_src;
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
+      var image_src = message.image_src;
 
         // 단품 추가
         if (type == "product") {
           var sql = `INSERT INTO restaurant_${message.id} (category,type, name, price, desc	ription) VALUES ('${category}','${type}','${name}','${price}','${description}')`;
           let results = sync_connection.query(sql);
-			menu_id = results.insertId;
+          menu_id = results.insertId;
           console.log("메뉴 추가 완료");
 
       } else if (type == "set") { // 세트 메뉴 추가
         var sql = `INSERT INTO restaurant_${message.id} (category,type, name, price, description, conf, category_list) VALUES ('${category}','${type}','${name}','${price}','${description}','${conf}','${category_list}')`;
         let results = sync_connection.query(sql);
-		  menu_id = results.insertId;
+        menu_id = results.insertId;
         console.log("메뉴 추가 완료");
       }
 
@@ -1727,57 +1649,16 @@ case '0008': {
 
 	//음식점 메뉴 삭제
     case '00A3':{ // 음식점 메뉴 삭제
-<<<<<<< HEAD
-        var category = message.category;
-        var name = message.name;
-		var menu_id;
-		
-		
-		// 이미지 삭제
-		var sql = `SELECT * FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
-		let results2 = sync_connection.query(sql);
-		menu_id = results2[0].id;
-		fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
-        
-		// 메뉴 삭제
-        var sql = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
-        let results = sync_connection.query(sql);
-        console.log("메뉴 삭제 완료");
-		
-		
-		
-		res.json({status:"GOOD"});
-		
-        connection.end();
-        break;
-    }
-		  
-	// 음식점 카테고리 삭제
-    case '00A4':{
-      var category = message.category;
-		
-		// 이미지 삭제
-		var sql1 = `SELECT * FROM resturant_${message.id} WHERE category='${message.category}'`;
-		let results2 = sync_connection.query(sql);
-		for(let result of results2){
-			let menu_id = result.id;
-			fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
-		}
-	        
-      var sql = `DELETE FROM resturant_${message.id} WHERE category='${message.category}'`;
-=======
-      var category = message.category;
-      var name = message.name;
+    var category = message.category;
+    var name = message.name;
+    var sql = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
+    let results = sync_connection.query(sql);
+    console.log("메뉴 삭제 완료");
+    res.json({status:"GOOD"});
 
-      var sql = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
-      let results = sync_connection.query(sql);
-      console.log("메뉴 삭제 완료");
-      res.json({status:"GOOD"});
-
-      connection.end();
-      break;
-    }
+    connection.end();
+    break;
+  }
 
 	// 음식점 카테고리 삭제
   case '00A4':{
@@ -1806,17 +1687,6 @@ case '0008': {
     break;
   }
 
-<<<<<<< HEAD
-      for (var result of results) {
-        var categoryName = result.category;
-        var type = result.type;
-        var name = result.name;
-        var price = result.price;
-        var description = result.description;
-        var conf = result.conf;
-        var category_list_json = result.category_list;
-        var image = `./assets/images/${message.id}/${result.id}.jpg`;
-=======
 	// 피시방
 	// 피시방 데이터 전송
   case '00B1': {
@@ -1834,7 +1704,6 @@ case '0008': {
       var image = result.image;
       var conf = result.conf;
       var category_list_json = result.category_list;
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
 
         // 카테고리 중복 확인
         var index = category_list.findIndex(function(item, i) {
@@ -1902,7 +1771,6 @@ case '0008': {
     }
 
 	// 피시방 메뉴 추가
-<<<<<<< HEAD
     case '00B2':{
       var category = message.category;
       var type = message.type;
@@ -1911,100 +1779,41 @@ case '0008': {
       var description = message.description;
       var conf = message.conf;
       var category_list = JSON.stringify(message.category_list);
-	  var image_src = message.image_src;
-		var menu_id;
-=======
-  case '00B2':{
-    var category = message.category;
-    var type = message.type;
-    var name = message.name;7
-    var price = message.price;
-    var description = message.description;
-    var conf = message.conf;
-    var category_list = JSON.stringify(message.category_list);
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
 
         // 단품 추가
         if (type == "product") {
           var sql = `INSERT INTO pc_${message.id} (category,type, name, price, description) VALUES ('${category}','${type}','${name}','${price}','${description}')`;
           let results = sync_connection.query(sql);
-			menu_id = results.insertId;
+          menu_id = results.insertId;
           console.log("메뉴 추가 완료");
 
       } else if (type == "set") { // 세트 메뉴 추가
         var sql = `INSERT INTO pc_${message.id} (category,type, name, price, description, conf, category_list) VALUES ('${category}','${type}','${name}','${price}','${description}','${conf}','${category_list}')`;
         let results = sync_connection.query(sql);
-		  menu_id = results.insertId;
+        menu_id = results.insertId;
         console.log("메뉴 추가 완료");
       }
-<<<<<<< HEAD
-		
-		// 이미지 추가
-		let image_decode = Buffer.from(image_src, 'base64');
-		let makeImageFile = fs.writeFileSync(`./assets/images/${message.id}/${menu_id}.jpg`, image_decode);
-		
-		res.json({status:"GOOD"});
-=======
 
-      res.json({status:"GOOD"});
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
+    res.json({status:"GOOD"});
 
 
-      connection.end();
-      break;
-    }
+    connection.end();
+    break;
+  }
 
 	// 피시방 메뉴 삭제
     case '00B3':{ // 음식점 메뉴 삭제
-<<<<<<< HEAD
-        var category = message.category;
-        var name = message.name;
-		var menu_id;
-		
-		// 이미지 삭제
-		var sql = `SELECT * FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
-		let results2 = sync_connection.query(sql);
-		menu_id = results2[0].id;
-		fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
-        
-		// 메뉴 삭제
-        var sql = `DELETE FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
-        let results = sync_connection.query(sql);
-        console.log("메뉴 삭제 완료");
-		res.json({status:"GOOD"});
-		
-        connection.end();
-        break;
-    }
-		  
-	// 피시방 카테고리 삭제
-    case '00B4':{
-      var category = message.category;
-		
-		// 이미지 삭제
-		var sql1 = `SELECT * FROM resturant_${message.id} WHERE category='${message.category}'`;
-		let results2 = sync_connection.query(sql);
-		for(let result of results2){
-			let menu_id = result.id;
-			fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
-		}
-	        
-      var sql = `DELETE FROM pc_${message.id} WHERE category='${category}'`;
-      let results = sync_connection.query(sql);
-      console.log("카테고리 삭제 완료");
-=======
-      var category = message.category;
-      var name = message.name;
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
+    var category = message.category;
+    var name = message.name;
 
-      var sql = `DELETE FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
-      let results = sync_connection.query(sql);
-      console.log("메뉴 삭제 완료");
-      res.json({status:"GOOD"});
+    var sql = `DELETE FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
+    let results = sync_connection.query(sql);
+    console.log("메뉴 삭제 완료");
+    res.json({status:"GOOD"});
 
-      connection.end();
-      break;
-    }
+    connection.end();
+    break;
+  }
 
 	// 피시방 카테고리 삭제
   case '00B4':{
@@ -2236,7 +2045,6 @@ case '0008': {
     }
 
 	// 영화관 음식 메뉴 추가
-<<<<<<< HEAD
     case '00C4':{
       var category = message.category;
       var type = message.type;
@@ -2245,92 +2053,27 @@ case '0008': {
       var description = message.description;
       var conf = message.conf;
       var category_list = JSON.stringify(message.category_list);
-	  var image_src = message.image_src;
-		image_src.replace(`data:image/jpeg;base64,`, "");
-		var menu_id;
-=======
-  case '00C4':{
-    var category = message.category;
-    var type = message.type;
-    var name = message.name;
-    var price = message.price;
-    var description = message.description;
-    var conf = message.conf;
-    var category_list = JSON.stringify(message.category_list);
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
 
         // 단품 추가
         if (type == "product") {
           var sql = `INSERT INTO movie_${message.id}_food (category,type, name, price, description) VALUES ('${category}','${type}','${name}','${price}','${description}')`;
           let results = sync_connection.query(sql);
-		  menu_id = results.insertId;
+          menu_id = results.insertId;
           console.log("메뉴 추가 완료");
 
       } else if (type == "set") { // 세트 메뉴 추가
         var sql = `INSERT INTO movie_${message.id}_food (category,type, name, price, description, conf, category_list) VALUES ('${category}','${type}','${name}','${price}','${description}','${conf}','${category_list}')`;
         let results = sync_connection.query(sql);
-		  menu_id = results.insertId;
+        menu_id = results.insertId;
         console.log("메뉴 추가 완료");
       }
-<<<<<<< HEAD
-		
-		// 이미지 추가
-		let image_decode = Buffer.from(image_src, 'base64');
-		let makeImageFile = fs.writeFileSync(`./assets/images/${message.id}/${menu_id}.jpg`, image_decode);
-	
-	  res.json({test:"GOOD"});
-=======
 
-      res.json({test:"GOOD"});
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
-      connection.end();
-      break;
-    }
+   res.json({test:"GOOD"});
+   connection.end();
+   break;
+ }
 
 	// 영화관 음식 메뉴 삭제
-<<<<<<< HEAD
-    case '00C5':{
-        var category = message.category;
-        var name = message.name;
-		var menu_id;
-		
-		// 이미지 삭제
-		var sql = `SELECT * FROM movie_${message.id}_food WHERE category='${category}' and name='${name}' `;
-		let results2 = sync_connection.query(sql);
-		menu_id = results2[0].id;
-		fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
-        
-        var sql = `DELETE FROM movie_${message.id}_food WHERE category='${category}' and name='${name}' `;
-        let results = sync_connection.query(sql);
-        console.log("메뉴 삭제 완료");
-		
-		res.json({status:"GOOD"});
-        connection.end();
-        break;
-    }
-		  
-	// 영화관 음식 카테고리 삭제
-    case '00C6':{
-      var category = message.category;
-		
-		// 이미지 삭제
-		var sql1 = `SELECT * FROM movie_${message.id}_food WHERE category='${message.category}'`;
-		let results2 = sync_connection.query(sql);
-		for(let result of results2){
-			let menu_id = result.id;
-			fs.unlinkSync(`./assets/images/${message.id}/${menu_id}.jpg`);
-		}
-	        
-      var sql = `DELETE FROM movie_${message.id}_food WHERE category='${message.category}'`;
-      let results = sync_connection.query(sql);
-      console.log("카테고리 삭제 완료");
-	  console.log(results);
-		res.json({status:"GOOD"});
-      connection.end();
-      break;
-    }
-		  
-=======
   case '00C5':{
     var category = message.category;
     var name = message.name;
@@ -2357,26 +2100,10 @@ case '0008': {
     break;
   }
 
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
 	// 영화관 음식 카테고리 변경
   case '00C7':{
     var category = message.category;
     var change = message.change;
-
-<<<<<<< HEAD
-		res.json({status:"GOOD"});
-      connection.end();
-      break;
-    }
-		  
-	// 영화관 
-    
-    default: {
-      console.log(request_code + ' does not exist in request_code.');
-      console.log(message);
-      connection.end();
-      break;
-=======
     var sql = `UPDATE movie_${message.id}_food SET category='${change}' WHERE category='${category}'`;
     let results = sync_connection.query(sql);
     console.log("카테고리 변경 완료");
@@ -2391,8 +2118,6 @@ case '0008': {
     console.log(message);
     connection.end();
     break;
->>>>>>> cee27526d54592515f1682424fdfb2192cb7817d
-
   }
 }
 
