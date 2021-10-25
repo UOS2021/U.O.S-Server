@@ -546,10 +546,11 @@ case '0008': {
 
     }
 
+	// 주문 시도
     case '0010' : {
       var res_data_string ='';
       var check = true;
-    /*
+      /*
 
       카드결제 서버와 통신해서 결제 실패하면 check 변수 false로 변환
 
@@ -592,11 +593,26 @@ case '0008': {
             res_data_string = {response_code: "0023"};
             console.log("주문 버퍼 추가 및 결제 성공");
 
-        // 영화관 좌석 비활성화
-        if(message.order[0].type==2){
-          let theater_order = message.order[0];
-
-        }
+        // 영화관 결제 성공 시 좌석 비활성화
+		for(let order of message.order){
+			if(order.type == 2){
+				let movie = order.menu.split('&')[0];
+				let time = order.menu.split('&')[1];
+				
+				// 변경할 영화 num 가져오기
+				let sql = `SELECT * FROM movie_${message.id} WHERE movie='${movie}' and time='${time}'`;
+				let results = sync_connection.query(sql);
+				let movie_num = results[0].num;
+				
+				// 영화 좌석
+				let code_arr = order.submenu.split('&');
+				for(let code of code_arr){
+					let sql2 = `UPDATE movie_${message.id}_${movie_num} SET state=1 WHERE code='${code}'`;
+					let results2 = sync_connection.query(sql2);
+					console.log(code + " 좌석 변경 완료");
+				}
+			}	
+		}
 
         var res_data_json = JSON.stringify(res_data_string);
         res.json(res_data_json);
@@ -619,7 +635,7 @@ case '0008': {
 
     break;
 
-  }
+    }
 
   case '0011' : {
 
@@ -1537,7 +1553,9 @@ case '0008': {
     });
       break;
     }
-
+	  case '000H' :{
+		  
+	  }
 
   // 음식점
   // 음식점 데이터 전송
@@ -2048,7 +2066,7 @@ case '0008': {
     }
 
   // 영화관 영화 삭제
-    case '00C3':{ // 영화관 영화 삭제
+    case '00C3':{
       var movie = message.movie;
       var time = message.time;
 
@@ -2134,7 +2152,6 @@ case '0008': {
     connection.end();
     break;
   }
-
   // 영화관 음식 카테고리 변경
   case '00C7':{
     var category = message.category;
@@ -2147,6 +2164,32 @@ case '0008': {
     connection.end();
     break;
   }
+  // 영화관 영화 좌석 업데이트
+	case '00C8':{
+		let movie = message.movie;
+      	let time = message.time;
+		let seat_arr = message.seat;
+		
+		// 변경할 영화 num 가져오기z	
+		let sql = `SELECT * FROM movie_${message.id} WHERE movie='${movie}' and time='${time}'`;
+		let results = sync_connection.query(sql);
+		let movie_num = results[0].num;
+		
+		// 변경할 영화 좌석 데이터
+		for(var seat of seat_arr){
+			let code = seat.code;
+			let state = seat.state;
+			
+			// 좌석 state 변경
+			let sql2 = `UPDATE movie_${message.id}_${movie_num} SET state='${state}' WHERE code='${code}'`;
+			let results2 = sync_connection.query(sql2);
+			console.log(code + " 좌석 변경 완료");
+		}
+		
+   		res.json({status:"GOOD"});
+		connection.end();
+		break;
+	}
 
   default: {
     console.log(request_code + ' does not exist in request_code.');
