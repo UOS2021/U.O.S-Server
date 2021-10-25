@@ -1,4 +1,5 @@
 var total_seat = [];
+var origin_seat = [];
 var test;
 var selected_movie = [];
 var selected_index=0;
@@ -78,6 +79,7 @@ function init(){
 						seats[(data.movie_list[j].seat_list[k].code[0].charCodeAt(0))%65][parseInt(data.movie_list[j].seat_list[k].code.substr(1,3))-1] = parseInt(data.movie_list[j].seat_list[k].state);
 					}
 					total_seat.push(seats);
+					origin_seat.push(seats);
 					var seat_alpha = 65;
 					var input_id = '#'+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"_body";
 					$.each(seats,function(indexY,line){
@@ -191,30 +193,51 @@ $('#movie_delete').on('click', function(){
 			location.reload();
 		});
 });
-
+var ess;
 $('#movie_modify').on('click', function(){
 	var send_movie_data = total_seat[selected_index];
+	ess=send_movie_data;
 	console.log(send_movie_data);
-	// let param =
-	// 	{
-	// 		"request_code": "00C3",
-	// 		"message" : {
-	// 			"id" : sessionStorage.getItem("id"),
-	// 			"movie" : movie_name,
-	// 			"time" : movie_time_send,
-	// 		}
-	// 	}
-	// console.log(param);
-	// 	var req = $.ajax({
-	// 		url : "/post",
-	// 		data : param,
-	// 		type : 'POST',
-	// 		dataType : 'json'
-	// 	});
-	// 	req.done(function(data, status){
-	// 		alert("영화 삭제 완료");
-	// 		location.reload();
-	// 	});
+	var seat_array = new Array();
+	for(var i =0;i<send_movie_data.length;i++){
+		var alpha = String.fromCharCode(65+i); 
+		for(var j=0;j<send_movie_data[i].length;j++){
+			if(JSON.stringify(origin_seat[selected_index][i][j])!=JSON.stringify(send_movie_data[i][j])){
+				var seat_rows = new Object();
+				var alpha_seat = alpha+(j+1);
+				seat_rows.code = alpha_seat;
+				seat_rows.state = send_movie_data[i][j];
+				seat_array.push(seat_rows);
+			}
+		}
+	}
+	var movie_name = selected_movie[selected_movie.length-2];
+	var movie_time = selected_movie[selected_movie.length-1].split(" ");
+	var movie_time_send = movie_time[1]+" "+movie_time[2]+" "+movie_time[3];
+	var sJson = JSON.stringify(seat_array);
+	console.log(sJson);
+	console.log(movie_time_send);
+	let param =
+		{
+			"request_code": "00C8",
+			"message" : {
+				"id" : sessionStorage.getItem("id"),
+				"movie" : movie_name,
+				"time" : movie_time_send,
+				"seat" : seat_array,
+			}
+		}
+		console.log(param);
+		var req = $.ajax({
+			url : "/post",
+			data : param,
+			type : 'POST',
+			dataType : 'json'
+		});
+		req.done(function(data, status){
+			alert("영화 업데이트");
+			location.reload();
+		});
 });
 
 $('#modal_movie_add').on('click', function(){ //메뉴추가하는 스크립트
