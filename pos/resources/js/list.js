@@ -276,11 +276,20 @@ function repeat_request000B(){
 					else{
 						menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
 					}
-					if(order_array[i].state==0){
-						alert("새로운 주문이 접수되었습니다.");
-						state0_num++;
-						list_attr_add('#new_order_list',cnt_now,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
-						cnt_now++;
+					if(sessionStorage.getItem("company_type")=="영화관"){
+						if(order_array[i].state==3){
+							alert("새로운 주문이 접수되었습니다.");
+							list_attr_add('#finished_order_list',cnt_finish,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
+							cnt_finish++;
+						}
+					}
+					else{
+						if(order_array[i].state==0){
+							alert("새로운 주문이 접수되었습니다.");
+							state0_num++;
+							list_attr_add('#new_order_list',cnt_now,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
+							cnt_now++;
+						}
 					}
 				}
 			}
