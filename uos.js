@@ -14,7 +14,8 @@ const conn = {
     port: '3306',
     user: 'root',
     password: '112antkglok!',
-    database: 'uos'
+    database: 'uos',
+    multipleStatements: true
 };
 
 var sync_connection = new sync_mysql({
@@ -22,7 +23,8 @@ var sync_connection = new sync_mysql({
     port: '3306',
     user: 'root',
     password: '112antkglok!',
-    database: 'uos'
+    database: 'uos',
+    multipleStatements: true
 });
 
 // express 미들웨어 불러오기
@@ -50,8 +52,10 @@ app.use(express.json({
 
 // body-parser : Post request 파싱
 var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({extended:true}));
+// app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 
 router.route('/').get(function(req, res){
@@ -741,9 +745,10 @@ app.post('/post', function(req, res, next){
                     var name = result.name;
                     var price = result.price;
                     var description = result.description;
-                    var image = result.image;
                     var conf = result.conf;
                     var category_list_json = JSON.parse(result.category_list);
+					let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+					let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -759,7 +764,7 @@ app.post('/post', function(req, res, next){
                             product['name'] = name;
                             product['price'] = price;
                             product['desc'] = description;
-                            product['image'] = "imgdata";
+                            product['image'] = image;
 
                             category_list[index].product_list.push(product);
                         } else if (type == "set") {
@@ -767,7 +772,7 @@ app.post('/post', function(req, res, next){
                             set['name'] = name;
                             set['price'] = price;
                             set['desc'] = description;
-                            set['image'] = "imgdata";
+                            set['image'] = image;
                             set['conf'] = conf;
                             set['category_list'] = category_list_json;
 
@@ -791,7 +796,7 @@ app.post('/post', function(req, res, next){
                             product['name'] = name;
                             product['price'] = price;
                             product['desc'] = description;
-                            product['image'] = "imgdata";
+                            product['image'] = image;
 
                             product_list.push(product);
                         } 
@@ -801,7 +806,7 @@ app.post('/post', function(req, res, next){
                             set['name'] = name;
                             set['price'] = price;
                             set['desc'] = description;
-                            set['image'] = "imgdata";
+                            set['image'] = image;
                             set['conf'] = conf;
                             set['category_list'] = category_list_json;
 
@@ -846,9 +851,10 @@ app.post('/post', function(req, res, next){
                     var name = result.name;
                     var price = result.price;
                     var description = result.description;
-                    var image = result.image;
                     var conf = result.conf;
                     var category_list_json = JSON.parse(result.category_list);
+					let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+					let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -862,7 +868,7 @@ app.post('/post', function(req, res, next){
                             product['name'] = name;
                             product['price'] = price;
                             product['desc'] = description;
-                            product['image'] = "imgdata";
+                            product['image'] = image;
 
                             category_list[index].product_list.push(product);
                         } else if (type == "set") {
@@ -870,7 +876,7 @@ app.post('/post', function(req, res, next){
                             set['name'] = name;
                             set['price'] = price;
                             set['desc'] = description;
-                            set['image'] = "imgdata";
+                            set['image'] = image;
                             set['conf'] = conf;
                             set['category_list'] = category_list_json;
 
@@ -894,7 +900,7 @@ app.post('/post', function(req, res, next){
                             product['name'] = name;
                             product['price'] = price;
                             product['desc'] = description;
-                            product['image'] = "imgdata";
+                            product['image'] = image;
 
                             product_list.push(product);
                         }
@@ -904,7 +910,7 @@ app.post('/post', function(req, res, next){
                             set['name'] = name;
                             set['price'] = price;
                             set['desc'] = description;
-                            set['image'] = "imgdata";
+                            set['image'] = image;
                             set['conf'] = conf;
                             set['category_list'] = category_list_json;
 
@@ -948,9 +954,10 @@ app.post('/post', function(req, res, next){
                     var name = result.name;
                     var price = result.price;
                     var description = result.description;
-                    var image = result.image;
                     var conf = result.conf;
                     var category_list_json = JSON.parse(result.category_list);
+					let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+					let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -964,7 +971,7 @@ app.post('/post', function(req, res, next){
                             product['name'] = name;
                             product['price'] = price;
                             product['desc'] = description;
-                            product['image'] = "imgdata";
+                            product['image'] = image;
 
                             category_list[index].product_list.push(product);
                         } else if (type == "set") {
@@ -972,7 +979,7 @@ app.post('/post', function(req, res, next){
                             set['name'] = name;
                             set['price'] = price;
                             set['desc'] = description;
-                            set['image'] = "imgdata";
+                            set['image'] = image;
                             set['conf'] = conf;
                             set['category_list'] = category_list_json;
 
@@ -996,7 +1003,7 @@ app.post('/post', function(req, res, next){
                             product['name'] = name;
                             product['price'] = price;
                             product['desc'] = description;
-                            product['image'] = "imgdata";
+                            product['image'] = image;
 
                             product_list.push(product);
                         }
@@ -1006,7 +1013,7 @@ app.post('/post', function(req, res, next){
                             set['name'] = name;
                             set['price'] = price;
                             set['desc'] = description;
-                            set['image'] = "imgdata";
+                            set['image'] = image;
                             set['conf'] = conf;
                             set['category_list'] = category_list_json;
 
@@ -1566,9 +1573,9 @@ app.post('/post', function(req, res, next){
                 var name = result.name;
                 var price = result.price;
                 var description = result.description;
-                var image = result.image;
                 var conf = result.conf;
                 var category_list_json = result.category_list;
+                var image = `../assets/images/${message.id}/${result.num}.jpg`;
 
                 // 카테고리 중복 확인
                 var index = category_list.findIndex(function(item, i) {
@@ -1734,9 +1741,9 @@ app.post('/post', function(req, res, next){
                 var name = result.name;
                 var price = result.price;
                 var description = result.description;
-                var image = result.image;
                 var conf = result.conf;
                 var category_list_json = result.category_list;
+                var image = `../assets/images/${message.id}/${result.num}.jpg`;
 
                 // 카테고리 중복 확인
                 var index = category_list.findIndex(function(item, i) {
@@ -1938,7 +1945,7 @@ app.post('/post', function(req, res, next){
                 var description = result.description;
                 var conf = result.conf;
                 var category_list_json = result.category_list;
-                var image = `./assets/images/${message.id}/${result.id}.jpg`;
+                var image = `../assets/images/${message.id}/${result.num}.jpg`;
 
                 // 카테고리 중복 확인
                 var index = category_list.findIndex(function(item, i) {
@@ -2187,17 +2194,15 @@ app.post('/post', function(req, res, next){
             let sql = `SELECT * FROM movie_${message.id} WHERE movie='${movie}' and time='${time}'`;
             let results = sync_connection.query(sql);
             let movie_num = results[0].num;
+			
+			// 영화 좌석 변경
+			let sql2 = ``;
+			seat_arr.forEach(function(seat) {
+				sql2 += "UPDATE movie_"+message.id+"_"+movie_num+" SET state = '" + seat.state + "' WHERE code = '" + seat.code + "'; ";
+			})
+			let results2 = sync_connection.query(sql2);
+			console.log("좌석 변경 완료");
 
-            // 변경할 영화 좌석 데이터
-            for(var seat of seat_arr){
-                let code = seat.code;
-                let state = seat.state;
-
-                // 좌석 state 변경
-                let sql2 = `UPDATE movie_${message.id}_${movie_num} SET state='${state}' WHERE code='${code}'`;
-                let results2 = sync_connection.query(sql2);
-                console.log(code + " 좌석 변경 완료");
-            }
 
             res.json({status:"GOOD"});
             connection.end();
