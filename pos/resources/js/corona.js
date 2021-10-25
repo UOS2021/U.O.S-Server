@@ -3,6 +3,8 @@ function list_attr_add(table,no, order_code, menu, time,state){
 	// $(table).append(newtr);
 	var t = $(table).DataTable();
 	var rows;
+	var rows_send;
+	rows_send = "<button class='btn btn-warning' type='button' onclick='send_alarm("+order_code+")'>알람 전송</button>";
 	if(state==3){
 		rows = "<button class='btn btn-secondary' type='button' disabled>완료 된 주문</button>";
 	}
@@ -12,13 +14,31 @@ function list_attr_add(table,no, order_code, menu, time,state){
 	else if(state==5){
 		rows = "<button class='btn btn-secondary' type='button' disabled>거절 한 주문</button>";
 	}
-	t.row.add([no,order_code,menu,time,rows]).draw(false);
+	t.row.add([no,order_code,menu,time,rows,rows_send]).draw(false);
 }
-
+function send_alarm(code){
+	let param =
+	{
+		"request_code": "000H",
+		"message" : {
+			"id" : sessionStorage.getItem("id"),
+			"order_code" : code
+		}
+	};
+	var req = $.ajax({
+		url : "/post",
+		data : param,
+		type : 'POST',
+		dataType : 'json'
+	});
+	req.done(function(data, status){
+		alert("알람 전송 완료");
+		
+	});
+}
 function init(){
 	cnt_now = 0;
 	cnt_finish = 0;
-}
 
 	let param =
 	{
@@ -35,6 +55,7 @@ function init(){
 	});
 	req.done(function(data, status){
 		/* for문으로 주문현황 리스트에 주문들 추가 */
+		console.log(data);
 		var i;
 		var order_array = data.message.order_array;
 		for(i=0;i<order_array.length;i++){
@@ -60,7 +81,8 @@ function init(){
 			cnt_finish++;
 		}
 		
-});
+	});
+}
 
 $(document).ready(function(){
     	
