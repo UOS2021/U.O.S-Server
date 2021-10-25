@@ -600,14 +600,14 @@ case '0008': {
 				let time = order.menu.split('&')[1];
 				
 				// 변경할 영화 num 가져오기
-				let sql = `SELECT * FROM movie_${message.id} WHERE movie='${movie}' and time='${time}'`;
+				let sql = `SELECT * FROM movie_${message.uospartner_id} WHERE movie='${movie}' and time='${time}'`;
 				let results = sync_connection.query(sql);
 				let movie_num = results[0].num;
 				
 				// 영화 좌석
 				let code_arr = order.submenu.split('&');
 				for(let code of code_arr){
-					let sql2 = `UPDATE movie_${message.id}_${movie_num} SET state=1 WHERE code='${code}'`;
+					let sql2 = `UPDATE movie_${message.uospartner_id}_${movie_num} SET state=1 WHERE code='${code}'`;
 					let results2 = sync_connection.query(sql2);
 					console.log(code + " 좌석 변경 완료");
 				}
@@ -742,7 +742,7 @@ case '0008': {
       // 영화관
       if(company_type == "영화관"){
         var sql1 = `SELECT * FROM movie_${message.uospartner_id}; `;
-        var sql2 = `SELECT * FROM movie_${message.id}_food; `;
+        var sql2 = `SELECT * FROM movie_${message.uospartner_id}_food; `;
 
         var movie_result = sync_connection.query(sql1);
         var food_result = sync_connection.query(sql2);
@@ -754,7 +754,7 @@ case '0008': {
         var movie_list = new Array();
         var company_obj = new Object();
         response_data.message = message_obj;
-        response_data.response_code = '0007';
+        response_data.response_code = '0008';
 
         message_obj.company = company_obj;
         message_obj.category_list = category_list;
@@ -794,14 +794,16 @@ case '0008': {
 
         // 음식 정보 데이터 삽입
         for (var result of food_result) {
+			var num = result.num;
           var categoryName = result.category;
           var type = result.type;
           var name = result.name;
           var price = result.price;
           var description = result.description;
-          var image = result.image;
           var conf = result.conf;
           var category_list_json = JSON.parse(result.category_list);
+			let readImage = fs.readFileSync(``./assets/images/${message.uospartner_id}/${num}.jpg`);
+			let image = Buffer.from(readImage).toString('base64');
 
           // 카테고리 중복 확인
           var index = category_list.findIndex(function(item, i) {
@@ -905,9 +907,10 @@ case '0008': {
           var name = result.name;
           var price = result.price;
           var description = result.description;
-          var image = result.image;
           var conf = result.conf;
           var category_list_json = JSON.parse(result.category_list);
+			let readImage = fs.readFileSync(``./assets/images/${message.uospartner_id}/${num}.jpg`);
+			let image = Buffer.from(readImage).toString('base64');
 
           // 카테고리 중복 확인
           var index = category_list.findIndex(function(item, i) {
@@ -998,14 +1001,16 @@ case '0008': {
         
         // 음식 정보 데이터 삽입
         for (var result of results) {
+			var num = result.num;
           var categoryName = result.category;
           var type = result.type;
           var name = result.name;
           var price = result.price;
           var description = result.description;
-          var image = result.image;
           var conf = result.conf;
           var category_list_json = JSON.parse(result.category_list);
+			let readImage = fs.readFileSync(``./assets/images/${message.uospartner_id}/${num}.jpg`);
+			let image = Buffer.from(readImage).toString('base64');
 
           // 카테고리 중복 확인
           var index = category_list.findIndex(function(item, i) {
