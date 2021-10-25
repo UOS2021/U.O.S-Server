@@ -1657,8 +1657,8 @@ app.post('/post', function(req, res, next){
             var description = message.description;
             var conf = message.conf;
             var category_list = JSON.stringify(message.category_list);
-            var image_src = message.image_src;
-            image_src = image_src.replace(`data:image/jpeg;base64,` , "");
+            var image_src = message.image_src.replace(`data:image/jpeg;base64,`, "");
+			var menu_id;
 
             // 단품 추가
             if (type == "product") {
@@ -1823,9 +1823,8 @@ app.post('/post', function(req, res, next){
             var description = message.description;
             var conf = message.conf;
             var category_list = JSON.stringify(message.category_list);
-            var image_src = message.image_src;
+            var image_src = message.image_src.replace(`data:image/jpeg;base64,`, "");
             var menu_id;
-            image_src = image_src.replace(`data:image/jpeg;base64,` , "");
 
             // 단품 추가
             if (type == "product") {
@@ -2116,8 +2115,7 @@ app.post('/post', function(req, res, next){
             var description = message.description;
             var conf = message.conf;
             var category_list = JSON.stringify(message.category_list);
-            var image_src = message.image_src;
-            image_src.replace(`data:image/jpeg;base64,`, "");
+            var image_src = message.image_src.replace(`data:image/jpeg;base64,`, "");
             var menu_id;
 
             // 단품 추가
