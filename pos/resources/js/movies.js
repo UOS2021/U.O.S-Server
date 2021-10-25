@@ -72,14 +72,17 @@ function init(){
 					
 					movie_rows+="<li><a class='dropdown-item' onclick='click_movie("+j+")' href='#"+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"'>"+data.movie_list[j].theater+" "+data.movie_list[j].time+"</a></li>"
 					var seats = new Array(data.movie_list[j].seat_list.length/data.movie_list[j].width);
+					var origin = new Array(data.movie_list[j].seat_list.length/data.movie_list[j].width);
 					for ( var k =0;k<seats.length;k++){
 						seats[k] = new Array((data.movie_list[j].width)-1);
+						origin[k] = new Array((data.movie_list[j].width)-1);
 					}
 					for (var k =0;k<data.movie_list[j].seat_list.length;k++){
 						seats[(data.movie_list[j].seat_list[k].code[0].charCodeAt(0))%65][parseInt(data.movie_list[j].seat_list[k].code.substr(1,3))-1] = parseInt(data.movie_list[j].seat_list[k].state);
+						origin[(data.movie_list[j].seat_list[k].code[0].charCodeAt(0))%65][parseInt(data.movie_list[j].seat_list[k].code.substr(1,3))-1] = parseInt(data.movie_list[j].seat_list[k].state);
 					}
 					total_seat.push(seats);
-					origin_seat.push(seats);
+					origin_seat.push(origin);
 					var seat_alpha = 65;
 					var input_id = '#'+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"_body";
 					$.each(seats,function(indexY,line){
@@ -196,8 +199,9 @@ $('#movie_delete').on('click', function(){
 var ess;
 $('#movie_modify').on('click', function(){
 	var send_movie_data = total_seat[selected_index];
-	ess=send_movie_data;
 	console.log(send_movie_data);
+	console.log("----------------------");
+	console.log(origin_seat[selected_index]);
 	var seat_array = new Array();
 	for(var i =0;i<send_movie_data.length;i++){
 		var alpha = String.fromCharCode(65+i); 
@@ -205,6 +209,7 @@ $('#movie_modify').on('click', function(){
 			if(JSON.stringify(origin_seat[selected_index][i][j])!=JSON.stringify(send_movie_data[i][j])){
 				var seat_rows = new Object();
 				var alpha_seat = alpha+(j+1);
+				console.log(alpha_seat);
 				seat_rows.code = alpha_seat;
 				seat_rows.state = send_movie_data[i][j];
 				seat_array.push(seat_rows);
@@ -215,8 +220,6 @@ $('#movie_modify').on('click', function(){
 	var movie_time = selected_movie[selected_movie.length-1].split(" ");
 	var movie_time_send = movie_time[1]+" "+movie_time[2]+" "+movie_time[3];
 	var sJson = JSON.stringify(seat_array);
-	console.log(sJson);
-	console.log(movie_time_send);
 	let param =
 		{
 			"request_code": "00C8",
