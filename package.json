@@ -1,0 +1,29 @@
+{
+  "name": "uos-pos",
+  "version": "1.0.0",
+  "description": "uos-pos server",
+  "main": "uos.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "fcm-node": "^1.6.1",
+    "ip": "^1.1.5",
+    "mysql": "^2.18.1",
+    "qrcode": "^1.4.4",
+    "simple-datatables": "^3.1.2",
+    "sync-mysql": "^3.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://westofsky: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@github.com/UOS2021/U.O.S-Server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UOS2021/U.O.S-Server/issues"
+  },
+  "homepage": "https://github.com/UOS2021/U.O.S-Server#readme"
+}
