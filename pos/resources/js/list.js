@@ -343,6 +343,7 @@ $(document).ready(function(){
 	});
 	if(sessionStorage.getItem("company_type")=="영화관"){
 		var newa= "<a class='nav-link' href='/pos/movies'><div class='sb-nav-link-icon'><i class='fas fa-tachometer-alt'></i></div>영화 관리</a>"
+		$('now_order').hide();
 		$('#nav_side').append(newa);
 	}
 	// $(document).on('click','#new_order_list td',function(){
