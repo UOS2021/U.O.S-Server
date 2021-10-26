@@ -5,6 +5,7 @@ var state0_num = 0;
 var state4_num = 0;
 var ee;
 
+// 처음 리스트 받아오기
 function init(){
 	cnt_now = 0;
 	cnt_finish = 0;
@@ -63,6 +64,7 @@ function init(){
 	});
 }
 
+// 주문 수락
 function btn_accept(where,order_code){
 	// console.log(order_code);
 	let param =
@@ -91,6 +93,8 @@ function btn_accept(where,order_code){
 		}
 	});
 }
+
+// 주문 거절
 function btn_reject(order_code){
 	
 	let param =
@@ -141,11 +145,12 @@ function btn_reject(order_code){
 		cnt_finish++;
 	});
 }
-			 
+
+// 조리 완료
 function menu_wait(where,order_code){
 	let param =
 	{
-		"request_code": "000E", //request_code 알아서 설정해줘 조리완료
+		"request_code": "000E",
 		"message" : {
 			"order_code" : order_code,
 		}
@@ -170,10 +175,11 @@ function menu_wait(where,order_code){
 	});
 }
 
+// 수령 완료
 function customer_accept(where, order_code){
 	let param =
 	{
-		"request_code": "000F", //request_code 알아서 설정해줘 수령완료
+		"request_code": "000F",
 		"message" : {
 			"order_code" : order_code,
 		}
@@ -246,7 +252,7 @@ function repeat_request000B(){
 			dataType : 'json'
 	});
 	req.done(function(data, status){
-			// 추가 주문 내역 없음
+		// 추가 주문 내역 없음
 		if(data.response_code == "C000"){
 			
 		}
