@@ -99,8 +99,8 @@
                         <div class="card">
                             <button type="button" class="btn btn-primary" id="modal_open" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">메뉴추가</button>
                         </div>
-                        <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal fade bd-example-modal-xl" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">추가할 메뉴 정보</h5>
@@ -111,6 +111,9 @@
                                                 <div class="ml-2 col-sm-6">
                                                     <div id="msg"></div>
                                                     <form method="post" id="image-form">
+														<label class="form-check-label" for="image">
+															파일 이미지
+														</label>
                                                         <input type="file" name="img[]" class="file" accept="image/*">
                                                         <div class="input-group my-3">
                                                             <input type="text" class="form-control" disabled placeholder="Upload File" id="file">
@@ -121,9 +124,12 @@
                                                     </form>
                                                 </div>
                                                 <div class="ml-2 col-sm-6">
-                                                    <img src="https://placehold.it/80x80" id="preview" class="img-thumbnail">
+													<img id="preview" class="img-thumbnail">
                                                 </div>
                                             </div>
+											<label class="form-check-label" for="type">
+												메뉴 종류
+											</label>
 											<div class="form-check">
 											  <input class="form-check-input" type="radio" name="flexRadioDefault" id="product" onclick="getType('product')" checked>
 											  <label class="form-check-label" for="product">
@@ -136,23 +142,62 @@
 												세트
 											  </label>
 											</div>
-                                            <div class="form-group">
-                                                <label for="name" class="col-form-label">이름:</label>
-                                                <input type="text" class="form-control" id="name">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="price" class="col-form-label">가격:</label>
-                                                <textarea class="form-control" id="price"></textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="explaination" class="col-form-label">설명:</label>
-                                                <textarea class="form-control" id="explaination"></textarea>
-                                            </div>
+											<div class="row">
+												<div class="col">
+                                                	<label for="name" class="col-form-label">이름</label>
+													<input type="text" class="form-control" placeholder="" id="name">
+												</div>
+												<div class="col">
+                                                	<label for="price" class="col-form-label">가격</label>
+											    	<input type="text" class="form-control" placeholder="" id="price">
+											  	</div>
+										    </div>
+                                            <label for="explaination" class="col-form-label">설명</label>
+                                            <textarea class="form-control" id="explaination"></textarea>
+											<div id ="if_set_conf">
+												<label for="explaination" class="col-form-label">세트 구성</label>
+                                            	<textarea class="form-control" id="set_conf"></textarea>
+											</div>
                                         </form>
+										<br>
+										<div id="if_set">
+											<button type="button" class="btn btn-info" onclick='add_side_category()'>사이드 카테고리 추가</button>
+											<br><br>
+											<div id="side_list">
+												
+											</div>
+											
+										</div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="modal_close">닫기</button>
                                         <button type="button" class="btn btn-primary" id="modal_menu_add">메뉴추가</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+						<div class="modal fade bd-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">사이드 카테고리</h5>
+                                    </div>
+                                    <div class="modal-body">
+										<form>
+											<div class="col">
+                                                <label for="name" class="col-form-label">사이드 카테고리 이름</label>
+												<input type="text" class="form-control" placeholder="" id="side_category_name">
+											</div>
+										</form>
+										<br>
+										<button type="button" class="btn btn-primary btn-sm" onclick="add_side_menu()">사이드 추가</button>
+										<div id="side_category_menus">
+											
+										</div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="modal_close2">닫기</button>
+                                        <button type="button" class="btn btn-primary" onclick="side_category_add()">추가</button>
                                     </div>
                                 </div>
                             </div>

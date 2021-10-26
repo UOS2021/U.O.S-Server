@@ -281,7 +281,10 @@ function init(){
 
 
 $('#modal_open').on('click', function(){
-    $('#myModal').modal('show');	
+    $('#myModal').modal('show');
+	document.getElementById('name').value='';
+	document.getElementById('price').value='';
+	document.getElementById('explaination').value='';
 	console.log("click open");
 });
 $('#modal_close').on('click', function(){
@@ -296,16 +299,28 @@ $('#category_close').on('click', function(){
 });
 
 var product_type='product';
+$('#if_set').hide();
+$('#if_set_conf').hide();
 function getType(type) {
-  product_type = type;
+    product_type = type;
+	console.log(type);
+	if(type=='product'){
+		$('#if_set').hide();
+		$('#if_set_conf').hide();
+	}
+	else if(type=='set'){
+		
+		$('#if_set_conf').show();
+		$('#if_set').show();
+	}
 }
 $('#modal_menu_add').on('click', function(){ //메뉴추가하는 스크립트
 	var type = product_type;
 	var name = document.getElementById('name').value;
 	var price = document.getElementById('price').value;
 	var description = document.getElementById('explaination').value;
-	var conf = null;
-	var category_list = null;
+	var conf =document.getElementById('set_conf').value;
+	var category_list = side_menu_list;
 	var preview = document.getElementById('preview').src;
 	console.log(preview);
 	if(sessionStorage.getItem("company_type")=='영화관'){
@@ -562,7 +577,90 @@ $('#change_category').on('click', function(){ //카테고리명 변경ㄴ하는 
 	
 	
 });
+var side_category_cnt=0;
+function add_side_category(){
+	side_category_menu_index=0;
+	document.getElementById('side_category_name').value='';
+	$('#side_category_menus').empty();
+	$('#myModal2').modal('show');
+}
+var side_category_menu_index = 0;
+function add_side_menu(){
+	var rows;
+	rows = "<div id='side_menu_"+side_category_menu_index+"'>";	
+		rows += "<div class='row'>";
+			rows += "<div class='col'>";
+				rows += "<label for='name' class='col-form-label'>이름</label>";
+				rows += "<input type='text' class='form-control' id='name"+side_category_menu_index+"'>";
+			rows += "</div>";
+			rows += "<div class='col'>";
+				rows += "<label for='price' class='col-form-label'>가격</label>";
+				rows += "<input type='text' class='form-control' id='price"+side_category_menu_index+"'>";
+			rows += "</div>";
+			rows += "<div class='col'>";
+				rows += " <label for='explaination' class='col-form-label'>설명</label>";
+				rows += "<input type='text' class='form-control' id='explaination"+side_category_menu_index+"'>";
+			rows += "</div>";
+				rows += `<button type='button' class='btn btn-danger btn-sm' onclick='delete_side_menu("${side_category_menu_index}")'>X</button>`;
+		rows += "</div>";
+	rows += "</div>";
+	side_category_menu_index++;
+	$('#side_category_menus').append(rows);
+}
+function delete_side_menu(index){
+	var where = 'side_menu_'+index;
+	console.log(where);
+	document.getElementById(where).remove();
+}
 
+var side_menu_list = new Array();
+function side_category_add(){
+	var side_name,side_price,side_explain;
+	var aJsonArray = new Array();
+	var bJson = new Object();
+	var side_name = document.getElementById('side_category_name').value;
+	var cnt=0;
+	for(var i=0;i<side_category_menu_index;i++){
+		var aJson = new Object();
+		if(document.getElementById('side_menu_'+i)){
+			side_name = document.getElementById('name'+i).value;
+			side_price = document.getElementById('price'+i).value;
+			side_explain = document.getElementById('explaination'+i).value;
+			console.log(side_name,side_price,side_explain);
+			aJson.price = side_price;
+			aJson.name = side_name;
+			aJson.desc = side_explain;
+			cnt++;
+		}
+		aJsonArray.push(aJson);
+		
+	}
+	bJson.product_list = aJsonArray;
+	bJson.category = side_name;
+	bJson.required = true;
+	side_menu_list.push(bJson);
+	$('#myModal2').modal('hide');
+	var rows2 = "<button type='button' class='btn btn-success' style='margin-right:5px;'>"+side_name+"<span class='badge badge-secondaryㄴ'>외 "+cnt+"개 항목"+"</span></button>"
+	$('#side_list').append(rows2);
+}
+
+
+$('#modal_open').on('click', function(){
+	side_menu_list = new Array();
+    $('#myModal').modal('show');
+	$('#side_list').empty();
+	$('#if_set').hide();
+	$('#if_set_conf').hide();
+	$("#product").prop("checked", true);
+	document.getElementById('name').value='';
+	document.getElementById('price').value='';
+	document.getElementById('explaination').value='';
+	document.getElementById("preview").src = '';
+	console.log("click open");
+});
+$('#modal_close2').on('click', function(){
+    $('#myModal2').modal('hide');
+});
 
 $(document).on("click", ".browse", function() {
     var file = $(this).parents().find(".file");
