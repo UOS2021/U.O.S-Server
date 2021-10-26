@@ -1730,6 +1730,7 @@ app.post('/post', function(req, res, next){
             break;
         }
 
+        // 피시방
         // 피시방 데이터 전송
         case '00B1': {
             var sql = `SELECT * FROM pc_${message.id}`;
