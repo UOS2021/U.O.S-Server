@@ -740,6 +740,7 @@ app.post('/post', function(req, res, next){
 
                 // 음식 정보 데이터 삽입
                 for (var result of food_result) {
+					var num = result.num;
                     var categoryName = result.category;
                     var type = result.type;
                     var name = result.name;
@@ -846,6 +847,7 @@ app.post('/post', function(req, res, next){
 
                 // 피시방 정보 데이터 삽입
                 for (var result of results) {
+					var num = result.num;
                     var categoryName = result.category;
                     var type = result.type;
                     var name = result.name;
@@ -949,6 +951,7 @@ app.post('/post', function(req, res, next){
 
                 // 음식 정보 데이터 삽입
                 for (var result of results) {
+					var num = result.num;
                     var categoryName = result.category;
                     var type = result.type;
                     var name = result.name;
@@ -1647,7 +1650,6 @@ app.post('/post', function(req, res, next){
         }
 
         // 음식점 메뉴 추가
-
         case '00A2':{
             var category = message.category;
             console.log("catecory : " + category);
