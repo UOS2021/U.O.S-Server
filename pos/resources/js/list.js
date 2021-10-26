@@ -271,7 +271,6 @@ function repeat_request000B(){
 							menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
 						else
 							menu_name = max_name;
-
 					}
 					else{
 						menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
@@ -352,7 +351,7 @@ $(document).ready(function(){
 	});
 	if(sessionStorage.getItem("company_type")=="영화관"){
 		var newa= "<a class='nav-link' href='/pos/movies'><div class='sb-nav-link-icon'><i class='fas fa-tachometer-alt'></i></div>영화 관리</a>"
-		$('now_order').hide();
+		$('#now_order').hide();
 		$('#nav_side').append(newa);
 	}
 	// $(document).on('click','#new_order_list td',function(){
