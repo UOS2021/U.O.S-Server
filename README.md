@@ -1,4 +1,4 @@
-  <h1 align="center"><strong>U.O.S</strong><br> 내 손 안에 키오스크를 담다. </h1>
+<h1 align="center"><strong>U.O.S</strong><br> 내 손 안에 키오스크를 담다. </h1>
 <p align="center">
  코로나 시대에 접촉을 최소화 하여 감염병을 예방할 수 있는 언택트 기술을 사용하여 비대면으로 주문하세요.
 </p>
@@ -10,6 +10,7 @@
 ## DB 구조
 > -  #### customer_account
 > ![customer_account](https://user-images.githubusercontent.com/35491052/132522752-ff36c1d7-c82d-4b2c-a3a6-c9366c949ef2.png)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FUOS2021%2FU.O.S-Server.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FUOS2021%2FU.O.S-Server?ref=badge_shield)
 >
 > - #### uospartner_account
 > ![uofpartner_account](https://user-images.githubusercontent.com/35491052/132523232-30556b85-2e0f-4336-93cf-8f4552d22d9c.png)
@@ -26,3 +27,7 @@
 >
 > - ### 결제 흐름도
 >> ![image](https://user-images.githubusercontent.com/35491052/132525406-4b564b92-431c-47c0-99ab-b070467e2157.png)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FUOS2021%2FU.O.S-Server.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FUOS2021%2FU.O.S-Server?ref=badge_large)
