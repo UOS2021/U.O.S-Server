@@ -1,8 +1,8 @@
 goorm.manifest
-package-lock.json
-node_modules/
+**node_modules/
 manifest.yml
 .vs/
 uos.sql
 order_buffer.sql
-assets/
+assets/qrcode/
+assets/images/
