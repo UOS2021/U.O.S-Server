@@ -100,15 +100,27 @@ function init(){
 					category_row = "<li class='nav-item'><a class='nav-link active' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='true'>"+data[i].category+"</a></li>";
 					selected_category=data[i].category;
 					content_row = "<div class='tab-pane mt-4 active' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					for(var k =0;k<data[i].set_list.length;k++){
+						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
+							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
+							content_row+="<div class='card-body card_scroll'>";
+								content_row+="<h5 class='card-title'>"+data[i].set_list[k].name+"</h5>";
+								content_row+="<h5 class='card-subtitle'>"+data[i].set_list[k].price+"</h5>";
+								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
+								content_row+="<p class='card-text'>"+"구성품 : "+data[i].set_list[k].conf+"</p>";
+							content_row+="</div>";
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+						content_row+="</div>";
+					}
 					for(j=0;j<data[i].product_list.length;j++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 						content_row+="<img class='menu_height' src='"+data[i].product_list[j].image+"'>";
-						content_row+="<div class='card-body'>";
+						content_row+="<div class='card-body card_scroll'>";
 						content_row+="<h5 class='card-title' style='height:3rem'>"+data[i].product_list[j].name+"</h5>";
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -116,15 +128,27 @@ function init(){
 				else{
 					category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='false'>"+data[i].category+"</a></li>";
 					content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					for(var k =0;k<data[i].set_list.length;k++){
+						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
+							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
+							content_row+="<div class='card-body .card_scroll'>";
+								content_row+="<h5 class='card-title'>"+data[i].set_list[k].name+"</h5>";
+								content_row+="<h5 class='card-subtitle'>"+data[i].set_list[k].price+"</h5>";
+								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
+								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
+							content_row+="</div>";
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+						content_row+="</div>";
+					}
 					for(j=0;j<data[i].product_list.length;j++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 						content_row+="<img class='menu_height' src='"+data[i].product_list[j].image+"'>";
-						content_row+="<div class='card-body'>";
-						content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
-						content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
+						content_row+="<div class='card-body .card_scroll'>";
+						content_row+="<h5 class='card-title' style='height:3rem'>"+data[i].product_list[j].name+"</h5>";
+						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -167,15 +191,27 @@ function init(){
 					category_row = "<li class='nav-item'><a class='nav-link active' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='true'>"+data[i].category+"</a></li>";
 					selected_category=data[i].category;
 					content_row = "<div class='tab-pane mt-4 active' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					for(var k =0;k<data[i].set_list.length;k++){
+						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
+							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
+							content_row+="<div class='card-body card_scroll'>";
+								content_row+="<h5 class='card-title'>"+data[i].set_list[k].name+"</h5>";
+								content_row+="<h5 class='card-subtitle'>"+data[i].set_list[k].price+"</h5>";
+								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
+								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
+							content_row+="</div>";
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+						content_row+="</div>";
+					}
 					for(j=0;j<data[i].product_list.length;j++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 						content_row+="<img class='menu_height' src='"+data[i].product_list[j].image+"'>";
-						content_row+="<div class='card-body'>";
-						content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
-						content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
+						content_row+="<div class='card-body card_scroll'>";
+						content_row+="<h5 class='card-title' style='height:3rem'>"+data[i].product_list[j].name+"</h5>";
+						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -183,15 +219,27 @@ function init(){
 				else{
 					category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='false'>"+data[i].category+"</a></li>";
 					content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					for(var k =0;k<data[i].set_list.length;k++){
+						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
+							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
+							content_row+="<div class='card-body card_scroll'>";
+								content_row+="<h5 class='card-title'>"+data[i].set_list[k].name+"</h5>";
+								content_row+="<h5 class='card-subtitle'>"+data[i].set_list[k].price+"</h5>";
+								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
+								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
+							content_row+="</div>";
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+						content_row+="</div>";
+					}
 					for(j=0;j<data[i].product_list.length;j++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 						content_row+="<img class='menu_height' src='"+data[i].product_list[j].image+"'>";
-						content_row+="<div class='card-body'>";
-						content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
-						content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
+						content_row+="<div class='card-body card_scroll'>";
+						content_row+="<h5 class='card-title' style='height:3rem'>"+data[i].product_list[j].name+"</h5>";
+						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -234,15 +282,27 @@ function init(){
 					category_row = "<li class='nav-item'><a class='nav-link active' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='true'>"+data[i].category+"</a></li>";
 					selected_category=data[i].category;
 					content_row = "<div class='tab-pane mt-4 active' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					for(var k =0;k<data[i].set_list.length;k++){
+						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
+							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
+							content_row+="<div class='card-body card_scroll'>";
+								content_row+="<h5 class='card-title'>"+data[i].set_list[k].name+"</h5>";
+								content_row+="<h5 class='card-subtitle'>"+data[i].set_list[k].price+"</h5>";
+								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
+								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
+							content_row+="</div>";
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+						content_row+="</div>";
+					}
 					for(j=0;j<data[i].product_list.length;j++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 						content_row+="<img class='menu_height' src='"+data[i].product_list[j].image+"'>";
-						content_row+="<div class='card-body'>";
-						content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
-						content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
+						content_row+="<div class='card-body card_scroll'>";
+						content_row+="<h5 class='card-title' style='height:3rem'>"+data[i].product_list[j].name+"</h5>";
+						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -250,15 +310,27 @@ function init(){
 				else{
 					category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='false'>"+data[i].category+"</a></li>";
 					content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					for(var k =0;k<data[i].set_list.length;k++){
+						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
+							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
+							content_row+="<div class='card-body card_scroll'>";
+								content_row+="<h5 class='card-title'>"+data[i].set_list[k].name+"</h5>";
+								content_row+="<h5 class='card-subtitle'>"+data[i].set_list[k].price+"</h5>";
+								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
+								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
+							content_row+="</div>";
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+						content_row+="</div>";
+					}
 					for(j=0;j<data[i].product_list.length;j++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 						content_row+="<img class='menu_height' src='"+data[i].product_list[j].image+"'>";
-						content_row+="<div class='card-body'>";
-						content_row+="<h5 class='card-title'>"+data[i].product_list[j].name+"</h5>";
-						content_row+="<h5 class='card-subtitle'>"+data[i].product_list[j].price+"</h5>";
+						content_row+="<div class='card-body card_scroll'>";
+						content_row+="<h5 class='card-title' style='height:3rem'>"+data[i].product_list[j].name+"</h5>";
+						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
