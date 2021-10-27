@@ -747,7 +747,7 @@ app.post('/post', function(req, res, next){
                     var price = result.price;
                     var description = result.description;
                     var conf = result.conf;
-                    var category_list_json = JSON.parse(result.category_list);
+                    var category_list_json = eval(result.category_list);
 					let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
 					let image = Buffer.from(readImage).toString('base64');
 
@@ -854,7 +854,7 @@ app.post('/post', function(req, res, next){
                     var price = result.price;
                     var description = result.description;
                     var conf = result.conf;
-                    var category_list_json = JSON.parse(result.category_list);
+                    var category_list_json = eval(result.category_list);
 					let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
 					let image = Buffer.from(readImage).toString('base64');
 
@@ -958,7 +958,7 @@ app.post('/post', function(req, res, next){
                     var price = result.price;
                     var description = result.description;
                     var conf = result.conf;
-                    var category_list_json = JSON.parse(result.category_list);
+                    var category_list_json = eval(result.category_list);
 					let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
 					let image = Buffer.from(readImage).toString('base64');
 
