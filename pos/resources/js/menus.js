@@ -97,9 +97,9 @@ function init(){
 			var i,j,category_row,content_row;
 			for(i=0;i<data.length;i++){
 				if(i==0){
-					category_row = "<li class='nav-item'><a class='nav-link active' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='true'>"+data[i].category+"</a></li>";
+					category_row = "<li class='nav-item'><a class='nav-link active' id='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='true'>"+data[i].category+"</a></li>";
 					selected_category=data[i].category;
-					content_row = "<div class='tab-pane mt-4 active' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					content_row = "<div class='tab-pane mt-4 active' id='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab'>";
 					for(var k =0;k<data[i].set_list.length;k++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
@@ -109,7 +109,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+"구성품 : "+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -120,14 +120,14 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
 				}
 				else{
-					category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='false'>"+data[i].category+"</a></li>";
-					content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' role='tab' aria-controls='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' aria-selected='false'>"+data[i].category+"</a></li>";
+					content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab'>";
 					for(var k =0;k<data[i].set_list.length;k++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
@@ -137,7 +137,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -148,7 +148,7 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -188,9 +188,9 @@ function init(){
 			var i,j,category_row,content_row;
 			for(i=0;i<data.length;i++){
 				if(i==0){
-					category_row = "<li class='nav-item'><a class='nav-link active' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='true'>"+data[i].category+"</a></li>";
+					category_row = "<li class='nav-item'><a class='nav-link active' id='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' aria-selected='true'>"+data[i].category+"</a></li>";
 					selected_category=data[i].category;
-					content_row = "<div class='tab-pane mt-4 active' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					content_row = "<div class='tab-pane mt-4 active' id='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab'>";
 					for(var k =0;k<data[i].set_list.length;k++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
@@ -200,7 +200,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -211,14 +211,14 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
 				}
 				else{
-					category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='false'>"+data[i].category+"</a></li>";
-					content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' role='tab' aria-controls='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' aria-selected='false'>"+data[i].category+"</a></li>";
+					content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab'>";
 					for(var k =0;k<data[i].set_list.length;k++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
@@ -228,7 +228,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -239,7 +239,7 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -279,9 +279,9 @@ function init(){
 			var i,j,category_row,content_row;
 			for(i=0;i<data.length;i++){
 				if(i==0){
-					category_row = "<li class='nav-item'><a class='nav-link active' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='true'>"+data[i].category+"</a></li>";
+					category_row = "<li class='nav-item'><a class='nav-link active' id='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' aria-selected='true'>"+data[i].category+"</a></li>";
 					selected_category=data[i].category;
-					content_row = "<div class='tab-pane mt-4 active' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					content_row = "<div class='tab-pane mt-4 active' id='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab'>";
 					for(var k =0;k<data[i].set_list.length;k++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
@@ -291,7 +291,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -302,14 +302,14 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
 				}
 				else{
-					category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(data[i].category)+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category)+"' role='tab' aria-controls='"+inko.ko2en(data[i].category)+"' aria-selected='false'>"+data[i].category+"</a></li>";
-					content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category)+"-tab'>";
+					category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab' data-toggle='tab' href='#"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' role='tab' aria-controls='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"' aria-selected='false'>"+data[i].category+"</a></li>";
+					content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(data[i].category)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data[i].category.replace(/\s/gi, ""))+"-tab'>";
 					for(var k =0;k<data[i].set_list.length;k++){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
@@ -319,7 +319,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -330,7 +330,7 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -393,8 +393,9 @@ $('#modal_menu_add').on('click', function(){ //메뉴추가하는 스크립트
 	var description = document.getElementById('explaination').value;
 	var conf =document.getElementById('set_conf').value;
 	var category_list = side_menu_list;
-	var preview = (document.getElementById('preview').src).split('base64,')[1];
+	var preview = document.getElementById('preview').src.split('base64,')[1];
 	console.log(preview);
+	console.log(category_list);
 	if(sessionStorage.getItem("company_type")=='영화관'){
 		let param =
 		{
@@ -483,10 +484,10 @@ $('#modal_menu_add').on('click', function(){ //메뉴추가하는 스크립트
 
 $('#category_add').on('click', function(){ //카테고리 추가하는 스크립트
 	var category_name = document.getElementById('category_name').value;
-	var category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(category_name)+"-tab' data-toggle='tab' href='#"+inko.ko2en(category_name)+"' role='tab' aria-		controls='"+inko.ko2en(category_name)+"' aria-selected='false'>"+category_name+"</a></li>";
+	var category_row = "<li class='nav-item'><a class='nav-link' id='"+inko.ko2en(category_name.replace(/\s/gi, ""))+"-tab' data-toggle='tab' href='#"+inko.ko2en(category_name.replace(/\s/gi, ""))+"' role='tab' aria-		controls='"+inko.ko2en(category_name.replace(/\s/gi, ""))+"' aria-selected='false'>"+category_name+"</a></li>";
 		$('#myTab').append(category_row);
 	$('#category').modal('hide');
-	var content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(category_name)+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(category_name)+"-tab'>";
+	var content_row = "<div class='tab-pane mt-4' id='"+inko.ko2en(category_name.replace(/\s/gi, ""))+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(category_name.replace(/\s/gi, ""))+"-tab'>";
 	content_row+="</div>";
 	$('#myTab_content').append(content_row);
 	$('#myTab a').on('click', function (e) {
@@ -692,18 +693,19 @@ function side_category_add(){
 	var bJson = new Object();
 	var side_name = document.getElementById('side_category_name').value;
 	var cnt=0;
+	var side_side_name;
 	for(var i=0;i<side_category_menu_index;i++){
 		var aJson = new Object();
 		if(document.getElementById('side_menu_'+i)){
-			side_name = document.getElementById('name'+i).value;
+			side_side_name = document.getElementById('name'+i).value;
 			side_price = document.getElementById('price'+i).value;
 			side_explain = document.getElementById('explaination'+i).value;
-			console.log(side_name,side_price,side_explain);
+			console.log(side_side_name,side_price,side_explain);
 			aJson.price = side_price;
-			aJson.name = side_name;
+			aJson.name = side_side_name;
 			aJson.desc = side_explain;
 			cnt++;
-		}
+		}	
 		aJsonArray.push(aJson);
 		
 	}

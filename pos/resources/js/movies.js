@@ -55,7 +55,7 @@ function init(){
 								content_rows += "<div class='card-body' id = '"+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"_body'>";
 								content_rows += "</div>";
 							content_rows += "</div>";
-						content_rows += "</div>";
+						content_rows += "</div>"; 
 						$('#myTab_content').append(content_rows);
 					}
 					else{

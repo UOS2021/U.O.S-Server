@@ -20,8 +20,8 @@ function send_alarm(code){
 	let param =
 	{
 		"request_code": "000H",
-		"message" : {
-			"id" : sessionStorage.getItem("id"),
+		"message" : {;//llllll/.plo/-.;00
+			"id" : sessionStorage.getItem;l;90olp;0lpPo.pll[;'ppp;;;;;;;;l;.;o.po.k;;p'i[./o;p("id"),
 			"order_code" : code
 		}
 	};

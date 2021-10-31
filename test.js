@@ -19,9 +19,8 @@
 
 // express 기본 모듈 불러오기
 var express = require('express'), http = require('http'), path = require('path'), mysql = require('mysql'), QRCode = require('qrcode');
-var fs = require('fs');
+const fs = require('fs');
 var sync_mysql = require('sync-mysql');
-var menu = require('./menu.js');
 
 var FCM = require('fcm-node');
 // api 토큰
@@ -735,7 +734,6 @@ app.post('/post', function(req, res, next){
                 company_obj.name = company_name;
                 company_obj.type = company_type;
 
-				let sql_seat = "";
                 // 영화 정보 데이터 삽입
                 for (var result of movie_result) {
                     var num = result.num;
@@ -746,8 +744,8 @@ app.post('/post', function(req, res, next){
                     var height = result.height;
 
                     // 좌석 정보 가져오기
-                    sql_seat += `SELECT * FROM movie_${message.uospartner_id}_${num}; `;
-                    // var seat_list = sync_connection.query(sql4);
+                    var sql4 = `SELECT * FROM movie_${message.uospartner_id}_${num}`;
+                    var seat_list = sync_connection.query(sql4);
 
                     var movie = new Object();
                     movie.movie = movieName;
@@ -755,9 +753,9 @@ app.post('/post', function(req, res, next){
                     movie.time = time;
                     movie.width = width;
                     movie.height = height;
-                    // movie.seat_list = seat_list;
+                    movie.seat_list = seat_list;
 
-                    // movie_list.push(movie);
+                    movie_list.push(movie);
                 }
 
                 // 음식 정보 데이터 삽입
@@ -1682,6 +1680,7 @@ app.post('/post', function(req, res, next){
             var conf = message.conf;
             var category_list = JSON.stringify(message.category_list);
             var image_src = message.image_src;
+			console.log(image_src);
 			var menu_id;
 
             // 단품 추가
@@ -1716,22 +1715,9 @@ app.post('/post', function(req, res, next){
         case '00A3':{ 
             var category = message.category;
             var name = message.name;
-			
-			let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${category}' and name='${name}'; `;
-			let results = sync_connection.query(sql);
-			let delete_num = results[0].num;
-			console.log(delete_num);
-			
-			// 이미지 삭제
-			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
-			console.log("이미지 삭제 완료");
-			
-			// 메뉴 삭제
-            var sql2 = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
-            let results2 = sync_connection.query(sql2);
+            var sql = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
+            let results = sync_connection.query(sql);
             console.log("메뉴 삭제 완료");
-			
-			
             res.json({status:"GOOD"});
 
             connection.end();
@@ -1741,18 +1727,10 @@ app.post('/post', function(req, res, next){
         // 음식점 카테고리 삭제
         case '00A4':{
             var category = message.category;
-			let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${message.category}'`;
-			let results = sync_connection.query(sql);
-			
-			// 이미지 삭제
-			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
-			console.log("이미지 삭제 완료");
 
-			// 메뉴 삭제
-            var sql2 = `DELETE FROM restaurant_${message.id} WHERE category='${message.category}'`;
-            let results2 = sync_connection.query(sql2);
+            var sql = `DELETE FROM restaurant_${message.id} WHERE category='${message.category}'`;
+            let results = sync_connection.query(sql);
             console.log("카테고리 삭제 완료");
-
             res.json({status:"GOOD"});
 
             connection.end();
@@ -1761,14 +1739,13 @@ app.post('/post', function(req, res, next){
 
         // 음식점 카테고리 변경
         case '00A5':{
-			menu.changeCategory(req, res);
-            // var category = message.category;
-            // var change = message.change;
+            var category = message.category;
+            var change = message.change;
 
-            // var sql = `UPDATE restaurant_${message.id} SET category='${change}' WHERE category='${category}'`;
-            // let results = sync_connection.query(sql);
-            // console.log("카테고리 변경 완료");
-            // res.json({status:"GOOD"});
+            var sql = `UPDATE restaurant_${message.id} SET category='${change}' WHERE category='${category}'`;
+            let results = sync_connection.query(sql);
+            console.log("카테고리 변경 완료");
+            res.json({status:"GOOD"});
 
             connection.end();
             break;
@@ -1929,7 +1906,6 @@ app.post('/post', function(req, res, next){
 
         // 피시방 카테고리 변경
         case '00B5':{
-			
             var category = message.category;
             var change = message.change;
             console.log(category,change);
@@ -1938,7 +1914,6 @@ app.post('/post', function(req, res, next){
             console.log("카테고리 변경 완료");
 
             res.json({status:"GOOD"});
-			
             connection.end();
             break;
         }
