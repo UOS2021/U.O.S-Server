@@ -1679,7 +1679,7 @@ app.post('/post', function(req, res, next){
             var description = message.description;
             var conf = message.conf;
             var category_list = JSON.stringify(message.category_list);
-            var image_src = message.image_src
+            var image_src = message.image_src;
 			var menu_id;
 
             // 단품 추가
@@ -1714,9 +1714,22 @@ app.post('/post', function(req, res, next){
         case '00A3':{ 
             var category = message.category;
             var name = message.name;
-            var sql = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
-            let results = sync_connection.query(sql);
+			
+			let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${category}' and name='${name}'; `;
+			let results = sync_connection.query(sql);
+			let delete_num = results[0].num;
+			console.log(delete_num);
+			
+			// 이미지 삭제
+			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+			console.log("이미지 삭제 완료");
+			
+			// 메뉴 삭제
+            var sql2 = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
+            let results2 = sync_connection.query(sql2);
             console.log("메뉴 삭제 완료");
+			
+			
             res.json({status:"GOOD"});
 
             connection.end();
@@ -1726,10 +1739,19 @@ app.post('/post', function(req, res, next){
         // 음식점 카테고리 삭제
         case '00A4':{
             var category = message.category;
+			let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${message.category}'`;
+			let results = sync_connection.query(sql);
+			
+			// 이미지 삭제
+			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+			console.log("이미지 삭제 완료");
 
-            var sql = `DELETE FROM resturant_${message.id} WHERE category='${message.category}'`;
-            let results = sync_connection.query(sql);
+			// 메뉴 삭제
+            var sql2 = `DELETE FROM restaurant_${message.id} WHERE category='${message.category}'`;
+            let results2 = sync_connection.query(sql2);
             console.log("카테고리 삭제 완료");
+			
+			
             res.json({status:"GOOD"});
 
             connection.end();
@@ -1846,7 +1868,7 @@ app.post('/post', function(req, res, next){
             var description = message.description;
             var conf = message.conf;
             var category_list = JSON.stringify(message.category_list);
-            var image_src = message.image_src
+            var image_src = message.image_src;
             var menu_id;
 
             // 단품 추가
@@ -2138,7 +2160,7 @@ app.post('/post', function(req, res, next){
             var description = message.description;
             var conf = message.conf;
             var category_list = JSON.stringify(message.category_list);
-            var image_src = message.image_src
+            var image_src = message.image_src;
             var menu_id;
 
             // 단품 추가
