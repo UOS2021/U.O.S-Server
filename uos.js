@@ -1727,7 +1727,7 @@ app.post('/post', function(req, res, next){
         case '00A4':{
             var category = message.category;
 
-            var sql = `DELETE FROM resturant_${message.id} WHERE category='${message.category}'`;
+            var sql = `DELETE FROM restaurant_${message.id} WHERE category='${message.category}'`;
             let results = sync_connection.query(sql);
             console.log("카테고리 삭제 완료");
             res.json({status:"GOOD"});
