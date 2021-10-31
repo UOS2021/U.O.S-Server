@@ -579,11 +579,12 @@ app.post('/post', function(req, res, next){
 
                                     // 영화 좌석
                                     let code_arr = order.submenu.split('&');
+									let hi = new String();
                                     for(let code of code_arr){
-                                        let sql2 = `UPDATE movie_${message.uospartner_id}_${movie_num} SET state=1 WHERE code='${code}'`;
-                                        let results2 = sync_connection.query(sql2);
-                                        console.log(code + " 좌석 변경 완료");
+                                        hi += "'"+code+"',";
                                     }
+									let sql2 = `UPDATE movie_${message.uospartner_id}_${movie_num} SET state=1 WHERE code IN (${hi.substr(0,hi.length-1)})`;
+                                    let results2 = sync_connection.query(sql2);
                                 }   
                             }
                             var res_data_json = JSON.stringify(res_data_string);
@@ -1678,7 +1679,7 @@ app.post('/post', function(req, res, next){
             var description = message.description;
             var conf = message.conf;
             var category_list = JSON.stringify(message.category_list);
-            var image_src = message.image_src.replace(`data:image/jpeg;base64,`, "");
+            var image_src = message.image_src
 			var menu_id;
 
             // 단품 추가
@@ -1845,7 +1846,7 @@ app.post('/post', function(req, res, next){
             var description = message.description;
             var conf = message.conf;
             var category_list = JSON.stringify(message.category_list);
-            var image_src = message.image_src.replace(`data:image/jpeg;base64,`, "");
+            var image_src = message.image_src
             var menu_id;
 
             // 단품 추가
@@ -2137,7 +2138,7 @@ app.post('/post', function(req, res, next){
             var description = message.description;
             var conf = message.conf;
             var category_list = JSON.stringify(message.category_list);
-            var image_src = message.image_src.replace(`data:image/jpeg;base64,`, "");
+            var image_src = message.image_src
             var menu_id;
 
             // 단품 추가
