@@ -1746,9 +1746,14 @@ app.post('/post', function(req, res, next){
 			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
 			console.log("이미지 삭제 완료");
 
+<<<<<<< HEAD
 			// 메뉴 삭제
             var sql2 = `DELETE FROM restaurant_${message.id} WHERE category='${message.category}'`;
             let results2 = sync_connection.query(sql2);
+=======
+            var sql = `DELETE FROM restaurant_${message.id} WHERE category='${message.category}'`;
+            let results = sync_connection.query(sql);
+>>>>>>> ac2a1d059eed8e97c5a0580ea13788a62bad305e
             console.log("카테고리 삭제 완료");
 			
 			
