@@ -393,7 +393,7 @@ $('#modal_menu_add').on('click', function(){ //메뉴추가하는 스크립트
 	var description = document.getElementById('explaination').value;
 	var conf =document.getElementById('set_conf').value;
 	var category_list = side_menu_list;
-	var preview = document.getElementById('preview').src;
+	var preview = (document.getElementById('preview').src).split('base64,')[1];
 	console.log(preview);
 	if(sessionStorage.getItem("company_type")=='영화관'){
 		let param =
