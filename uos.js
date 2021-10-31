@@ -735,7 +735,6 @@ app.post('/post', function(req, res, next){
                 company_obj.name = company_name;
                 company_obj.type = company_type;
 
-				let sql_seat = "";
                 // 영화 정보 데이터 삽입
                 for (var result of movie_result) {
                     var num = result.num;
@@ -746,8 +745,8 @@ app.post('/post', function(req, res, next){
                     var height = result.height;
 
                     // 좌석 정보 가져오기
-                    sql_seat += `SELECT * FROM movie_${message.uospartner_id}_${num}; `;
-                    // var seat_list = sync_connection.query(sql4);
+                    var sql4 = `SELECT * FROM movie_${message.uospartner_id}_${num}`;
+                    var seat_list = sync_connection.query(sql4);
 
                     var movie = new Object();
                     movie.movie = movieName;
@@ -755,9 +754,9 @@ app.post('/post', function(req, res, next){
                     movie.time = time;
                     movie.width = width;
                     movie.height = height;
-                    // movie.seat_list = seat_list;
+                    movie.seat_list = seat_list;
 
-                    // movie_list.push(movie);
+                    movie_list.push(movie);
                 }
 
                 // 음식 정보 데이터 삽입
@@ -1743,10 +1742,15 @@ app.post('/post', function(req, res, next){
             var category = message.category;
 			let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${message.category}'`;
 			let results = sync_connection.query(sql);
+			console.log(results);
 			
 			// 이미지 삭제
-			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+			for(let result of results){
+				let delete_num = result.num;
+				fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+			}
 			console.log("이미지 삭제 완료");
+			
 
 			// 메뉴 삭제
             var sql2 = `DELETE FROM restaurant_${message.id} WHERE category='${message.category}'`;
@@ -1904,9 +1908,18 @@ app.post('/post', function(req, res, next){
         case '00B3':{ 
             var category = message.category;
             var name = message.name;
+			
+			let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${category}' and name='${name}'; `;
+			let results = sync_connection.query(sql);
+			let delete_num = results[0].num;
+			console.log(delete_num);
+			
+			// 이미지 삭제
+			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+			console.log("이미지 삭제 완료");
 
-            var sql = `DELETE FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
-            let results = sync_connection.query(sql);
+            var sql2 = `DELETE FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
+            let results2 = sync_connection.query(sql2);
             console.log("메뉴 삭제 완료");
             res.json({status:"GOOD"});
 
@@ -1917,9 +1930,20 @@ app.post('/post', function(req, res, next){
         // 피시방 카테고리 삭제
         case '00B4':{
             var category = message.category;
+			
+			let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${message.category}'`;
+			let results = sync_connection.query(sql);
+			console.log(results);
+			
+			// 이미지 삭제
+			for(let result of results){
+				let delete_num = result.num;
+				fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+			}
+			console.log("이미지 삭제 완료");
 
-            var sql = `DELETE FROM pc_${message.id} WHERE category='${category}'`;
-            let results = sync_connection.query(sql);
+            var sql2 = `DELETE FROM pc_${message.id} WHERE category='${category}'`;
+            let results2 = sync_connection.query(sql2);
             console.log("카테고리 삭제 완료");
 
             res.json({status:"GOOD"});
@@ -2196,9 +2220,18 @@ app.post('/post', function(req, res, next){
         case '00C5':{
             var category = message.category;
             var name = message.name;
+			
+			let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${category}' and name='${name}'; `;
+			let results = sync_connection.query(sql);
+			let delete_num = results[0].num;
+			console.log(delete_num);
+			
+			// 이미지 삭제
+			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+			console.log("이미지 삭제 완료");
 
-            var sql = `DELETE FROM movie_${message.id}_food WHERE category='${category}' and name='${name}' `;
-            let results = sync_connection.query(sql);
+            var sql2 = `DELETE FROM movie_${message.id}_food WHERE category='${category}' and name='${name}' `;
+            let results2 = sync_connection.query(sql2);
             console.log("메뉴 삭제 완료");
 
             res.json({status:"GOOD"});
@@ -2209,11 +2242,22 @@ app.post('/post', function(req, res, next){
         // 영화관 음식 카테고리 삭제
         case '00C6':{
             var category = message.category;
+			
+			let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${message.category}'`;
+			let results = sync_connection.query(sql);
+			console.log(results);
+			
+			// 이미지 삭제
+			for(let result of results){
+				let delete_num = result.num;
+				fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+			}
+			console.log("이미지 삭제 완료");
 
-            var sql = `DELETE FROM movie_${message.id}_food WHERE category='${message.category}'`;
-            let results = sync_connection.query(sql);
+            var sql2 = `DELETE FROM movie_${message.id}_food WHERE category='${message.category}'`;
+            let results2 = sync_connection.query(sql2);
             console.log("카테고리 삭제 완료");
-            console.log(results);
+			
             res.json({status:"GOOD"});
             connection.end();
             break;
