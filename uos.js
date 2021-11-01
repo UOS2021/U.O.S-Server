@@ -579,14 +579,12 @@ app.post('/post', function(req, res, next){
                             // 영화관 결제 성공 시 좌석 비활성화
                             for(let order of message.order){
                                 if(order.type == 2){
-									// let movie = order.menu.split('&')[0];
-									// let time = order.menu.split('&')[1];
-									// let theater = order.menu.split('&')[2];
-									let num = order.menu;
+                                    let movie = order.menu.split('&')[0];
+                                    let time = order.menu.split('&')[1];
+									let theater = order.menu.split('&')[2];
 
                                     // 변경할 영화 num 가져오기
-                                    // let sql = `SELECT * FROM movie_${message.uospartner_id} WHERE movie='${movie}' and time='${time}' and theater='${theater}'`;
-									let sql = `SELECT * FROM movie_${message.uospartner_id} WHERE num='${num}'`;
+                                    let sql = `SELECT * FROM movie_${message.uospartner_id} WHERE movie='${movie}' and time='${time}' and theater='${theater}'`;
                                     let results = sync_connection.query(sql);
                                     let movie_num = results[0].num;
 
