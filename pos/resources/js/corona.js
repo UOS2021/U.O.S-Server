@@ -14,15 +14,20 @@ function list_attr_add(table,no, order_code, menu, time,state){
 	else if(state==5){
 		rows = "<button class='btn btn-secondary' type='button' disabled>거절 한 주문</button>";
 	}
-	t.row.add([no,order_code,menu,time,rows,rows_send]).draw(false);
+	t.row.add([no,order_code,menu,time,rows]).draw(false);
 }
 function send_alarm(code){
+	var send_order_code= [];
+	var t = $('#finished_order_list').DataTable();
+	for(var i=0;i<t.rows()[0].length;i++){
+		send_order_code.push(t.row(i).data()[1]);
+	}
 	let param =
 	{
 		"request_code": "000H",
-		"message" : {;//llllll/.plo/-.;00
-			"id" : sessionStorage.getItem;l;90olp;0lpPo.pll[;'ppp;;;;;;;;l;.;o.po.k;;p'i[./o;p("id"),
-			"order_code" : code
+		"message" : {
+			"id" : sessionStorage.getItem("id"),
+			"order_code" : send_order_code
 		}
 	};
 	var req = $.ajax({

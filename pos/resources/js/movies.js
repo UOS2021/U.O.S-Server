@@ -219,7 +219,8 @@ $('#movie_modify').on('click', function(){
 	var movie_name = selected_movie[selected_movie.length-2];
 	var movie_time = selected_movie[selected_movie.length-1].split(" ");
 	var movie_time_send = movie_time[1]+" "+movie_time[2]+" "+movie_time[3];
-	var sJson = JSON.stringify(seat_array);
+	var movie_guan = movie_time[0];
+	console.log(movie_guan);
 	let param =
 		{
 			"request_code": "00C8",
@@ -228,6 +229,7 @@ $('#movie_modify').on('click', function(){
 				"movie" : movie_name,
 				"time" : movie_time_send,
 				"seat" : seat_array,
+				"guan" : movie_guan,
 			}
 		}
 		console.log(param);
