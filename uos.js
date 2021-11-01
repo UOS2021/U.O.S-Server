@@ -1982,6 +1982,7 @@ app.post('/post', function(req, res, next){
             response_data.category_list = category_list;
             response_data.movie_list = movie_list;
 
+			let sql_seat = '';
             // 영화 정보 데이터
             for (var result of movie_result) {
                 var num = result.num;
@@ -1991,9 +1992,8 @@ app.post('/post', function(req, res, next){
                 var width = result.width;
                 var height = result.height;
 
-                // 좌석 정보 가져오기
-                var sql = `SELECT * FROM movie_${message.id}_${num}`;
-                var seat_list = sync_connection.query(sql);
+                // 좌석 쿼리문 저장
+                sql_seat += `SELECT * FROM movie_${message.id}_${num}; `;
 
                 var movie = new Object();
 				movie.num = num;
@@ -2002,10 +2002,15 @@ app.post('/post', function(req, res, next){
                 movie.time = time;
                 movie.width = width;
                 movie.height = height;
-                movie.seat_list = seat_list;
 
                 movie_list.push(movie);
             }
+			// 좌석 정보 가져오기
+			let results_seat = sync_connection.query(sql_seat);			
+			for(let i=0; i<results_seat.length; i++){
+				let result = results_seat[i];
+				movie_list[i].seat_list = result;
+			}
 
             // 음식 정보 데이터
             for (var result of food_result) {
