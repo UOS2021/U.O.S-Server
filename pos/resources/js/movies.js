@@ -96,11 +96,14 @@ function init(){
 							}).appendTo($line);
 							if(seat == 0) // 좌석값이 '0'이면 'enable'스타일 적용
 								$output.addClass('enable');
-							else if(seat == 1){ // 불가능
+							else if(seat == 2){ // 불가능
 								$output.addClass('disable');
 							}
-							else if(seat == 2){ // 예약된좌석
+							else if(seat == 1){ // 예약된좌석
 								$output.addClass('reserved');
+							}
+							else if(seat == -1){ // 복도와 같은 곳
+								$output.addClass('bokdo');
 							}
 						});
 						$line.appendTo(input_id);
@@ -159,8 +162,14 @@ $(document).on('click', '.seat', function (e) {
 		total_seat[selected_index][$(this).attr('data_y')][$(this).attr('data_x')] = 1;
 	}
 	else if($(this).attr('data_state')==1){
-		$(this).attr('data_state',0);
+		$(this).attr('data_state',-1);
 		$(this).removeClass('disable');
+		$(this).addClass('bokdo');
+		total_seat[selected_index][$(this).attr('data_y')][$(this).attr('data_x')] = -1;
+	}
+	else if($(this).attr('data_state')==-1){
+		$(this).attr('data_state',0);
+		$(this).removeClass('bokdo');
 		$(this).addClass('enable');
 		total_seat[selected_index][$(this).attr('data_y')][$(this).attr('data_x')] = 0;
 	}

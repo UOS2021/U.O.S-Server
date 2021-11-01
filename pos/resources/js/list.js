@@ -4,6 +4,7 @@ var cnt_finish;
 var state0_num = 0;
 var state4_num = 0;
 var ee;
+var test;
 
 // 처음 리스트 받아오기
 function init(){
@@ -27,6 +28,8 @@ function init(){
 		
 		var i;
 		var order_array = data.message.order_array;
+		test=order_array;
+		console.log(test);
 		for(i=0;i<order_array.length;i++){
 			var max_name = "";
 			var max_price = -1;
