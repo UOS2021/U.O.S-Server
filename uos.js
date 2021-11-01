@@ -552,7 +552,7 @@ app.post('/post', function(req, res, next){
                 connection.query(select_query, message.uospartner_id, function (err1, result1, fields){
                     var company_name = result1[0].company_name;
                     var insert_text = "";
-                    if(company_name == "영화관"){
+                    if(result1[0].company_type == "영화관"){
                         insert_text = "INSERT INTO `order_buffer` (`state`, `date`, `customer_id`, `uospartner_id`, `company_name`, `card`, `orderlist`, `price`) "
                         + "VALUES ( 3, '" + now_date + "','" + message.customer_id + "','" + message.uospartner_id + "','" + company_name + "','" + JSON.stringify(message.card) + "','" + JSON.stringify(message.order) + "',"+price+");";
                     }
@@ -757,8 +757,8 @@ app.post('/post', function(req, res, next){
                     var height = result.height;
 
                     // 좌석 정보 가져오기
-                    sql_seat += `SELECT * FROM movie_${message.uospartner_id}_${num}; `;
-                    // var seat_list = sync_connection.query(sql4);
+                    var sql4 = `SELECT * FROM movie_${message.uospartner_id}_${num}; `;
+                    var seat_list = sync_connection.query(sql4);
 
                     var movie = new Object();
                     movie.movie = movieName;
@@ -766,9 +766,9 @@ app.post('/post', function(req, res, next){
                     movie.time = time;
                     movie.width = width;
                     movie.height = height;
-                    // movie.seat_list = seat_list;
+                    movie.seat_list = seat_list;
 
-                    // movie_list.push(movie);
+                    movie_list.push(movie);
                 }
 
                 // 음식 정보 데이터 삽입
@@ -1530,68 +1530,59 @@ app.post('/post', function(req, res, next){
             break;
         }
 
+        // 코로나 알림 보내기
         case '000H' : {
-            var select_query1 = "select * from order_buffer where order_code=?";
-            var uospartner_id = "";
-            var customer_id = "";
-            var date = ""
 
-            var select_query2 = "select * from uospartner_account where id=?";
-            var company_name = "";
-            var company_address = "";
+            var order_code_arr = message.order_code;
+            var where_sql1 = 'order_code=' + (message.order_code)[0];
+            for(var i = 1; i < order_code_arr.length; i++){
+                where_sql1 += (' or order_code=' + (message.order_code)[i]);
+            }
+            var select_query1 = "select uospartner_id, customer_id, date from order_buffer where " + where_sql1;
+            let results1 = sync_connection.query(select_query1);
 
-            var select_query3 = "select name, fcm_token from customer_account where id=?";
+            var company_name_arr = new Array();
+            var company_address_arr = new Array();
 
-            connection.query(select_query1, message.order_code, function(err, result, fields){
-                if(err){
-                    console.log("sql질의 에러1");
-                }
-                else{
-                    uospartner_id = result[0].uospartner_id;
-                    customer_id = result[0].customer_id;
-                    date = result[0].date;
+            var customer_name_arr = new Array();
+            var fcm_token_arr = new Array();
+            for(var i = 0; i < results1.length; i++){
+                var select_query2 = "select company_name, company_address from uospartner_account where id='" + results1[i].uospartner_id + "'";
+                let results2 = sync_connection.query(select_query2);
+                company_name_arr.push(results2[0].company_name);
+                company_address_arr.push(results2[0].company_address);
+                
+                var select_query3 = "select name, fcm_token from customer_account where id='" + results1[i].customer_id + "'";
+                let results3 = sync_connection.query(select_query3);
+                customer_name_arr.push(results3[0].name);
+                fcm_token_arr.push(results3[0].fcm_token);
+            }
 
-                    connection.query(select_query2, uospartner_id, function(err, result, fields){
-                        if(err){
-                            console.log("sql질의 에러2");
-                        }
-                        else{
-                            company_name = result[0].company_name;
-                            company_address = result[0].company_address;
-                        }
-                    });
+            for(var i = 0; i < results1.length; i++){
+                var send_message_string = "[코로나19 알림] " + results1[i].date + " 경 " + company_name_arr[i] + "에 방문하셨던 "
+                + customer_name_arr[i] + "님은 코로나19 확진자와 동선이 겹쳤기 때문에 신속히 가까운 보건소에서 검사바랍니다.";
+                console.log(send_message_string);
+                var send_message = {
+                    to: fcm_token_arr[i],
+                    collapse_key: "",
+                    data: {
+                        "response_code": "0029",
+                        "company_name": company_name_arr[i],
+                        "message": send_message_string
+                    }
+                };
 
-                    connection.query(select_query3, customer_id, function(err, result, fields){
-                        if(err){
-                            console.log("sql질의 에러3");
-                        }
-                        else{
-                            var send_message_string = "[코로나19 알림] " + date + " 경 " + company_name + "에 방문하셨던 "
-                            + result[0].name + "님은 코로나19 확진자와 동선이 겹쳤기 때문에 신속히 가까운 보건소에서 검사바랍니다.";
-                            var send_message = {
-                                to: result[0].fcm_token,
-                                collapse_key: "",
-                                data: {
-                                    "response_code": "0029",
-                                    "company_name": company_name,
-                                    "message": send_message_string
-                                }
-                            };
+                fcm.send(send_message, function(err, response) {
+                    if (err) {
+                        console.log("Something has gone wrong");
+                    } else {
+                        console.log("Successfully sent with response: ", response);
+                    }
+                });
+            }
 
-                            fcm.send(send_message, function(err, response) {
-                                if (err) {
-                                    console.log("Something has gone wrong");
-                                } else {
-                                    console.log("Successfully sent with response: ", response);
-                                }
-                            });
-                        }
-                    });
-                }
-
-                connection.end();
-            });
-
+            connection.end();
+    
         }
         break;
 
@@ -1733,11 +1724,11 @@ app.post('/post', function(req, res, next){
             let delete_num = results[0].num;
             console.log(delete_num);
 
-			// 이미지 삭제
-			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
-			console.log("이미지 삭제 완료");
-			
-			// 메뉴 삭제
+            // 이미지 삭제
+            fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+            console.log("이미지 삭제 완료");
+            
+            // 메뉴 삭제
             var sql2 = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
             let results2 = sync_connection.query(sql2);
             console.log("메뉴 삭제 완료");
@@ -1755,11 +1746,11 @@ app.post('/post', function(req, res, next){
             let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${message.category}'`;
             let results = sync_connection.query(sql);
 
-			// 이미지 삭제
-			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
-			console.log("이미지 삭제 완료");
+            // 이미지 삭제
+            fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+            console.log("이미지 삭제 완료");
 
-			// 메뉴 삭제
+            // 메뉴 삭제
             var sql2 = `DELETE FROM restaurant_${message.id} WHERE category='${message.category}'`;
             let results2 = sync_connection.query(sql2);
             console.log("카테고리 삭제 완료");
@@ -1772,14 +1763,14 @@ app.post('/post', function(req, res, next){
 
         // 음식점 카테고리 변경
         case '00A5':{
-           menu.changeCategory(req, res);
-            // var category = message.category;
-            // var change = message.change;
+            //menu.changeCategory(req, res);
+            var category = message.category;
+            var change = message.change;
 
-            // var sql = `UPDATE restaurant_${message.id} SET category='${change}' WHERE category='${category}'`;
-            // let results = sync_connection.query(sql);
-            // console.log("카테고리 변경 완료");
-            // res.json({status:"GOOD"});
+            var sql = `UPDATE restaurant_${message.id} SET category='${change}' WHERE category='${category}'`;
+            let results = sync_connection.query(sql);
+            console.log("카테고리 변경 완료");
+            res.json({status:"GOOD"});
 
             connection.end();
             break;
@@ -2254,13 +2245,13 @@ app.post('/post', function(req, res, next){
             let results = sync_connection.query(sql);
             let movie_num = results[0].num;
 
-			// 영화 좌석 변경
-			let sql2 = ``;
-			seat_arr.forEach(function(seat) {
-				sql2 += "UPDATE movie_"+message.id+"_"+movie_num+" SET state = '" + seat.state + "' WHERE code = '" + seat.code + "'; ";
-			})
-			let results2 = sync_connection.query(sql2);
-			console.log("좌석 변경 완료");
+            // 영화 좌석 변경
+            let sql2 = ``;
+            seat_arr.forEach(function(seat) {
+                sql2 += "UPDATE movie_"+message.id+"_"+movie_num+" SET state = '" + seat.state + "' WHERE code = '" + seat.code + "'; ";
+            })
+            let results2 = sync_connection.query(sql2);
+            console.log("좌석 변경 완료");
 
 
             res.json({status:"GOOD"});
