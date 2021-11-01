@@ -73,6 +73,9 @@ function init(){
 				}
 			}
 			var menu_name;
+			if(eval(order_array[i].order_list)[0].type == 2){
+				max_name = (eval(order_array[i].order_list)[0].menu).split("&")[0] + "("+(eval(order_array[i].order_list)[0].menu).split("&")[1]+")";
+			};
 			if(eval(order_array[i].order_list).length == 1){
 				if(eval(order_array[i].order_list)[0].type==1)
 					menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
@@ -88,7 +91,25 @@ function init(){
 		
 	});
 }
-
+$.fn.dataTable.ext.search.push(
+	function(settings, data, dataIndex){
+		// var min = Date.parse($('#fromDate').val());
+		// var max = Date.parse($('#toDate').val());
+		// console.log(min);
+		// var targetDate = Date.parse(data[3]);
+		var min = new Date($('#fromDate').val());
+		var max = new Date($('#toDate').val());
+		console.log(min);
+		var targetDate = new Date(data[3]);
+		if( (isNaN(min) && isNaN(max) ) || 
+			(isNaN(min) && targetDate <= max )|| 
+			( min <= targetDate && isNaN(max) ) ||
+			( targetDate >= min && targetDate <= max) ){ 
+				return true;
+			}
+		return false;
+	}
+)
 $(document).ready(function(){
     	
 	init();
@@ -106,6 +127,14 @@ $(document).ready(function(){
 			search : '검색 ->'
 		}
 	});
+	
+	
+	var t = $('#finished_order_list').DataTable();
+	$('#toDate, #fromDate').unbind().bind('keyup',function(){
+    	t.draw();
+	})
+
+
 	if(sessionStorage.getItem("company_type")=="영화관"){
 		var newa= "<a class='nav-link' href='/pos/movies'><div class='sb-nav-link-icon'><i class='fas fa-tachometer-alt'></i></div>영화 관리</a>"
 		$('#nav_side').append(newa);
