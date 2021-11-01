@@ -1723,14 +1723,7 @@ app.post('/post', function(req, res, next){
 
         //음식점 메뉴 삭제
         case '00A3':{ 
-            // var category = message.category;
-            // var name = message.name;
 			let num = message.num;
-
-            // let sql = `SELECT * FROM restaurant_${message.id} WHERE num='${num}'; `;
-            // let results = sync_connection.query(sql);
-            // let delete_num = results[0].num;
-            // console.log(delete_num);
 
             // 이미지 삭제
             fs.unlinkSync(`./assets/images/${message.id}/${num}.jpg`)
@@ -1755,7 +1748,10 @@ app.post('/post', function(req, res, next){
             let results = sync_connection.query(sql);
 
             // 이미지 삭제
-            fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+			for(let result of results){
+				let num = result.num;
+            	fs.unlinkSync(`./assets/images/${message.id}/${num}.jpg`)
+			}
             console.log("이미지 삭제 완료");
 
             // 메뉴 삭제
