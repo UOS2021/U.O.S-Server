@@ -581,9 +581,10 @@ app.post('/post', function(req, res, next){
                                 if(order.type == 2){
                                     let movie = order.menu.split('&')[0];
                                     let time = order.menu.split('&')[1];
+									let theater = order.menu.split('&')[2];
 
                                     // 변경할 영화 num 가져오기
-                                    let sql = `SELECT * FROM movie_${message.uospartner_id} WHERE movie='${movie}' and time='${time}'`;
+                                    let sql = `SELECT * FROM movie_${message.uospartner_id} WHERE movie='${movie}' and time='${time}' and theater='${theater}'`;
                                     let results = sync_connection.query(sql);
                                     let movie_num = results[0].num;
 
@@ -2255,7 +2256,7 @@ app.post('/post', function(req, res, next){
             let movie_num = results[0].num;
 			
 			// 그새 팔렸는지 체크
-			let sql2 = `SELECT * FROM movie_${message.id}_${movie_num} WHERE movie='${movie}' and time='${time}'; `;
+			let sql2 = `SELECT * FROM movie_${message.id}_${movie_num}; `;
 			let results2 = sync_connection.query(sql2);
 			for(let result2 of results2){
 				let state = result2.state;
@@ -2264,7 +2265,7 @@ app.post('/post', function(req, res, next){
 					let seat_code = seat.code;
 					let seat_state = seat.state;
 					if(seat_code == code && code == 1){
-						res.json({status:"Fail"});
+						res.json({status:'Fail'});
 						connection.end();
 						break;
 					}
