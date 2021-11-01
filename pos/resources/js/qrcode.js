@@ -1,6 +1,14 @@
-
+function logout(){
+	sessionStorage.setItem("id",'');
+	sessionStorage.setItem("company_type",'');
+	location.href = "/";
+}
 //초기 시작하는 부분
 $(document).ready(function(){ 
+	if(!sessionStorage.getItem("id")){
+		alert("로그인이 필요합니다.");
+		location.href="/";
+	}
 	var id = sessionStorage.getItem("id");
 	document.getElementById("no_qr").style.display = "none";
 	document.getElementById("qrcode").src = "/assets/qrcode/"+id+'.jpg';

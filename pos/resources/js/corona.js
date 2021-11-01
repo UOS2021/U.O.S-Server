@@ -1,3 +1,9 @@
+var alarm_code = [];
+function logout(){
+	sessionStorage.setItem("id",'');
+	sessionStorage.setItem("company_type",'');
+	location.href = "/";
+}
 function list_attr_add(table,no, order_code, menu, time,state){
 	// var newtr = "<tr><td>"+no+"</td>"+"<td>"+order_code+"</td>"+"<td>"+menu+"</td>"+"<td>"+time+"</td></tr>";
 	// $(table).append(newtr);
@@ -17,17 +23,12 @@ function list_attr_add(table,no, order_code, menu, time,state){
 	t.row.add([no,order_code,menu,time,rows]).draw(false);
 }
 function send_alarm(code){
-	var send_order_code= [];
-	var t = $('#finished_order_list').DataTable();
-	for(var i=0;i<t.rows()[0].length;i++){
-		send_order_code.push(t.row(i).data()[1]);
-	}
 	let param =
 	{
 		"request_code": "000H",
 		"message" : {
 			"id" : sessionStorage.getItem("id"),
-			"order_code" : send_order_code
+			"order_code" : alarm_code
 		}
 	};
 	var req = $.ajax({
@@ -104,14 +105,18 @@ $.fn.dataTable.ext.search.push(
 		if( (isNaN(min) && isNaN(max) ) || 
 			(isNaN(min) && targetDate <= max )|| 
 			( min <= targetDate && isNaN(max) ) ||
-			( targetDate >= min && targetDate <= max) ){ 
+			( targetDate >= min && targetDate <= max) ){
+				alarm_code.push(data[1]);
 				return true;
 			}
 		return false;
 	}
 )
 $(document).ready(function(){
-    	
+    if(!sessionStorage.getItem("id")){
+		alert("로그인이 필요합니다.");
+		location.href="/";
+	}	
 	init();
 	$('#finished_order_list').DataTable({
 		language : {
@@ -131,6 +136,7 @@ $(document).ready(function(){
 	
 	var t = $('#finished_order_list').DataTable();
 	$('#toDate, #fromDate, #toTime, #fromTime').unbind().bind('change',function(){
+		alarm_code = [];
     	t.draw();
 	})
 

@@ -5,7 +5,11 @@ var state0_num = 0;
 var state4_num = 0;
 var ee;
 var test;
-
+function logout(){
+	sessionStorage.setItem("id",'');
+	sessionStorage.setItem("company_type",'');
+	location.href = "/";
+}
 // 처음 리스트 받아오기
 function init(){
 	cnt_now = 0;
@@ -329,7 +333,10 @@ function repeat_request000B(){
 	});
 }
 $(document).ready(function(){
-    	
+    if(!sessionStorage.getItem("id")){
+		alert("로그인이 필요합니다.");
+		location.href="/";
+	}
 	// request 000B 1초마다 반복
 	init();
 	setInterval(repeat_request000B, 1000);

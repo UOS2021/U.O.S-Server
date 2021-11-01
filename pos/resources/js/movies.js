@@ -4,6 +4,11 @@ var test;
 var selected_movie = [];
 var selected_index=0;
 var movie_nums = [];
+function logout(){
+	sessionStorage.setItem("id",'');
+	sessionStorage.setItem("company_type",'');
+	location.href = "/";
+}
 function click_movie(index){
 	selected_index=index;
 	console.log(selected_index);
@@ -24,7 +29,7 @@ function init(){
 	});
 	req.done(function(data, status){
 		var i,j,now_theater,now_movie,movie_rows,content_rows;
-		console.log(data.movie_list);//받는 data	
+		console.log(data);//받는 data	
 		test=data.movie_list;
 		now_movie = data.movie_list[0].movie;
 		now_theater = data.movie_list[0].theater;
@@ -242,8 +247,15 @@ $('#movie_modify').on('click', function(){
 			dataType : 'json'
 		});
 		req.done(function(data, status){
-			alert("영화 업데이트");
-			location.reload();
+			if(data.state == 'Fail'){
+				alert("수정한 좌석이 이미 예약되었습니다.");
+				location.reload();
+			}
+			else{
+				alert("영화 업데이트");
+				location.reload();
+			}
+			
 		});
 });
 
@@ -300,6 +312,10 @@ $('input[type="file"]').change(function(e) {
 });
 
 $(document).ready(function(){	
+	if(!sessionStorage.getItem("id")){
+		alert("로그인이 필요합니다.");
+		location.href="/";
+	}
 	if(sessionStorage.getItem("company_type")=="영화관"){
 		var newa= "<a class='nav-link' href='/pos/movies'><div class='sb-nav-link-icon'><i class='fas fa-tachometer-alt'></i></div>영화 관리</a>"
 		$('#nav_side').append(newa);

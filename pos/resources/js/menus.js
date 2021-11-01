@@ -1,5 +1,10 @@
 var test;
 var selected_category;
+function logout(){
+	sessionStorage.setItem("id",'');
+	sessionStorage.setItem("company_type",'');
+	location.href = "/";
+}
 function menu_del(num){
 	if(sessionStorage.getItem("company_type")=='영화관'){
 		var con_test = confirm("선택한 메뉴를 삭제하시겠습니까?");
@@ -754,6 +759,10 @@ $('input[type="file"]').change(function(e) {
 });
 
 $(document).ready(function(){
+	if(!sessionStorage.getItem("id")){
+		alert("로그인이 필요합니다.");
+		location.href="/";
+	}
 	if(sessionStorage.getItem("company_type")=="영화관"){
 		var newa= "<a class='nav-link' href='/pos/movies'><div class='sb-nav-link-icon'><i class='fas fa-tachometer-alt'></i></div>영화 관리</a>"
 		$('#nav_side').append(newa);
