@@ -3,7 +3,7 @@ var origin_seat = [];
 var test;
 var selected_movie = [];
 var selected_index=0;
-
+var movie_nums = [];
 function click_movie(index){
 	selected_index=index;
 	console.log(selected_index);
@@ -45,7 +45,7 @@ function init(){
 			movie_rows+="<a class='nav-link dropdown-toggle' data-bs-toggle='dropdown' href='#' role='button' aria-expanded='false'>"+movie_names[i]+"</a>";
 			movie_rows+="<ul class='dropdown-menu'>";
 			for(j=0;j<data.movie_list.length;j++){
-					
+				movie_nums.push(data.movie_list[j].num);
 				if(data.movie_list[j].movie==movie_names[i]){
 					if(j==0){
 						content_rows = "<div class = 'tab-pane mt-4 active' id='"+inko.ko2en(data.movie_list[j].movie.replace(/\s/gi, ""))+j+"' role = 'tabpanel' aria-labelledby='"+inko.ko2en(data.movie_list[j].movie)+j+"_tab'>";
@@ -184,15 +184,12 @@ $('#movie_delete').on('click', function(){
 	var movie_time = selected_movie[selected_movie.length-1].split(" ");
 	var movie_time_send = movie_time[1]+" "+movie_time[2]+" "+movie_time[3];
 	var movie_guan = movie_time[0];
-	console.log(movie_time_send);
 	let param =
 		{
 			"request_code": "00C3",
 			"message" : {
 				"id" : sessionStorage.getItem("id"),
-				"movie" : movie_name,
-				"time" : movie_time_send,
-				"guan" : movie_guan,
+				"num" : movie_nums[selected_index],
 			}
 		}
 	console.log(param);
@@ -210,9 +207,6 @@ $('#movie_delete').on('click', function(){
 var ess;
 $('#movie_modify').on('click', function(){
 	var send_movie_data = total_seat[selected_index];
-	console.log(send_movie_data);
-	console.log("----------------------");
-	console.log(origin_seat[selected_index]);
 	var seat_array = new Array();
 	for(var i =0;i<send_movie_data.length;i++){
 		var alpha = String.fromCharCode(65+i); 
@@ -231,16 +225,13 @@ $('#movie_modify').on('click', function(){
 	var movie_time = selected_movie[selected_movie.length-1].split(" ");
 	var movie_time_send = movie_time[1]+" "+movie_time[2]+" "+movie_time[3];
 	var movie_guan = movie_time[0];
-	console.log(movie_guan);
 	let param =
 		{
 			"request_code": "00C8",
 			"message" : {
 				"id" : sessionStorage.getItem("id"),
-				"movie" : movie_name,
-				"time" : movie_time_send,
 				"seat" : seat_array,
-				"guan" : movie_guan,
+				"num" : movie_nums[selected_index],
 			}
 		}
 		console.log(param);

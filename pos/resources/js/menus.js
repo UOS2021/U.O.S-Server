@@ -1,6 +1,6 @@
 var test;
 var selected_category;
-function menu_del(del_menu){
+function menu_del(num){
 	if(sessionStorage.getItem("company_type")=='영화관'){
 		var con_test = confirm("선택한 메뉴를 삭제하시겠습니까?");
 		if(con_test){
@@ -10,7 +10,7 @@ function menu_del(del_menu){
 				"message" : {
 					"id" : sessionStorage.getItem("id"),
 					"category" : selected_category,
-					"name" : del_menu
+					"num" : num,
 				}
 			}
 			var req = $.ajax({
@@ -34,7 +34,7 @@ function menu_del(del_menu){
 				"message" : {
 					"id" : sessionStorage.getItem("id"),
 					"category" : selected_category,
-					"name" : del_menu
+					"num" : num,
 				}
 			}
 			var req = $.ajax({
@@ -58,7 +58,7 @@ function menu_del(del_menu){
 				"message" : {
 					"id" : sessionStorage.getItem("id"),
 					"category" : selected_category,
-					"name" : del_menu
+					"num" : num,
 				}
 			}
 			var req = $.ajax({
@@ -109,7 +109,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+"구성품 : "+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del(${data[i].set_list[k].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -120,7 +120,7 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del(${data[i].product_list[j].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -137,7 +137,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del(${data[i].set_list[k].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -148,7 +148,7 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger'onclick='menu_del(${data[i].product_list[j].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -200,7 +200,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del(${data[i].set_list[k].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -211,7 +211,7 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del(${data[i].product_list[j].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -228,7 +228,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del(${data[i].set_list[k].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -239,7 +239,7 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del(${data[i].product_list[j].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -291,7 +291,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del(${data[i].set_list[k].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -302,7 +302,7 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del(${data[i].product_list[j].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
@@ -319,7 +319,7 @@ function init(){
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
-							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].set_list[k].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+							content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del(${data[i].set_list[k].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					for(j=0;j<data[i].product_list.length;j++){
@@ -330,7 +330,7 @@ function init(){
 						content_row+="<h5 class='card-subtitle' style='height:2rem'>"+data[i].product_list[j].price+"</h5>";
 						content_row+="<p class='card-text'>"+data[i].product_list[j].desc+"</p>";
 						content_row+="</div>";
-						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del("${data[i].product_list[j].name.replace(/\s/gi, "")}")' style='width:100%'>삭제</button>`;
+						content_row+=`<button type='button' class='btn btn-danger' onclick='menu_del(${data[i].product_list[j].num})' style='width:100%'>삭제</button>`;
 						content_row+="</div>";
 					}
 					content_row+="</div>";
