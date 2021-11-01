@@ -1596,6 +1596,7 @@ app.post('/post', function(req, res, next){
             var category_list = new Array();
 
             for (var result of results) {
+				var num = result.num;
                 var categoryName = result.category;
                 var type = result.type;
                 var name = result.name;
@@ -1614,6 +1615,7 @@ app.post('/post', function(req, res, next){
                 if (index != -1) {
                     if (type == "product") {
                         var product = new Object();
+						product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -1622,6 +1624,7 @@ app.post('/post', function(req, res, next){
                         category_list[index].product_list.push(product);
                     } else if (type == "set") {
                         var set = new Object();
+						set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -1646,6 +1649,7 @@ app.post('/post', function(req, res, next){
                     // 단품
                     if (type == "product") {
                         var product = new Object();
+						product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -1656,6 +1660,7 @@ app.post('/post', function(req, res, next){
                     // 세트
                     else if (type == "set") { 
                         var set = new Object();
+						set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -1717,20 +1722,21 @@ app.post('/post', function(req, res, next){
 
         //음식점 메뉴 삭제
         case '00A3':{ 
-            var category = message.category;
-            var name = message.name;
+            // var category = message.category;
+            // var name = message.name;
+			let num = message.num;
 
-            let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${category}' and name='${name}'; `;
-            let results = sync_connection.query(sql);
-            let delete_num = results[0].num;
-            console.log(delete_num);
+            // let sql = `SELECT * FROM restaurant_${message.id} WHERE num='${num}'; `;
+            // let results = sync_connection.query(sql);
+            // let delete_num = results[0].num;
+            // console.log(delete_num);
 
             // 이미지 삭제
-            fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
+            fs.unlinkSync(`./assets/images/${message.id}/${num}.jpg`)
             console.log("이미지 삭제 완료");
             
             // 메뉴 삭제
-            var sql2 = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
+            var sql2 = `DELETE FROM restaurant_${message.id} WHERE num='${num}' `;
             let results2 = sync_connection.query(sql2);
             console.log("메뉴 삭제 완료");
 
@@ -1786,6 +1792,7 @@ app.post('/post', function(req, res, next){
             var category_list = new Array();
 
             for (var result of results) {
+				var num = result.num;
                 var categoryName = result.category;
                 var type = result.type;
                 var name = result.name;
@@ -1804,6 +1811,7 @@ app.post('/post', function(req, res, next){
                 if (index != -1) {
                     if (type == "product") {
                         var product = new Object();
+						product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -1812,6 +1820,7 @@ app.post('/post', function(req, res, next){
                         category_list[index].product_list.push(product);
                     } else if (type == "set") {
                         var set = new Object();
+						set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -1836,6 +1845,7 @@ app.post('/post', function(req, res, next){
                     // 단품
                     if (type == "product") {
                         var product = new Object();
+						product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -1846,6 +1856,7 @@ app.post('/post', function(req, res, next){
                     // 세트
                     else if (type == "set") { 
                         var set = new Object();
+						set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -1905,12 +1916,19 @@ app.post('/post', function(req, res, next){
 
         // 피시방 메뉴 삭제
         case '00B3':{ 
-            var category = message.category;
-            var name = message.name;
-
-            var sql = `DELETE FROM pc_${message.id} WHERE category='${category}' and name='${name}' `;
-            let results = sync_connection.query(sql);
+            // var category = message.category;
+            // var name = message.name;
+			let num = message.num;
+			
+			// 이미지 삭제
+            fs.unlinkSync(`./assets/images/${message.id}/${num}.jpg`)
+            console.log("이미지 삭제 완료");
+            
+            // 메뉴 삭제
+            var sql2 = `DELETE FROM pc_${message.id} WHERE num='${num}' `;
+            let results2 = sync_connection.query(sql2);
             console.log("메뉴 삭제 완료");
+			
             res.json({status:"GOOD"});
 
             connection.end();
@@ -1977,6 +1995,7 @@ app.post('/post', function(req, res, next){
                 var seat_list = sync_connection.query(sql);
 
                 var movie = new Object();
+				movie.num = num;
                 movie.movie = movieName;
                 movie.theater = theater;
                 movie.time = time;
@@ -1989,6 +2008,7 @@ app.post('/post', function(req, res, next){
 
             // 음식 정보 데이터
             for (var result of food_result) {
+				var num = result.num;
                 var categoryName = result.category;
                 var type = result.type;
                 var name = result.name;
@@ -2009,6 +2029,7 @@ app.post('/post', function(req, res, next){
 
                     if (type == "product") {
                         var product = new Object();
+						product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -2017,6 +2038,7 @@ app.post('/post', function(req, res, next){
                         category_list[index].product_list.push(product);
                     } else if (type == "set") {
                         var set = new Object();
+						set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -2041,6 +2063,7 @@ app.post('/post', function(req, res, next){
                     // 단품
                     if (type == "product") {
                         var product = new Object();
+						product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -2051,6 +2074,7 @@ app.post('/post', function(req, res, next){
                     // 세트
                     else if (type == "set") { 
                         var set = new Object();
+						set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -2135,16 +2159,17 @@ app.post('/post', function(req, res, next){
 
         // 영화관 영화 삭제
         case '00C3':{
-            var movie = message.movie;
-            var time = message.time;
-			let theater = message.theater;
+			// var movie = message.movie;
+			// var time = message.time;
+			// let theater = message.theater;
+			let num = message.num;
 
-            var sql = `SELECT * FROM movie_${message.id} WHERE time='${time}' and movie='${movie}' and theater='${theater}'`;
+            var sql = `SELECT * FROM movie_${message.id} WHERE num='${num}'`;
             let results = sync_connection.query(sql);
             var movie_num = results[0].num;
             console.log(num);
 
-            var sql1 = `DELETE FROM movie_${message.id} WHERE time='${time}' and movie='${movie}' and theater='${theater}'`;
+            var sql1 = `DELETE FROM movie_${message.id} WHERE num='${num}'`;
             let results1 = sync_connection.query(sql1);
             console.log(results1);
             console.log('영화 삭제 완료');
@@ -2198,10 +2223,11 @@ app.post('/post', function(req, res, next){
 
         // 영화관 음식 메뉴 삭제
         case '00C5':{
-            var category = message.category;
-            var name = message.name;
+            // var category = message.category;
+            // var name = message.name;
+			let num = message.num;
 
-            var sql = `DELETE FROM movie_${message.id}_food WHERE category='${category}' and name='${name}' `;
+            var sql = `DELETE FROM movie_${message.id}_food WHERE num='${num}' `;
             let results = sync_connection.query(sql);
             console.log("메뉴 삭제 완료");
 
@@ -2237,13 +2263,14 @@ app.post('/post', function(req, res, next){
         }
         // 영화관 영화 좌석 업데이트
         case '00C8':{
-            let movie = message.movie;
-            let time = message.time;
-			let theater = message.theater;
+			// let movie = message.movie;
+			// let time = message.time;
+			// let theater = message.theater;
+			let num = message.num;
             let seat_arr = message.seat;
 
             // 변경할 영화 num 가져오기
-            let sql = `SELECT * FROM movie_${message.id} WHERE movie='${movie}' and time='${time}' and theater='${theater}'`;
+            let sql = `SELECT * FROM movie_${message.id} WHERE num='${num}'`;
             let results = sync_connection.query(sql);
             let movie_num = results[0].num;
 			
