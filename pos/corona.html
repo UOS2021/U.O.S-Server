@@ -54,10 +54,32 @@
         <main>
             <div class="container-fluid px-4" >
                 <h1 class="mt-4 uof-h1">코로나 관리</h1>
-				
+				<table border="0" cellspacing="5" cellpadding="5">
+					<tbody>
+						<tr>
+							<h2>
+								날짜 검색
+							</h2>
+						</tr>
+						<br>
+						<tr>
+							처음 날짜 및 시간
+						</tr>
+						<tr>
+							<input type="date" class="form-control" id="fromDate">
+                    		<input type="time" class="form-control" id="fromTime">
+						</tr>
+						<br>
+						<tr>
+							마지막 날짜 및 시간
+						</tr>
+						<tr>
+							<input type="date" class="form-control" id="toDate">
+                    		<input type="time" class="form-control" id="toTime">
+						</tr>
+					</tbody>
+				</table>
 				<div class="card mb-4" >
-					<input type="date" class="form-control" id="fromDate" > 
-					<input type="date" class="form-control" id="toDate" >
                     <div class="card-header" >
                         <i class="fas fa-table me-1"></i>
                         완료된 주문

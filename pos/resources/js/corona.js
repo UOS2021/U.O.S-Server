@@ -97,8 +97,8 @@ $.fn.dataTable.ext.search.push(
 		// var max = Date.parse($('#toDate').val());
 		// console.log(min);
 		// var targetDate = Date.parse(data[3]);
-		var min = new Date($('#fromDate').val());
-		var max = new Date($('#toDate').val());
+		var min = new Date($("#fromDate").val() + " "+ $('#fromTime').val());
+		var max = new Date($("#toDate").val() + " "+ $('#toTime').val());
 		console.log(min);
 		var targetDate = new Date(data[3]);
 		if( (isNaN(min) && isNaN(max) ) || 
@@ -130,7 +130,7 @@ $(document).ready(function(){
 	
 	
 	var t = $('#finished_order_list').DataTable();
-	$('#toDate, #fromDate').unbind().bind('keyup',function(){
+	$('#toDate, #fromDate, #toTime, #fromTime').unbind().bind('change',function(){
     	t.draw();
 	})
 
