@@ -155,17 +155,17 @@ $('#modal_open').on('click', function(){
 });
 $(document).on('click', '.seat', function (e) {
 	console.log($(this).attr('data_y')+","+$(this).attr('data_x'));
-	if($(this).attr('data_state')==0){
-		$(this).attr('data_state',1);
-		$(this).addClass('disable');
-		$(this).removeClass('enable');
-		total_seat[selected_index][$(this).attr('data_y')][$(this).attr('data_x')] = 1;
-	}
-	else if($(this).attr('data_state')==1){
+	if($(this).attr('data_state')==2){
 		$(this).attr('data_state',-1);
-		$(this).removeClass('disable');
 		$(this).addClass('bokdo');
+		$(this).removeClass('disable');
 		total_seat[selected_index][$(this).attr('data_y')][$(this).attr('data_x')] = -1;
+	}
+	else if($(this).attr('data_state')==0){
+		$(this).attr('data_state',2);
+		$(this).removeClass('enable');
+		$(this).addClass('disable');
+		total_seat[selected_index][$(this).attr('data_y')][$(this).attr('data_x')] = 2;
 	}
 	else if($(this).attr('data_state')==-1){
 		$(this).attr('data_state',0);
