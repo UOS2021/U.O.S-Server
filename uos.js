@@ -522,6 +522,7 @@ app.post('/post', function(req, res, next){
             break;
         }
 
+        // 주문
         case '0010' : {
             var res_data_string ='';
             var check = true;
@@ -550,8 +551,16 @@ app.post('/post', function(req, res, next){
                 var select_query = "select company_name, company_type from uospartner_account where id=?;";
                 connection.query(select_query, message.uospartner_id, function (err1, result1, fields){
                     var company_name = result1[0].company_name;
-                    var insert_text = "INSERT INTO `order_buffer` (`state`, `date`, `customer_id`, `uospartner_id`, `company_name`, `card`, `orderlist`, `price`) "
-                    + "VALUES ( 0, '" + now_date + "','" + message.customer_id + "','" + message.uospartner_id + "','" + company_name + "','" + JSON.stringify(message.card) + "','" + JSON.stringify(message.order) + "',"+price+");";
+                    var insert_text = "";
+                    if(company_name == "영화관"){
+                        insert_text = "INSERT INTO `order_buffer` (`state`, `date`, `customer_id`, `uospartner_id`, `company_name`, `card`, `orderlist`, `price`) "
+                        + "VALUES ( 3, '" + now_date + "','" + message.customer_id + "','" + message.uospartner_id + "','" + company_name + "','" + JSON.stringify(message.card) + "','" + JSON.stringify(message.order) + "',"+price+");";
+                    }
+                    else{
+                        insert_text = "INSERT INTO `order_buffer` (`state`, `date`, `customer_id`, `uospartner_id`, `company_name`, `card`, `orderlist`, `price`) "
+                        + "VALUES ( 0, '" + now_date + "','" + message.customer_id + "','" + message.uospartner_id + "','" + company_name + "','" + JSON.stringify(message.card) + "','" + JSON.stringify(message.order) + "',"+price+");";
+                    }
+                    
                     connection.query(insert_text, function (err, result, fields){
 
                         if(err){
@@ -580,11 +589,11 @@ app.post('/post', function(req, res, next){
 
                                     // 영화 좌석
                                     let code_arr = order.submenu.split('&');
-									let hi = new String();
+                                    let hi = new String();
                                     for(let code of code_arr){
                                         hi += "'"+code+"',";
                                     }
-									let sql2 = `UPDATE movie_${message.uospartner_id}_${movie_num} SET state=1 WHERE code IN (${hi.substr(0,hi.length-1)})`;
+                                    let sql2 = `UPDATE movie_${message.uospartner_id}_${movie_num} SET state=1 WHERE code IN (${hi.substr(0,hi.length-1)})`;
                                     let results2 = sync_connection.query(sql2);
                                 }   
                             }
@@ -604,6 +613,7 @@ app.post('/post', function(req, res, next){
             break;
         }
 
+        // 주문취소
         case '0011' : {
 
             var select_query = "select * from order_buffer where order_code=?";
@@ -647,6 +657,7 @@ app.post('/post', function(req, res, next){
 
         }
 
+        // 주문내역
         case '0012': {
             var select_query = "select * from order_buffer where customer_id=? order by order_code desc";
 
@@ -735,7 +746,7 @@ app.post('/post', function(req, res, next){
                 company_obj.name = company_name;
                 company_obj.type = company_type;
 
-				let sql_seat = "";
+                let sql_seat = "";
                 // 영화 정보 데이터 삽입
                 for (var result of movie_result) {
                     var num = result.num;
@@ -762,16 +773,16 @@ app.post('/post', function(req, res, next){
 
                 // 음식 정보 데이터 삽입
                 for (var result of food_result) {
-					var num = result.num;
-                    var categoryName = result.category;
-                    var type = result.type;
-                    var name = result.name;
-                    var price = result.price;
-                    var description = result.description;
-                    var conf = result.conf;
-                    var category_list_json = eval(result.category_list);
-					let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
-					let image = Buffer.from(readImage).toString('base64');
+                 var num = result.num;
+                 var categoryName = result.category;
+                 var type = result.type;
+                 var name = result.name;
+                 var price = result.price;
+                 var description = result.description;
+                 var conf = result.conf;
+                 var category_list_json = eval(result.category_list);
+                 let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+                 let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -869,16 +880,16 @@ app.post('/post', function(req, res, next){
 
                 // 피시방 정보 데이터 삽입
                 for (var result of results) {
-					var num = result.num;
-                    var categoryName = result.category;
-                    var type = result.type;
-                    var name = result.name;
-                    var price = result.price;
-                    var description = result.description;
-                    var conf = result.conf;
-                    var category_list_json = eval(result.category_list);
-					let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
-					let image = Buffer.from(readImage).toString('base64');
+                 var num = result.num;
+                 var categoryName = result.category;
+                 var type = result.type;
+                 var name = result.name;
+                 var price = result.price;
+                 var description = result.description;
+                 var conf = result.conf;
+                 var category_list_json = eval(result.category_list);
+                 let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+                 let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -973,16 +984,16 @@ app.post('/post', function(req, res, next){
 
                 // 음식 정보 데이터 삽입
                 for (var result of results) {
-					var num = result.num;
-                    var categoryName = result.category;
-                    var type = result.type;
-                    var name = result.name;
-                    var price = result.price;
-                    var description = result.description;
-                    var conf = result.conf;
-                    var category_list_json = eval(result.category_list);
-					let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
-					let image = Buffer.from(readImage).toString('base64');
+                 var num = result.num;
+                 var categoryName = result.category;
+                 var type = result.type;
+                 var name = result.name;
+                 var price = result.price;
+                 var description = result.description;
+                 var conf = result.conf;
+                 var category_list_json = eval(result.category_list);
+                 let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+                 let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -1682,7 +1693,7 @@ app.post('/post', function(req, res, next){
             var conf = message.conf;
             var category_list = JSON.stringify(message.category_list);
             var image_src = message.image_src;
-			var menu_id;
+            var menu_id;
 
             // 단품 추가
             if (type == "product") {
@@ -1716,12 +1727,12 @@ app.post('/post', function(req, res, next){
         case '00A3':{ 
             var category = message.category;
             var name = message.name;
-			
-			let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${category}' and name='${name}'; `;
-			let results = sync_connection.query(sql);
-			let delete_num = results[0].num;
-			console.log(delete_num);
-			
+
+            let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${category}' and name='${name}'; `;
+            let results = sync_connection.query(sql);
+            let delete_num = results[0].num;
+            console.log(delete_num);
+
 			// 이미지 삭제
 			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
 			console.log("이미지 삭제 완료");
@@ -1730,8 +1741,8 @@ app.post('/post', function(req, res, next){
             var sql2 = `DELETE FROM restaurant_${message.id} WHERE category='${category}' and name='${name}' `;
             let results2 = sync_connection.query(sql2);
             console.log("메뉴 삭제 완료");
-			
-			
+
+
             res.json({status:"GOOD"});
 
             connection.end();
@@ -1741,9 +1752,9 @@ app.post('/post', function(req, res, next){
         // 음식점 카테고리 삭제
         case '00A4':{
             var category = message.category;
-			let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${message.category}'`;
-			let results = sync_connection.query(sql);
-			
+            let sql = `SELECT * FROM restaurant_${message.id} WHERE category='${message.category}'`;
+            let results = sync_connection.query(sql);
+
 			// 이미지 삭제
 			fs.unlinkSync(`./assets/images/${message.id}/${delete_num}.jpg`)
 			console.log("이미지 삭제 완료");
@@ -1761,7 +1772,7 @@ app.post('/post', function(req, res, next){
 
         // 음식점 카테고리 변경
         case '00A5':{
-			menu.changeCategory(req, res);
+           menu.changeCategory(req, res);
             // var category = message.category;
             // var change = message.change;
 
@@ -1929,7 +1940,7 @@ app.post('/post', function(req, res, next){
 
         // 피시방 카테고리 변경
         case '00B5':{
-			
+
             var category = message.category;
             var change = message.change;
             console.log(category,change);
@@ -1938,7 +1949,7 @@ app.post('/post', function(req, res, next){
             console.log("카테고리 변경 완료");
 
             res.json({status:"GOOD"});
-			
+
             connection.end();
             break;
         }
@@ -2241,7 +2252,7 @@ app.post('/post', function(req, res, next){
             let sql = `SELECT * FROM movie_${message.id} WHERE movie='${movie}' and time='${time}'`;
             let results = sync_connection.query(sql);
             let movie_num = results[0].num;
-			
+
 			// 영화 좌석 변경
 			let sql2 = ``;
 			seat_arr.forEach(function(seat) {
