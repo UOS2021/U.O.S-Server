@@ -112,6 +112,7 @@ function btn_accept(where,order_code){
 		dataType : 'json'
 	});
 	req.done(function(data, status){
+		state0_num--;
 		alert("주문 접수 완료");
 		var t = $('#new_order_list').DataTable();
 		var rows = "<button class='btn btn-warning' id='"+order_code+"' type='button' onclick='menu_wait(this,"+order_code+")'>조리 완료</button>";
@@ -485,7 +486,7 @@ function repeat_request000I(){
 						t.row(i).remove().draw(false);
 						cnt_now--;
 						cnt_finish++;
-						state0_num--;
+						
 					}
 				}
 			}
