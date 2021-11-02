@@ -489,7 +489,6 @@ $('#show_menu_sebu_close').on('click', function(){
 $('#show_new_menus_close').on('click', function(){
 	$('#show_new_menus').modal('hide');
 });
-
 $(document).ready(function(){
     if(!sessionStorage.getItem("id")){
 		alert("로그인이 필요합니다.");
@@ -547,7 +546,11 @@ $(document).ready(function(){
 		var rows = '';
 		var total_price = 0;
 		for(var i=0;i<eval(total_order_list[data[1]]).length;i++){
-			rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
+			if(eval(total_order_list[data[1]])[i].type == 2){
+			rows+= ((total_order_list[data[1]])[i].menu).split("&")[0] + "("+(eval(total_order_list[data[1]])[i].menu).split("&")[1]+")" + " "+  eval(total_order_list[data[1]])[i].count + "개";
+			}
+			else
+				rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
 			if(eval(total_order_list[data[1]])[i].submenu){
 				rows += "("+(eval(total_order_list[data[1]])[i].submenu).replace( /&/gi, ',') + ")";
 			}
@@ -566,7 +569,11 @@ $(document).ready(function(){
 		var rows = '';
 		var total_price = 0;
 		for(var i=0;i<eval(total_order_list[data[1]]).length;i++){
-			rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
+			if(eval(total_order_list[data[1]])[i].type == 2){
+			rows+= ((total_order_list[data[1]])[i].menu).split("&")[0] + "("+(eval(total_order_list[data[1]])[i].menu).split("&")[1]+")" + " "+  eval(total_order_list[data[1]])[i].count + "개";
+			}
+			else
+				rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
 			if(eval(total_order_list[data[1]])[i].submenu){
 				rows += "("+(eval(total_order_list[data[1]])[i].submenu).replace( /&/gi, ',') + ")";
 			}
