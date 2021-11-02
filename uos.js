@@ -2081,8 +2081,6 @@ app.post('/post', function(req, res, next){
                 for(let i=0; i<results_seat.length; i++){
                     let result = results_seat[i];
                     movie_list[i].seat_list = result;
-                    console.log(result);
-                    console.log("FUCK");
                 }
             }
 
