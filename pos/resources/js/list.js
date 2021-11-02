@@ -545,12 +545,17 @@ $(document).ready(function(){
 		console.log(total_order_list[data[1]]);
 		$("#show_menu_sebu_title").html("주문코드 : "+data[1]);
 		var rows = '';
+		var total_price = 0;
 		for(var i=0;i<eval(total_order_list[data[1]]).length;i++){
 			rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
 			if(eval(total_order_list[data[1]])[i].submenu){
-				rows += "("+eval(total_order_list[data[1]])[i].submenu + ")<br>";
+				rows += "("+eval(total_order_list[data[1]])[i].submenu + ")";
 			}
+			rows += " - "+eval(total_order_list[data[1]])[i].price*eval(total_order_list[data[1]])[i].count+"원<br>"
+			total_price+= eval(total_order_list[data[1]])[i].price*eval(total_order_list[data[1]])[i].count;
 		}
+		rows+= "--------------------------------------------------------------------------------------------------------------------<br>";
+		rows+= "총 : "+total_price+"원";
 		$("#show_menu_sebu_body").html(rows);		
 		$('#show_menu_sebu').modal('show');
     } );
@@ -562,8 +567,9 @@ $(document).ready(function(){
 		for(var i=0;i<eval(total_order_list[data[1]]).length;i++){
 			rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
 			if(eval(total_order_list[data[1]])[i].submenu){
-				rows += "("+eval(total_order_list[data[1]])[i].submenu + ")<br>";
+				rows += "("+eval(total_order_list[data[1]])[i].submenu + ")";
 			}
+			rows += " - "+eval(total_order_list[data[1]])[i].price*eval(total_order_list[data[1]])[i].count+"원<br>"
 		}
 		$("#show_menu_sebu_body").html(rows);
 		$('#show_menu_sebu').modal('show');
