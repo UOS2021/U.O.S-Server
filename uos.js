@@ -2034,6 +2034,7 @@ app.post('/post', function(req, res, next){
             response_data.movie_list = movie_list;
 
             let sql_seat = '';
+			let sql_seat_number=0;
             // 영화 정보 데이터
             for (var result of movie_result) {
                 var num = result.num;
@@ -2045,7 +2046,8 @@ app.post('/post', function(req, res, next){
 
                 // 좌석 쿼리문 저장
                 sql_seat += `SELECT * FROM movie_${message.id}_${num}; `;
-
+				sql_seat_number++;
+				
                 var movie = new Object();
                 movie.num = num;
                 movie.movie = movieName;
@@ -2056,12 +2058,24 @@ app.post('/post', function(req, res, next){
 
                 movie_list.push(movie);
             }
+			
             // 좌석 정보 가져오기
-            let results_seat = sync_connection.query(sql_seat);         
-            for(let i=0; i<results_seat.length; i++){
-                let result = results_seat[i];
-                movie_list[i].seat_list = result;
-            }
+			if(sql_seat_number==0){
+				
+			} else if(sql_seat_number==1){
+				let results_seat = sync_connection.query(sql_seat);      
+				console.log(results_seat.length);   
+				movie_list[0].seat_list = results_seat;
+			} else {
+				let results_seat = sync_connection.query(sql_seat);      
+				console.log(results_seat.length);   
+				for(let i=0; i<results_seat.length; i++){
+					let result = results_seat[i];
+					movie_list[i].seat_list = result;
+					console.log(result);
+					console.log("FUCK");
+				}
+			}
 
             // 음식 정보 데이터
             for (var result of food_result) {
