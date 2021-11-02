@@ -522,12 +522,6 @@ $(document).ready(function(){
 			info : '총 _TOTAL_ 개의 행 중 _START_ 행 부터 _END_ 행 까지',
 			imfoEmpty : '데이터가 없습니다.',
 			lengthMenu : '총 _MENU_ 행씩 보기',
-			paginate : {
-				first : '처음',
-				last : '끝',
-				next : '다음',
-				previous : '이전'
-			},
 			search : '검색 ->'
 		}
 	});
