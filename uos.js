@@ -429,31 +429,62 @@ app.post('/post', function(req, res, next){
 
         // 회원 탈퇴
         case '0006': {
-            var delete_query = "";
+
+
+
+            var check = false;
+
             if(message.type == 'customer'){
-                delete_query = "delete from customer_account where id=?";
-            }
-            else if(message.type == 'uospartner'){
-                delete_query = "delete from uospartner_account where id=?";
-            }
-            else{
-                console.log('type 오류');
-            }
-            connection.query(delete_query, message.id , function(err, result, fields){
-                var res_data_string ='';
-                if(err){
-                    console.log('회원 탈퇴 실패');
-                    res_data_string = {response_code: "0017"};
-                }
-                else{
-                    console.log('회원 탈퇴 성공');
-                    res_data_string = {response_code: "0016"};
+                var select_query = "select pw from customer_account where id='" + message.id + "'";
+                let results = sync_connection.query(select_query);
+                if(results[0].pw == message.pw){
+                    check = true;
                 }
 
+            }
+            else if(message.type == 'uospartner'){
+                var select_query = "select pw from uospartner_account where id='" + message.id + "'";
+                let results = sync_connection.query(select_query);
+                if(results[0].pw == message.pw){
+                    check = true;
+                }
+            }
+
+            if(check){
+                var delete_query = "";
+                if(message.type == 'customer'){
+                    delete_query = "delete from customer_account where id=?";
+                }
+                else if(message.type == 'uospartner'){
+                    delete_query = "delete from uospartner_account where id=?";
+                }
+                else{
+                    console.log('type 오류');
+                }
+                connection.query(delete_query, message.id , function(err, result, fields){
+                    var res_data_string ='';
+                    if(err){
+                        console.log('회원 탈퇴 실패');
+                        res_data_string = {response_code: "0017"};
+                    }
+                    else{
+                        console.log('회원 탈퇴 성공');
+                        res_data_string = {response_code: "0016"};
+                    }
+
+                    var res_data_json = JSON.stringify(res_data_string);
+                    res.json(res_data_json);
+                    connection.end();
+                });
+            }
+            else{
+                console.log('회원 탈퇴 실패 - 비밀번호 틀림');
+                res_data_string = {response_code: "0017"};
                 var res_data_json = JSON.stringify(res_data_string);
                 res.json(res_data_json);
                 connection.end();
-            });
+            }
+            
             break;
         }
 
@@ -775,16 +806,16 @@ app.post('/post', function(req, res, next){
 
                 // 음식 정보 데이터 삽입
                 for (var result of food_result) {
-                 var num = result.num;
-                 var categoryName = result.category;
-                 var type = result.type;
-                 var name = result.name;
-                 var price = result.price;
-                 var description = result.description;
-                 var conf = result.conf;
-                 var category_list_json = eval(result.category_list);
-                 let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
-                 let image = Buffer.from(readImage).toString('base64');
+                   var num = result.num;
+                   var categoryName = result.category;
+                   var type = result.type;
+                   var name = result.name;
+                   var price = result.price;
+                   var description = result.description;
+                   var conf = result.conf;
+                   var category_list_json = eval(result.category_list);
+                   let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+                   let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -882,16 +913,16 @@ app.post('/post', function(req, res, next){
 
                 // 피시방 정보 데이터 삽입
                 for (var result of results) {
-                 var num = result.num;
-                 var categoryName = result.category;
-                 var type = result.type;
-                 var name = result.name;
-                 var price = result.price;
-                 var description = result.description;
-                 var conf = result.conf;
-                 var category_list_json = eval(result.category_list);
-                 let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
-                 let image = Buffer.from(readImage).toString('base64');
+                   var num = result.num;
+                   var categoryName = result.category;
+                   var type = result.type;
+                   var name = result.name;
+                   var price = result.price;
+                   var description = result.description;
+                   var conf = result.conf;
+                   var category_list_json = eval(result.category_list);
+                   let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+                   let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -986,16 +1017,16 @@ app.post('/post', function(req, res, next){
 
                 // 음식 정보 데이터 삽입
                 for (var result of results) {
-                 var num = result.num;
-                 var categoryName = result.category;
-                 var type = result.type;
-                 var name = result.name;
-                 var price = result.price;
-                 var description = result.description;
-                 var conf = result.conf;
-                 var category_list_json = eval(result.category_list);
-                 let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
-                 let image = Buffer.from(readImage).toString('base64');
+                   var num = result.num;
+                   var categoryName = result.category;
+                   var type = result.type;
+                   var name = result.name;
+                   var price = result.price;
+                   var description = result.description;
+                   var conf = result.conf;
+                   var category_list_json = eval(result.category_list);
+                   let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+                   let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -1289,9 +1320,9 @@ app.post('/post', function(req, res, next){
                     res_data_string = {response_code: "0019"};
                 }
                 else{
-                   fcm_token = result[0].fcm_token;
-               }
-           });
+                 fcm_token = result[0].fcm_token;
+             }
+         });
 
 
             connection.query(update_query, function(err1, result1, fields){
@@ -2070,7 +2101,7 @@ app.post('/post', function(req, res, next){
             
             // 좌석 정보 가져오기
             if(sql_seat_number==0){
-                
+
             } else if(sql_seat_number==1){
                 let results_seat = sync_connection.query(sql_seat);      
                 console.log(results_seat.length);   
