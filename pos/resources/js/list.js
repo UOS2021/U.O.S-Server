@@ -7,6 +7,7 @@ var state4_num = 0;
 var ee;
 var test;
 var total_order_list = {};
+var timing = true;
 function logout(){
 	sessionStorage.setItem("id",'');
 	sessionStorage.setItem("company_type",'');
@@ -95,6 +96,7 @@ function init(){
 
 // 주문 수락
 function btn_accept(where,order_code){
+	timing = false;
 	// console.log(order_code);
 	let param =
 	{
@@ -120,6 +122,7 @@ function btn_accept(where,order_code){
 				break;
 			}
 		}
+		timing = true;
 	});
 }
 
@@ -192,6 +195,7 @@ function menu_wait(where,order_code){
 	});
 	req.done(function(data, status){
 		alert("조리 완료");
+
 		var t = $('#new_order_list').DataTable();
 		var rows = "<button class='btn btn-info' id='"+order_code+"' type='button' onclick='customer_accept(this,"+order_code+")'>수령 완료</button>";
 		var i;
@@ -540,27 +544,29 @@ $(document).ready(function(){
      
 	var t2 = $('#finished_order_list').DataTable();
     $('#new_order_list tbody').on('click', 'tr', function () {
-        var data = t.row( this ).data();
-		console.log(total_order_list[data[1]]);
-		$("#show_menu_sebu_title").html("주문코드 : "+data[1]);
-		var rows = '';
-		var total_price = 0;
-		for(var i=0;i<eval(total_order_list[data[1]]).length;i++){
-			if(eval(total_order_list[data[1]])[i].type == 2){
-			rows+= (eval(total_order_list[data[1]])[i].menu).split("&")[0] + "("+(eval(total_order_list[data[1]])[i].menu).split("&")[1]+")" + " "+  eval(total_order_list[data[1]])[i].count + "개";
+		if(timing){
+			var data = t.row( this ).data();
+			console.log(total_order_list[data[1]]);
+			$("#show_menu_sebu_title").html("주문코드 : "+data[1]);
+			var rows = '';
+			var total_price = 0;
+			for(var i=0;i<eval(total_order_list[data[1]]).length;i++){
+				if(eval(total_order_list[data[1]])[i].type == 2){
+				rows+= (eval(total_order_list[data[1]])[i].menu).split("&")[0] + "("+(eval(total_order_list[data[1]])[i].menu).split("&")[1]+")" + " "+  eval(total_order_list[data[1]])[i].count + "개";
+				}
+				else
+					rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
+				if(eval(total_order_list[data[1]])[i].submenu){
+					rows += "("+(eval(total_order_list[data[1]])[i].submenu).replace( /&/gi, ',') + ")";
+				}
+				rows += " - "+eval(total_order_list[data[1]])[i].price*eval(total_order_list[data[1]])[i].count+"원<br>"
+				total_price+= eval(total_order_list[data[1]])[i].price*eval(total_order_list[data[1]])[i].count;
 			}
-			else
-				rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
-			if(eval(total_order_list[data[1]])[i].submenu){
-				rows += "("+(eval(total_order_list[data[1]])[i].submenu).replace( /&/gi, ',') + ")";
-			}
-			rows += " - "+eval(total_order_list[data[1]])[i].price*eval(total_order_list[data[1]])[i].count+"원<br>"
-			total_price+= eval(total_order_list[data[1]])[i].price*eval(total_order_list[data[1]])[i].count;
+			rows+= "--------------------------------------------------------------------------------------------------------------------<br>";
+			rows+= "총 : "+total_price+"원";
+			$("#show_menu_sebu_body").html(rows);		
+			$('#show_menu_sebu').modal('show');
 		}
-		rows+= "--------------------------------------------------------------------------------------------------------------------<br>";
-		rows+= "총 : "+total_price+"원";
-		$("#show_menu_sebu_body").html(rows);		
-		$('#show_menu_sebu').modal('show');
     } );
 	$('#finished_order_list tbody').on('click', 'tr', function () {
         var data = t2.row( this ).data();
