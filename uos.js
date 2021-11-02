@@ -581,7 +581,7 @@ app.post('/post', function(req, res, next){
                                 if(order.type == 2){
                                     let movie = order.menu.split('&')[0];
                                     let time = order.menu.split('&')[1];
-									let theater = order.menu.split('&')[2];
+                                    let theater = order.menu.split('&')[2];
 
                                     // 변경할 영화 num 가져오기
                                     let sql = `SELECT * FROM movie_${message.uospartner_id} WHERE movie='${movie}' and time='${time}' and theater='${theater}'`;
@@ -762,7 +762,7 @@ app.post('/post', function(req, res, next){
                     var seat_list = sync_connection.query(sql4);
 
                     var movie = new Object();
-					movie.num = num;
+                    movie.num = num;
                     movie.movie = movieName;
                     movie.theater = theater;
                     movie.time = time;
@@ -1179,7 +1179,7 @@ app.post('/post', function(req, res, next){
             break;
         }
 
-        // 주문조회
+        // 주문조회 - 음식점, PC방
         case '000B': {
 
             var state0_index = 0;
@@ -1207,7 +1207,7 @@ app.post('/post', function(req, res, next){
                             var order_array_arr = new Array();
                             var cancel_order_code_arr = new Array();
 
-                            console.log("result1 : " + result1.length + ", result2" + result2.length);
+                            console.log("result1 : " + result1.length + ", result2 : " + result2.length);
 
                             function createResponseState0(){
                                 for(var i = 0; i < result1.length; i++){
@@ -1584,9 +1584,63 @@ app.post('/post', function(req, res, next){
             }
 
             connection.end();
-    
+
         }
         break;
+
+        // 주문 조회 - 영화관
+        case '000I': {
+
+            var state3_index = 0;
+            if(message.state3_num != 0){
+                state3_index = message.state3_num-1;
+            }
+
+            var select_query1 = "select * from order_buffer where uospartner_id=? and state=3 and order_code > (select order_code from order_buffer where uospartner_id=? and state=3 limit 1 offset "+ state3_index +")";
+
+            connection.query(select_query1, [message.id, message.id] , function(err1, result1, fields){
+                if(err1){
+                    console.log("sql질의 에러1");
+                    console.log(err1);
+                }
+                else {
+
+                    var response_obj = new Object();
+                    var order_array_arr = new Array();
+                    var cancel_order_code_arr = new Array();
+
+                    console.log("result1 : " + result1.length );
+
+                    function createResponseState3(){
+                        for(var i = 0; i < result1.length; i++){
+                            var obj = new Object();
+                            obj.order_code = result1[i].order_code;
+                            obj.state = result1[i].state;
+                            obj.order_list = result1[i].orderlist;
+                            obj.date = result1[i].date;
+                            order_array_arr.push(obj);
+                        }
+                    }
+
+                    if(result1.length == 0){
+                        response_obj.response_code = "C000";
+                        res.json(response_obj);
+                    }
+
+                    else{
+                        response_obj.response_code = "B000";
+                        createResponseState3();
+                        response_obj.message = { order_array : order_array_arr };
+                        res.json(response_obj);
+                    }
+
+                }
+
+                connection.end();
+            });
+
+            break;
+        }
 
 
         // 음식점
@@ -1597,7 +1651,7 @@ app.post('/post', function(req, res, next){
             var category_list = new Array();
 
             for (var result of results) {
-				var num = result.num;
+                var num = result.num;
                 var categoryName = result.category;
                 var type = result.type;
                 var name = result.name;
@@ -1616,7 +1670,7 @@ app.post('/post', function(req, res, next){
                 if (index != -1) {
                     if (type == "product") {
                         var product = new Object();
-						product['num'] = num;
+                        product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -1625,7 +1679,7 @@ app.post('/post', function(req, res, next){
                         category_list[index].product_list.push(product);
                     } else if (type == "set") {
                         var set = new Object();
-						set['num'] = num;
+                        set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -1650,7 +1704,7 @@ app.post('/post', function(req, res, next){
                     // 단품
                     if (type == "product") {
                         var product = new Object();
-						product['num'] = num;
+                        product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -1661,7 +1715,7 @@ app.post('/post', function(req, res, next){
                     // 세트
                     else if (type == "set") { 
                         var set = new Object();
-						set['num'] = num;
+                        set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -1725,7 +1779,7 @@ app.post('/post', function(req, res, next){
         case '00A3':{ 
             // var category = message.category;
             // var name = message.name;
-			let num = message.num;
+            let num = message.num;
 
             // let sql = `SELECT * FROM restaurant_${message.id} WHERE num='${num}'; `;
             // let results = sync_connection.query(sql);
@@ -1772,7 +1826,7 @@ app.post('/post', function(req, res, next){
         // 음식점 카테고리 변경
         case '00A5':{
 
-        	var category = message.category;
+            var category = message.category;
             var change = message.change;
 
             var sql = `UPDATE restaurant_${message.id} SET category='${change}' WHERE category='${category}'`;
@@ -1793,7 +1847,7 @@ app.post('/post', function(req, res, next){
             var category_list = new Array();
 
             for (var result of results) {
-				var num = result.num;
+                var num = result.num;
                 var categoryName = result.category;
                 var type = result.type;
                 var name = result.name;
@@ -1812,7 +1866,7 @@ app.post('/post', function(req, res, next){
                 if (index != -1) {
                     if (type == "product") {
                         var product = new Object();
-						product['num'] = num;
+                        product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -1821,7 +1875,7 @@ app.post('/post', function(req, res, next){
                         category_list[index].product_list.push(product);
                     } else if (type == "set") {
                         var set = new Object();
-						set['num'] = num;
+                        set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -1846,7 +1900,7 @@ app.post('/post', function(req, res, next){
                     // 단품
                     if (type == "product") {
                         var product = new Object();
-						product['num'] = num;
+                        product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -1857,7 +1911,7 @@ app.post('/post', function(req, res, next){
                     // 세트
                     else if (type == "set") { 
                         var set = new Object();
-						set['num'] = num;
+                        set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -1919,9 +1973,9 @@ app.post('/post', function(req, res, next){
         case '00B3':{ 
             // var category = message.category;
             // var name = message.name;
-			let num = message.num;
-			
-			// 이미지 삭제
+            let num = message.num;
+            
+            // 이미지 삭제
             fs.unlinkSync(`./assets/images/${message.id}/${num}.jpg`)
             console.log("이미지 삭제 완료");
             
@@ -1929,7 +1983,7 @@ app.post('/post', function(req, res, next){
             var sql2 = `DELETE FROM pc_${message.id} WHERE num='${num}' `;
             let results2 = sync_connection.query(sql2);
             console.log("메뉴 삭제 완료");
-			
+            
             res.json({status:"GOOD"});
 
             connection.end();
@@ -1982,7 +2036,7 @@ app.post('/post', function(req, res, next){
             response_data.category_list = category_list;
             response_data.movie_list = movie_list;
 
-			let sql_seat = '';
+            let sql_seat = '';
             // 영화 정보 데이터
             for (var result of movie_result) {
                 var num = result.num;
@@ -1996,7 +2050,7 @@ app.post('/post', function(req, res, next){
                 sql_seat += `SELECT * FROM movie_${message.id}_${num}; `;
 
                 var movie = new Object();
-				movie.num = num;
+                movie.num = num;
                 movie.movie = movieName;
                 movie.theater = theater;
                 movie.time = time;
@@ -2005,16 +2059,16 @@ app.post('/post', function(req, res, next){
 
                 movie_list.push(movie);
             }
-			// 좌석 정보 가져오기
-			let results_seat = sync_connection.query(sql_seat);			
-			for(let i=0; i<results_seat.length; i++){
-				let result = results_seat[i];
-				movie_list[i].seat_list = result;
-			}
+            // 좌석 정보 가져오기
+            let results_seat = sync_connection.query(sql_seat);         
+            for(let i=0; i<results_seat.length; i++){
+                let result = results_seat[i];
+                movie_list[i].seat_list = result;
+            }
 
             // 음식 정보 데이터
             for (var result of food_result) {
-				var num = result.num;
+                var num = result.num;
                 var categoryName = result.category;
                 var type = result.type;
                 var name = result.name;
@@ -2035,7 +2089,7 @@ app.post('/post', function(req, res, next){
 
                     if (type == "product") {
                         var product = new Object();
-						product['num'] = num;
+                        product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -2044,7 +2098,7 @@ app.post('/post', function(req, res, next){
                         category_list[index].product_list.push(product);
                     } else if (type == "set") {
                         var set = new Object();
-						set['num'] = num;
+                        set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -2069,7 +2123,7 @@ app.post('/post', function(req, res, next){
                     // 단품
                     if (type == "product") {
                         var product = new Object();
-						product['num'] = num;
+                        product['num'] = num;
                         product['name'] = name;
                         product['price'] = price;
                         product['desc'] = description;
@@ -2080,7 +2134,7 @@ app.post('/post', function(req, res, next){
                     // 세트
                     else if (type == "set") { 
                         var set = new Object();
-						set['num'] = num;
+                        set['num'] = num;
                         set['name'] = name;
                         set['price'] = price;
                         set['desc'] = description;
@@ -2165,10 +2219,10 @@ app.post('/post', function(req, res, next){
 
         // 영화관 영화 삭제
         case '00C3':{
-			// var movie = message.movie;
-			// var time = message.time;
-			// let theater = message.theater;
-			let num = message.num;
+            // var movie = message.movie;
+            // var time = message.time;
+            // let theater = message.theater;
+            let num = message.num;
 
             var sql = `SELECT * FROM movie_${message.id} WHERE num='${num}'`;
             let results = sync_connection.query(sql);
@@ -2231,7 +2285,7 @@ app.post('/post', function(req, res, next){
         case '00C5':{
             // var category = message.category;
             // var name = message.name;
-			let num = message.num;
+            let num = message.num;
 
             var sql = `DELETE FROM movie_${message.id}_food WHERE num='${num}' `;
             let results = sync_connection.query(sql);
@@ -2269,43 +2323,43 @@ app.post('/post', function(req, res, next){
         }
         // 영화관 영화 좌석 업데이트
         case '00C8':{
-			// let movie = message.movie;
-			// let time = message.time;
-			// let theater = message.theater;
-			let num = message.num;
+            // let movie = message.movie;
+            // let time = message.time;
+            // let theater = message.theater;
+            let num = message.num;
             let seat_arr = message.seat;
 
             // 변경할 영화 num 가져오기
             let sql = `SELECT * FROM movie_${message.id} WHERE num='${num}'`;
             let results = sync_connection.query(sql);
             let movie_num = results[0].num;
-			
-			// 그새 팔렸는지 체크
-			let sql2 = `SELECT * FROM movie_${message.id}_${movie_num}; `;
-			let results2 = sync_connection.query(sql2);
-			for(let result2 of results2){
-				let state = result2.state;
-				let code = result2.code;
-				for(let seat of seat_arr){
-					let seat_code = seat.code;
-					let seat_state = seat.state;
-					if(seat_code == code && code == 1){
-						res.json({status:'Fail'});
-						connection.end();
-						break;
-					}
-				}
-			}
-			
+            
+            // 그새 팔렸는지 체크
+            let sql2 = `SELECT * FROM movie_${message.id}_${movie_num}; `;
+            let results2 = sync_connection.query(sql2);
+            for(let result2 of results2){
+                let state = result2.state;
+                let code = result2.code;
+                for(let seat of seat_arr){
+                    let seat_code = seat.code;
+                    let seat_state = seat.state;
+                    if(seat_code == code && code == 1){
+                        res.json({status:'Fail'});
+                        connection.end();
+                        break;
+                    }
+                }
+            }
+            
 
 
-			// 영화 좌석 변경
-			let sql3 = ``;
-			seat_arr.forEach(function(seat) {
-				sql3 += "UPDATE movie_"+message.id+"_"+movie_num+" SET state = '" + seat.state + "' WHERE code = '" + seat.code + "'; ";
-			})
-			let results3 = sync_connection.query(sql3);
-			console.log("좌석 변경 완료");
+            // 영화 좌석 변경
+            let sql3 = ``;
+            seat_arr.forEach(function(seat) {
+                sql3 += "UPDATE movie_"+message.id+"_"+movie_num+" SET state = '" + seat.state + "' WHERE code = '" + seat.code + "'; ";
+            })
+            let results3 = sync_connection.query(sql3);
+            console.log("좌석 변경 완료");
 
 
             res.json({status:"GOOD"});
