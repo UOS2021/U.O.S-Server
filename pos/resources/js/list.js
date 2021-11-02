@@ -128,6 +128,7 @@ function btn_accept(where,order_code){
 
 // 주문 거절
 function btn_reject(order_code){
+	timing = false;
 	
 	let param =
 	{
@@ -175,11 +176,13 @@ function btn_reject(order_code){
 		}
 		list_attr_add('#finished_order_list',cnt_finish,data.message.order_code,menu_name,data.message.date,data.message.state);
 		cnt_finish++;
+		timing = true;
 	});
 }
 
 // 조리 완료
 function menu_wait(where,order_code){
+	timing = false;
 	let param =
 	{
 		"request_code": "000E",
@@ -205,11 +208,13 @@ function menu_wait(where,order_code){
 				break;
 			}
 		}
+		timing = true;
 	});
 }
 
 // 수령 완료
 function customer_accept(where, order_code){
+	timing = false;
 	let param =
 	{
 		"request_code": "000F",
@@ -236,6 +241,7 @@ function customer_accept(where, order_code){
 				break;
 			}
 		}
+		timing = true;
 	});
 }
 
