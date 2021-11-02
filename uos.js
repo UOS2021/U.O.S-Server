@@ -1183,13 +1183,17 @@ app.post('/post', function(req, res, next){
         case '000B': {
 
             var state0_index = 0;
+            var select_query1 = "";
+
             if(message.state0_num != 0){
                 state0_index = message.state0_num-1;
+                select_query1 = "select * from order_buffer where uospartner_id=? and state=0 and order_code > (select order_code from order_buffer where uospartner_id='" + message.id + "' and state=0 limit 1 offset "+ state0_index +")";
+            }
+            else{
+                select_query1 = "select * from order_buffer where uospartner_id=? and state=0";
             }
 
-            var select_query1 = "select * from order_buffer where uospartner_id=? and state=0 and order_code > (select order_code from order_buffer where uospartner_id=? and state=0 limit 1 offset "+ state0_index +")";
-
-            connection.query(select_query1, [message.id, message.id] , function(err1, result1, fields){
+            connection.query(select_query1, message.id, function(err1, result1, fields){
                 console.log(result1);
                 if(err1){
                     console.log("sql질의 에러1");
@@ -1592,13 +1596,18 @@ app.post('/post', function(req, res, next){
         case '000I': {
 
             var state3_index = 0;
+            var select_query1 = "";
             if(message.state3_num != 0){
                 state3_index = message.state3_num-1;
+                select_query1 = "select * from order_buffer where uospartner_id=? and state=3 and order_code > (select order_code from order_buffer where uospartner_id='" + message.id + "' and state=3 limit 1 offset "+ state3_index +")";
+            }
+            else{
+                select_query1 = "select * from order_buffer where uospartner_id=? and state=3";
             }
 
-            var select_query1 = "select * from order_buffer where uospartner_id=? and state=3 and order_code > (select order_code from order_buffer where uospartner_id=? and state=3 limit 1 offset "+ state3_index +")";
+            
 
-            connection.query(select_query1, [message.id, message.id] , function(err1, result1, fields){
+            connection.query(select_query1, message.id, function(err1, result1, fields){
                 if(err1){
                     console.log("sql질의 에러1");
                     console.log(err1);
@@ -1778,7 +1787,7 @@ app.post('/post', function(req, res, next){
         //음식점 메뉴 삭제
         case '00A3':{ 
 
-			let num = message.num;
+            let num = message.num;
 
             // 이미지 삭제
             fs.unlinkSync(`./assets/images/${message.id}/${num}.jpg`)
@@ -1803,10 +1812,10 @@ app.post('/post', function(req, res, next){
             let results = sync_connection.query(sql);
 
             // 이미지 삭제
-			for(let result of results){
-				let num = result.num;
-            	fs.unlinkSync(`./assets/images/${message.id}/${num}.jpg`)
-			}
+            for(let result of results){
+                let num = result.num;
+                fs.unlinkSync(`./assets/images/${message.id}/${num}.jpg`)
+            }
             console.log("이미지 삭제 완료");
 
             // 메뉴 삭제
@@ -2034,7 +2043,7 @@ app.post('/post', function(req, res, next){
             response_data.movie_list = movie_list;
 
             let sql_seat = '';
-			let sql_seat_number=0;
+            let sql_seat_number=0;
             // 영화 정보 데이터
             for (var result of movie_result) {
                 var num = result.num;
@@ -2046,8 +2055,8 @@ app.post('/post', function(req, res, next){
 
                 // 좌석 쿼리문 저장
                 sql_seat += `SELECT * FROM movie_${message.id}_${num}; `;
-				sql_seat_number++;
-				
+                sql_seat_number++;
+                
                 var movie = new Object();
                 movie.num = num;
                 movie.movie = movieName;
@@ -2058,24 +2067,24 @@ app.post('/post', function(req, res, next){
 
                 movie_list.push(movie);
             }
-			
+            
             // 좌석 정보 가져오기
-			if(sql_seat_number==0){
-				
-			} else if(sql_seat_number==1){
-				let results_seat = sync_connection.query(sql_seat);      
-				console.log(results_seat.length);   
-				movie_list[0].seat_list = results_seat;
-			} else {
-				let results_seat = sync_connection.query(sql_seat);      
-				console.log(results_seat.length);   
-				for(let i=0; i<results_seat.length; i++){
-					let result = results_seat[i];
-					movie_list[i].seat_list = result;
-					console.log(result);
-					console.log("FUCK");
-				}
-			}
+            if(sql_seat_number==0){
+                
+            } else if(sql_seat_number==1){
+                let results_seat = sync_connection.query(sql_seat);      
+                console.log(results_seat.length);   
+                movie_list[0].seat_list = results_seat;
+            } else {
+                let results_seat = sync_connection.query(sql_seat);      
+                console.log(results_seat.length);   
+                for(let i=0; i<results_seat.length; i++){
+                    let result = results_seat[i];
+                    movie_list[i].seat_list = result;
+                    console.log(result);
+                    console.log("FUCK");
+                }
+            }
 
             // 음식 정보 데이터
             for (var result of food_result) {
