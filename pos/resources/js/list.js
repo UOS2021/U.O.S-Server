@@ -547,7 +547,7 @@ $(document).ready(function(){
 		var total_price = 0;
 		for(var i=0;i<eval(total_order_list[data[1]]).length;i++){
 			if(eval(total_order_list[data[1]])[i].type == 2){
-			rows+= ((total_order_list[data[1]])[i].menu).split("&")[0] + "("+(eval(total_order_list[data[1]])[i].menu).split("&")[1]+")" + " "+  eval(total_order_list[data[1]])[i].count + "개";
+			rows+= (eval(total_order_list[data[1]])[i].menu).split("&")[0] + "("+(eval(total_order_list[data[1]])[i].menu).split("&")[1]+")" + " "+  eval(total_order_list[data[1]])[i].count + "개";
 			}
 			else
 				rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
@@ -570,7 +570,7 @@ $(document).ready(function(){
 		var total_price = 0;
 		for(var i=0;i<eval(total_order_list[data[1]]).length;i++){
 			if(eval(total_order_list[data[1]])[i].type == 2){
-			rows+= ((total_order_list[data[1]])[i].menu).split("&")[0] + "("+(eval(total_order_list[data[1]])[i].menu).split("&")[1]+")" + " "+  eval(total_order_list[data[1]])[i].count + "개";
+			rows+= (eval(total_order_list[data[1]])[i].menu).split("&")[0] + "("+(eval(total_order_list[data[1]])[i].menu).split("&")[1]+")" + " "+  eval(total_order_list[data[1]])[i].count + "개";
 			}
 			else
 				rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
