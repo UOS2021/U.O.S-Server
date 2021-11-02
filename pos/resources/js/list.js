@@ -145,6 +145,7 @@ function btn_reject(order_code){
 		dataType : 'json'
 	});
 	req.done(function(data, status){
+		state0_num--;
 		alert("주문 거절 완료");
 		var t = $('#new_order_list').DataTable();
 		var t1 = $('finished_order_list').DataTable();
