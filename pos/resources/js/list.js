@@ -2,9 +2,11 @@ var new_order_list;
 var cnt_now;
 var cnt_finish;
 var state0_num = 0;
+var state3_num = 0;
 var state4_num = 0;
 var ee;
 var test;
+var total_order_list = [];
 function logout(){
 	sessionStorage.setItem("id",'');
 	sessionStorage.setItem("company_type",'');
@@ -66,6 +68,9 @@ function init(){
 				
 			}
 			else{
+				if(order_array[i].state == 3){
+                    state3_num++;
+                }
 				list_attr_add('#finished_order_list',cnt_finish,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
 				cnt_finish++;
 			}
@@ -332,6 +337,99 @@ function repeat_request000B(){
 		}
 	});
 }
+function repeat_request000I(){
+		
+	/* 실시간 주문 현황에 올라온 state가 3인 주문들 개수 세기 구현 */
+	let param =
+	{
+		"request_code": "000I",
+		"message" : {
+			"id" : sessionStorage.getItem("id"),
+			"state0_num" : state0_num,
+			"state4_num" : state4_num,
+			"state3_num" : state3_num
+		}
+	};
+	var req = $.ajax({
+		url : "/post",
+		data : param,
+		type : 'POST',
+			dataType : 'json'
+	});
+	req.done(function(data, status){
+		// 추가 주문 내역 없음
+		if(data.response_code == "C000"){
+			
+		}
+		// state가 0인 주문 추가로 들어옴
+		if(data.response_code == "B000"){
+			console.log(data);
+			/* for문으로 주문현황 리스트에 주문들 추가 */
+			var i;
+			var order_array = data.message.order_array;
+			if(order_array!=undefined){
+				for(i=0;i<order_array.length;i++){
+					var max_name = "";
+					var max_price = -1;
+					for(var j=0;j<eval(order_array[i].order_list).length;j++){
+						if(max_price < eval(order_array[i].order_list)[j].price){
+							max_name = eval(order_array[i].order_list)[j].menu;
+							max_price = eval(order_array[i].order_list)[j].price;
+						}
+					}
+					var menu_name;
+					if(eval(order_array[i].order_list).length == 1){
+						if(eval(order_array[i].order_list)[0].type==1)
+							menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
+						else
+							menu_name = max_name;
+					}
+					else{
+						menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
+					}
+					if(sessionStorage.getItem("company_type")=="영화관"){
+						if(order_array[i].state==3){
+							alert("새로운 주문이 접수되었습니다.");
+							list_attr_add('#finished_order_list',cnt_finish,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
+							cnt_finish++;
+							state3_num++;
+						}
+					}
+					else{
+						if(order_array[i].state==0){
+							alert("새로운 주문이 접수되었습니다.");
+							state0_num++;
+							list_attr_add('#new_order_list',cnt_now,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
+							cnt_now++;
+						}
+					}
+				}
+			}
+			if(data.message.order_codes!=undefined ){
+				var t = $('#new_order_list').DataTable();
+				
+				for(i=0;i<t.rows()[0].length;i++){
+					var j;
+					var check = 0;
+					for(j=0;j<data.message.order_codes.length;j++){
+						if(t.row(i).data()[1]==data.message.order_codes[j]){
+							check=1;
+							break;
+						}
+					}
+					if(!check){	
+						list_attr_add('#finished_order_list',cnt_finish,t.row(i).data()[1],t.row(i).data()[2],t.row(i).data()[3],4);
+						t.row(i).remove().draw(false);
+						cnt_now--;
+						cnt_finish++;
+						state0_num--;
+					}
+				}
+			}
+		}
+	});
+}
+
 $(document).ready(function(){
     if(!sessionStorage.getItem("id")){
 		alert("로그인이 필요합니다.");
@@ -339,7 +437,13 @@ $(document).ready(function(){
 	}
 	// request 000B 1초마다 반복
 	init();
-	setInterval(repeat_request000B, 1000);
+	
+	if(sessionStorage.getItem("company_type")=="영화관"){
+		setInterval(repeat_request000I, 1000);
+	}
+	else{
+		setInterval(repeat_request000B, 1000);	
+	}
 	$('#new_order_list').DataTable({
 		language : {
 			info : '총 _TOTAL_ 개의 행 중 _START_ 행 부터 _END_ 행 까지',
@@ -373,6 +477,17 @@ $(document).ready(function(){
 		$('#now_order').hide();
 		$('#nav_side').append(newa);
 	}
+	var t = $('#new_order_list').DataTable();
+     
+	var t2 = $('#finished_order_list').DataTable();
+    $('#new_order_list tbody').on('click', 'tr', function () {
+        var data = t.row( this ).data();
+		console.log(total_order_list[data[1]-1]);
+    } );
+	$('#finished_order_list tbody').on('click', 'tr', function () {
+        var data = t2.row( this ).data();
+		console.log(eval(total_order_list[data[1]-1]));
+    } );
 	// $(document).on('click','#new_order_list td',function(){
 		// var tr = $(this).closest('tr');
 		// var td = tr.children();
