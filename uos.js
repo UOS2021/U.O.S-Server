@@ -1777,13 +1777,8 @@ app.post('/post', function(req, res, next){
 
         //음식점 메뉴 삭제
         case '00A3':{ 
-<<<<<<< HEAD
+
 			let num = message.num;
-=======
-            // var category = message.category;
-            // var name = message.name;
-            let num = message.num;
->>>>>>> bb9a9df3739f55e782f50de64c85d093668474a8
 
             // 이미지 삭제
             fs.unlinkSync(`./assets/images/${message.id}/${num}.jpg`)
@@ -2335,35 +2330,6 @@ app.post('/post', function(req, res, next){
             let sql = `SELECT * FROM movie_${message.id} WHERE num='${num}'`;
             let results = sync_connection.query(sql);
             let movie_num = results[0].num;
-<<<<<<< HEAD
-			
-			// 그새 팔렸는지 체크
-			// let sql2 = `SELECT * FROM movie_${message.id}_${movie_num}; `;
-			// let results2 = sync_connection.query(sql2);
-			// for(let result2 of results2){
-			// 	let state = result2.state;
-			// 	let code = result2.code;
-			// 	for(let seat of seat_arr){
-			// 		let seat_code = seat.code;
-			// 		let seat_state = seat.state;
-			// 		if(seat_code == code && code == 1){
-			// 			res.json({status:'Fail'});
-			// 			connection.end();
-			// 			break;
-			// 		}
-			// 	}
-			// }
-			
-
-
-			// 영화 좌석 변경
-			let sql3 = ``;
-			seat_arr.forEach(function(seat) {
-				sql3 += "UPDATE movie_"+message.id+"_"+movie_num+" SET state = '" + seat.state + "' WHERE code = '" + seat.code + "'; ";
-			})
-			let results3 = sync_connection.query(sql3);
-			console.log("좌석 변경 완료");
-=======
             
             // 그새 팔렸는지 체크
             let sql2 = `SELECT * FROM movie_${message.id}_${movie_num}; `;
@@ -2391,8 +2357,6 @@ app.post('/post', function(req, res, next){
             })
             let results3 = sync_connection.query(sql3);
             console.log("좌석 변경 완료");
->>>>>>> bb9a9df3739f55e782f50de64c85d093668474a8
-
 
             res.json({status:"GOOD"});
             connection.end();
