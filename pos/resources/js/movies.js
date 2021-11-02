@@ -320,5 +320,6 @@ $(document).ready(function(){
 		var newa= "<a class='nav-link' href='/pos/movies'><div class='sb-nav-link-icon'><i class='fas fa-tachometer-alt'></i></div>영화 관리</a>"
 		$('#nav_side').append(newa);
 	}
+	$('#company_names').html(sessionStorage.getItem("company_name"));
 	init();
 });

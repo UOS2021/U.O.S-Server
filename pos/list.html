@@ -21,6 +21,7 @@
     <!-- Sidebar Toggle-->
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
     <!-- Navbar Search-->
+	<a class="navbar-brand ps-3" id="company_names" style="text-align : center;"></a>
 	<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
@@ -81,7 +82,36 @@
 						</tbody>
                     </table>
                 </div>
-				
+				<div class="modal fade" id="show_menu_sebu" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<h5 class="modal-title" id="show_menu_sebu_title"></h5>
+					  </div>
+					  <div class="modal-body" id="show_menu_sebu_body">
+						
+					  </div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="show_menu_sebu_close">닫기</button>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				<div class="modal fade" id="show_new_menus" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<h5 class="modal-title">새 주문 알림</h5>
+					  </div>
+					  <div class="modal-body" id="show_menu_sebu_body">
+						
+					  </div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="show_new_menus_close">닫기</button>
+					  </div>
+					</div>
+				  </div>
+				</div>
 				<div class="card mb-4">
                     <div class="card-header">
                         <i class="fas fa-table me-1"></i>

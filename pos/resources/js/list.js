@@ -6,7 +6,7 @@ var state3_num = 0;
 var state4_num = 0;
 var ee;
 var test;
-var total_order_list = [];
+var total_order_list = {};
 function logout(){
 	sessionStorage.setItem("id",'');
 	sessionStorage.setItem("company_type",'');
@@ -39,9 +39,11 @@ function init(){
 		for(i=0;i<order_array.length;i++){
 			var max_name = "";
 			var max_price = -1;
+			var count = 0;
 			for(var j=0;j<eval(order_array[i].order_list).length;j++){
 				if(max_price < eval(order_array[i].order_list)[j].price){
 					max_name = eval(order_array[i].order_list)[j].menu;
+					count = eval(order_array[i].order_list)[j].count;
 					max_price = eval(order_array[i].order_list)[j].price;
 				}
 			}
@@ -51,12 +53,23 @@ function init(){
 			};
 			if(eval(order_array[i].order_list).length == 1){
 				if(eval(order_array[i].order_list)[0].type==1)
-					menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
-				else
-					menu_name = max_name;
+					if(count>1)
+						menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu;
+					else
+						menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
+				else{
+					if(count>1)
+						menu_name = max_name + " "+count +"개";
+					else					
+						menu_name = max_name;
+				}
 			}
 			else{
-				menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
+				if(count>1){
+					menu_name = max_name+" "+count+"개 외 "+eval(order_array[i].order_list).length+"개 상품";
+				}
+				else
+					menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
 			}
 			
 			if(order_array[i].state==0 || order_array[i].state == 1 || order_array[i].state == 2){
@@ -74,6 +87,7 @@ function init(){
 				list_attr_add('#finished_order_list',cnt_finish,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
 				cnt_finish++;
 			}
+			total_order_list[order_array[i].order_code] = order_array[i].order_list;
 		}
 		
 	});
@@ -280,37 +294,57 @@ function repeat_request000B(){
 				for(i=0;i<order_array.length;i++){
 					var max_name = "";
 					var max_price = -1;
+					var count = 0;
 					for(var j=0;j<eval(order_array[i].order_list).length;j++){
 						if(max_price < eval(order_array[i].order_list)[j].price){
 							max_name = eval(order_array[i].order_list)[j].menu;
+							count = eval(order_array[i].order_list)[j].count;
 							max_price = eval(order_array[i].order_list)[j].price;
 						}
 					}
 					var menu_name;
+					if(eval(order_array[i].order_list)[0].type == 2){
+						max_name = (eval(order_array[i].order_list)[0].menu).split("&")[0] + "("+(eval(order_array[i].order_list)[0].menu).split("&")[1]+")";
+					};
 					if(eval(order_array[i].order_list).length == 1){
 						if(eval(order_array[i].order_list)[0].type==1)
-							menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
-						else
-							menu_name = max_name;
+							if(count>1)
+								menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu;
+							else
+								menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
+						else{
+							if(count>1)
+								menu_name = max_name + " "+count +"개";
+							else					
+								menu_name = max_name;
+						}
 					}
 					else{
-						menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
+						if(count>1){
+							menu_name = max_name+" "+count+"개 외 "+eval(order_array[i].order_list).length+"개 상품";
+						}
+						else
+							menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
 					}
 					if(sessionStorage.getItem("company_type")=="영화관"){
 						if(order_array[i].state==3){
-							alert("새로운 주문이 접수되었습니다.");
+							$("#show_new_menus_body").html("주문 내역 : " + menu_name);
+							$("#show_new_menus").modal('show');
 							list_attr_add('#finished_order_list',cnt_finish,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
 							cnt_finish++;
 						}
 					}
 					else{
 						if(order_array[i].state==0){
-							alert("새로운 주문이 접수되었습니다.");
+							$("#show_new_menus_body").html("주문 내역 : " + menu_name);
+							$("#show_new_menus").modal('show');
 							state0_num++;
 							list_attr_add('#new_order_list',cnt_now,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
 							cnt_now++;
 						}
 					}
+					total_order_list[order_array[i].order_code] = order_array[i].order_list;
+					
 				}
 			}
 			if(data.message.order_codes!=undefined ){
@@ -371,25 +405,42 @@ function repeat_request000I(){
 				for(i=0;i<order_array.length;i++){
 					var max_name = "";
 					var max_price = -1;
+					var count = 0;
 					for(var j=0;j<eval(order_array[i].order_list).length;j++){
 						if(max_price < eval(order_array[i].order_list)[j].price){
 							max_name = eval(order_array[i].order_list)[j].menu;
+							count = eval(order_array[i].order_list)[j].count;
 							max_price = eval(order_array[i].order_list)[j].price;
 						}
 					}
 					var menu_name;
+					if(eval(order_array[i].order_list)[0].type == 2){
+						max_name = (eval(order_array[i].order_list)[0].menu).split("&")[0] + "("+(eval(order_array[i].order_list)[0].menu).split("&")[1]+")";
+					};
 					if(eval(order_array[i].order_list).length == 1){
 						if(eval(order_array[i].order_list)[0].type==1)
-							menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
-						else
-							menu_name = max_name;
+							if(count>1)
+								menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu;
+							else
+								menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
+						else{
+							if(count>1)
+								menu_name = max_name + " "+count +"개";
+							else					
+								menu_name = max_name;
+						}
 					}
 					else{
-						menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
+						if(count>1){
+							menu_name = max_name+" "+count+"개 외 "+eval(order_array[i].order_list).length+"개 상품";
+						}
+						else
+							menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
 					}
 					if(sessionStorage.getItem("company_type")=="영화관"){
 						if(order_array[i].state==3){
-							alert("새로운 주문이 접수되었습니다.");
+							$("#show_new_menus_body").html("주문 내역 : " + menu_name);
+							$("#show_new_menus").modal('show');
 							list_attr_add('#finished_order_list',cnt_finish,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
 							cnt_finish++;
 							state3_num++;
@@ -397,12 +448,14 @@ function repeat_request000I(){
 					}
 					else{
 						if(order_array[i].state==0){
-							alert("새로운 주문이 접수되었습니다.");
+							$("#show_new_menus_body").html("주문 내역 : " + menu_name);
+							$("#show_new_menus").modal('show');
 							state0_num++;
 							list_attr_add('#new_order_list',cnt_now,order_array[i].order_code,menu_name,order_array[i].date,order_array[i].state);
 							cnt_now++;
 						}
 					}
+					total_order_list[order_array[i].order_code] = order_array[i].order_list;
 				}
 			}
 			if(data.message.order_codes!=undefined ){
@@ -429,6 +482,13 @@ function repeat_request000I(){
 		}
 	});
 }
+
+$('#show_menu_sebu_close').on('click', function(){
+	$('#show_menu_sebu').modal('hide');
+});
+$('#show_new_menus_close').on('click', function(){
+	$('#show_new_menus').modal('hide');
+});
 
 $(document).ready(function(){
     if(!sessionStorage.getItem("id")){
@@ -482,12 +542,33 @@ $(document).ready(function(){
 	var t2 = $('#finished_order_list').DataTable();
     $('#new_order_list tbody').on('click', 'tr', function () {
         var data = t.row( this ).data();
-		console.log(total_order_list[data[1]-1]);
+		console.log(total_order_list[data[1]]);
+		$("#show_menu_sebu_title").html("주문코드 : "+data[1]);
+		var rows = '';
+		for(var i=0;i<eval(total_order_list[data[1]]).length;i++){
+			rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
+			if(eval(total_order_list[data[1]])[i].submenu){
+				rows += "("+eval(total_order_list[data[1]])[i].submenu + ")<br>";
+			}
+		}
+		$("#show_menu_sebu_body").html(rows);		
+		$('#show_menu_sebu').modal('show');
     } );
 	$('#finished_order_list tbody').on('click', 'tr', function () {
         var data = t2.row( this ).data();
-		console.log(eval(total_order_list[data[1]-1]));
+		console.log(eval(total_order_list[data[1]]));
+		$("#show_menu_sebu_title").html("주문코드 : "+data[1]);
+		var rows = '';
+		for(var i=0;i<eval(total_order_list[data[1]]).length;i++){
+			rows+= eval(total_order_list[data[1]])[i].menu + " "+  eval(total_order_list[data[1]])[i].count + "개";
+			if(eval(total_order_list[data[1]])[i].submenu){
+				rows += "("+eval(total_order_list[data[1]])[i].submenu + ")<br>";
+			}
+		}
+		$("#show_menu_sebu_body").html(rows);
+		$('#show_menu_sebu').modal('show');
     } );
+	$('#company_names').html(sessionStorage.getItem("company_name"));
 	// $(document).on('click','#new_order_list td',function(){
 		// var tr = $(this).closest('tr');
 		// var td = tr.children();
