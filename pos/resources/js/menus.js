@@ -109,8 +109,8 @@ function init(){
 						content_row+="<div class='card mx-2 my-2 border' style='width:18rem;float:left'>";
 							content_row+="<img class='menu_height' src='"+data[i].set_list[k].image+"'>";
 							content_row+="<div class='card-body card_scroll'>";
-								content_row+="<h5 class='card-title'>"+data[i].set_list[k].name+"</h5>";
-								content_row+="<h5 class='card-subtitle'>"+data[i].set_list[k].price+"</h5>";
+								content_row+="<h5 class='card-title' style='height:3rem'>"+data[i].set_list[k].name+"</h5>";
+								content_row+="<h5 class='card-subtitle'  style='height:2rem'>"+data[i].set_list[k].price+"</h5>";
 								content_row+="<p class='card-text'>"+data[i].set_list[k].desc+"</p>";
 								content_row+="<p class='card-text'>"+"구성품 : "+data[i].set_list[k].conf+"</p>";
 							content_row+="</div>";
