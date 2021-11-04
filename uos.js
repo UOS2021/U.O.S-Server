@@ -101,6 +101,9 @@ router.route('/pos/movies').get(function(req, res){
 router.route('/pos/corona').get(function(req, res){
     res.redirect('/pos/corona.html');
 });
+router.route('/pos/calc').get(function(req, res){
+    res.redirect('/pos/calc.html');
+});
 
 router.route('/pos/index.html').get(function(req, res){
     res.redirect('/pos/list.html');
@@ -1684,13 +1687,12 @@ app.post('/post', function(req, res, next){
 
         // 정산 정보 전송
         case '000J' : {
-
             var select_query = "select state, orderlist, price from order_buffer where uospartner_id='" + message.uospartner_id + "' and date like '" + message.date + "%'";
             let results = sync_connection.query(select_query);
             var response_obj = new Object();
-            response_obj.message = "J000"
+            response_obj.message = "J000";
 
-            var send_sales = 0,
+            var send_sales = 0;
             var send_num_orders = 0;
             var send_num_orders_canceled = 0;
             var send_num_orders_rejected = 0;
@@ -1723,7 +1725,7 @@ app.post('/post', function(req, res, next){
 
             res.json(response_obj);
             connection.end();
-
+			break;
         }
 
 
