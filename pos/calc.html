@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>UOS-POS</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <link href="resources/css/uof.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/inko@1.1.1/inko.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="resources/css/styles.css" rel="stylesheet" />
+</head>
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark uof-nav-bg">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3" href="index.html">UOS POS</a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+	<a class="navbar-brand ps-3" id="company_names" style="text-align : center;"></a>
+	<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" onclick = "logout()">Logout</a></li>
+                </ul>
+            </li>
+    </ul>
+
+</nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark " id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav" id="nav_side">
+                    <div class="sb-sidenav-menu-heading">Core</div>
+                    <a class="nav-link" href="/pos/list">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        대쉬보드
+                    </a>
+                    <div class="sb-sidenav-menu-heading">MANAGEMENT</div>
+					<a class="nav-link" href="/pos/calc">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        수입 정산
+                    </a>
+                    <a class="nav-link" href="/pos/qrcode">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        QR코드 관리
+                    </a>
+                    <a class="nav-link" href="/pos/menus">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        메뉴 관리
+                    </a>
+                    <a class="nav-link" href="/pos/corona">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        코로나 관리
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4 uof-h1">수입 정산
+                </h1>
+                
+				<div class="row">
+					<div class="col-lg-6">
+						<ul class="nav nav-tabs" id = "myTab">
+						  <li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#year">년</a>
+						  </li>
+						  <li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#month">월</a>
+						  </li>
+						  <li class="nav-item">
+							<a class="nav-link  active" data-toggle="tab" href="#date">일</a>
+						  </li>
+						</ul>
+							<div class="tab-content">
+								<div class="tab-pane fade" id="year">
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="table"  style="table-layout: fixed">
+												<thead>
+													<tr>
+														<th colspan = "5">
+															<button onclick="prev_year()"><</button>
+																<h2 id = "print_year" style = "display : inline">
+																	2021년
+																</h2>
+															<button onclick="next_year()">></button>
+														</th>
+													</tr>
+												</thead>
+												<tbody>
+												<tr>
+													<td colspan = "2">매 출</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="salesy"></td>
+												</tr>
+												<tr>
+													<td colspan = "2">주 문 건 수</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="num_ordersy"></td>
+												</tr>
+												<tr>
+													<td colspan = "2">주 문 취 소</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="num_orders_canceledy"></td>
+												</tr>
+												<tr>
+													<td colspan = "2">주 문 거 절</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="num_order_rejectedy"></td>
+												</tr>
+											</tbody>
+											</table>
+										</div>
+									</div>
+							</div>
+							<div class="tab-pane fade" id="month">
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="table" style="table-layout: fixed">
+											<thead>
+												<tr>
+													<th colspan = "5">
+														<button onclick="prev_month()"><</button>
+															<h2 id = "print_month" style = "display : inline">
+																2021년 11월
+															</h2>
+														<button onclick="next_month()">></button>
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td colspan = "2">매 출</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="salesm"></td>
+												</tr>
+												<tr>
+													<td colspan = "2">주 문 건 수</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="num_ordersm"></td>
+												</tr>
+												<tr>
+													<td colspan = "2">주 문 취 소</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="num_orders_canceledm"></td>
+												</tr>
+												<tr>
+													<td colspan = "2">주 문 거 절</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="num_order_rejectedm"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane fade show active" id="date">
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="table" style="table-layout: fixed">
+											<thead>
+												<tr>
+													<th colspan = "5">
+														<button onclick="prev_date()"><</button>
+															<h2 id = "print_date" style = "display : inline">
+																2021년 11월 5일
+															</h2>
+														<button onclick="next_date()">></button>
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td colspan = "2">매 출</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="salesd"></td>
+												</tr>
+												<tr>
+													<td colspan = "2">주 문 건 수</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="num_ordersd"></td>
+												</tr>
+												<tr>
+													<td colspan = "2">주 문 취 소</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="num_orders_canceledd"></td>
+												</tr>
+												<tr>
+													<td colspan = "2">주 문 거 절</td>
+													<td colspan = "1">:</td>
+													<td colspan = "2" id="num_order_rejectedd"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="resources/js/scripts.js"></script>
+<script src="resources/js/calc.js"></script>
+</body>
+</html>
