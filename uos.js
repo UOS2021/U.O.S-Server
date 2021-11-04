@@ -806,16 +806,16 @@ app.post('/post', function(req, res, next){
 
                 // 음식 정보 데이터 삽입
                 for (var result of food_result) {
-                   var num = result.num;
-                   var categoryName = result.category;
-                   var type = result.type;
-                   var name = result.name;
-                   var price = result.price;
-                   var description = result.description;
-                   var conf = result.conf;
-                   var category_list_json = eval(result.category_list);
-                   let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
-                   let image = Buffer.from(readImage).toString('base64');
+                 var num = result.num;
+                 var categoryName = result.category;
+                 var type = result.type;
+                 var name = result.name;
+                 var price = result.price;
+                 var description = result.description;
+                 var conf = result.conf;
+                 var category_list_json = eval(result.category_list);
+                 let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+                 let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -913,16 +913,16 @@ app.post('/post', function(req, res, next){
 
                 // 피시방 정보 데이터 삽입
                 for (var result of results) {
-                   var num = result.num;
-                   var categoryName = result.category;
-                   var type = result.type;
-                   var name = result.name;
-                   var price = result.price;
-                   var description = result.description;
-                   var conf = result.conf;
-                   var category_list_json = eval(result.category_list);
-                   let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
-                   let image = Buffer.from(readImage).toString('base64');
+                 var num = result.num;
+                 var categoryName = result.category;
+                 var type = result.type;
+                 var name = result.name;
+                 var price = result.price;
+                 var description = result.description;
+                 var conf = result.conf;
+                 var category_list_json = eval(result.category_list);
+                 let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+                 let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -1017,16 +1017,16 @@ app.post('/post', function(req, res, next){
 
                 // 음식 정보 데이터 삽입
                 for (var result of results) {
-                   var num = result.num;
-                   var categoryName = result.category;
-                   var type = result.type;
-                   var name = result.name;
-                   var price = result.price;
-                   var description = result.description;
-                   var conf = result.conf;
-                   var category_list_json = eval(result.category_list);
-                   let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
-                   let image = Buffer.from(readImage).toString('base64');
+                 var num = result.num;
+                 var categoryName = result.category;
+                 var type = result.type;
+                 var name = result.name;
+                 var price = result.price;
+                 var description = result.description;
+                 var conf = result.conf;
+                 var category_list_json = eval(result.category_list);
+                 let readImage = fs.readFileSync(`./assets/images/${message.uospartner_id}/${num}.jpg`);
+                 let image = Buffer.from(readImage).toString('base64');
 
                     // 카테고리 중복 확인
                     var index = category_list.findIndex(function(item, i) {
@@ -1287,7 +1287,6 @@ app.post('/post', function(req, res, next){
                                     order_array : order_array_arr,
                                     order_codes : cancel_order_code_arr
                                 };
-                                console.log(cancel_order_code_arr);
                                 res.json(response_obj);
                             }
                         }
@@ -1320,9 +1319,9 @@ app.post('/post', function(req, res, next){
                     res_data_string = {response_code: "0019"};
                 }
                 else{
-                 fcm_token = result[0].fcm_token;
-             }
-         });
+                   fcm_token = result[0].fcm_token;
+               }
+           });
 
 
             connection.query(update_query, function(err1, result1, fields){
@@ -1680,6 +1679,29 @@ app.post('/post', function(req, res, next){
             });
 
             break;
+        }
+
+
+        // 정산 정보 전송
+        case '000J' : {
+
+            var select_query = "select orderlist, price from order_buffer where uospartner_id='" + message.uospartner_id + "' and (state=0 or state=1 or state=2 or state=3)";
+            let results = sync_connection.query(select_query);
+            var response_obj = new Object();
+            response_obj.message = "J000"
+            var orderlist_arr = new Array();
+            var price_arr = new Array();
+            for(var i=0; i < results1.length; i++){
+                orderlist_arr.push(results[i].orderlist);
+                price_arr.push(results[i].price);
+            }
+            response_obj.message = {
+                orderlist_array : orderlist_arr,
+                price_array : price_arr
+            };
+            res.json(response_obj);
+            connection.end();
+
         }
 
 
