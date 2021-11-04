@@ -719,7 +719,7 @@ function side_category_add(){
 	bJson.required = true;
 	side_menu_list.push(bJson);
 	$('#myModal2').modal('hide');
-	var rows2 = "<button type='button' class='btn btn-success' style='margin-right:5px;'>"+side_name+"<span class='badge badge-secondaryㄴ'>외 "+cnt+"개 항목"+"</span></button>"
+	var rows2 = "<button type='button' class='btn btn-success' style='margin-right:5px;'>"+side_name+"<span class='badge badge-secondary'>외 "+cnt+"개 항목"+"</span></button>"
 	$('#side_list').append(rows2);
 }
 

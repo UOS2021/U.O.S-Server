@@ -23,6 +23,7 @@ function list_attr_add(table,no, order_code, menu, time,state){
 	t.row.add([no,order_code,menu,time,rows]).draw(false);
 }
 function send_alarm(code){
+	console.log(alarm_code);
 	let param =
 	{
 		"request_code": "000H",
