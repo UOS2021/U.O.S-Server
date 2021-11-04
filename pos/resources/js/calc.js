@@ -1,4 +1,4 @@
-var selected_type = "일";
+var selected_type = "일별";
 var today = new Date();
 var today_year = today.getFullYear();
 var today_month = today.getMonth() + 1;
@@ -56,13 +56,13 @@ function communicate(date){
 	});
 	req.done(function(data, status){
 		tt=data;
-		if(selected_type == "일"){
+		if(selected_type == "일별"){
 			$("#salesd").html(data.message.sales.toLocaleString()+"원");
 			$("#num_ordersd").html(data.message.num_orders+"건");
 			$("#num_orders_canceledd").html(data.message.num_orders_canceled+"건");
 			$("#num_order_rejectedd").html(data.message.num_orders_rejected+"건");
 		}
-		else if(selected_type == "월"){
+		else if(selected_type == "월별"){
 			$("#salesm").html(data.message.sales.toLocaleString()+"원");
 			$("#num_ordersm").html(data.message.num_orders+"건");
 			$("#num_orders_canceledm").html(data.message.num_orders_canceled+"건");
@@ -89,10 +89,10 @@ $('#myTab a').on('click', function (e) {
 	$(this).tab('show');
 	selected_type = this.innerHTML;
 	console.log(selected_type);
-	if(selected_type == "일"){
+	if(selected_type == "일별"){
 		communicate(today.getFullYear()+"-"+(today.getMonth()+1)+"-"+pad(today.getDate()));
 	}
-	else if(selected_type == "월"){
+	else if(selected_type == "월별"){
 		communicate(today.getFullYear()+"-"+(today.getMonth()+1));
 	}
 	else{
