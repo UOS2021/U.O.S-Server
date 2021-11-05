@@ -3,6 +3,32 @@ var today = new Date();
 var today_year = today.getFullYear();
 var today_month = today.getMonth() + 1;
 var today_date = today.getDate();
+var pieChartCanvas = $("#pie-chart");
+function Draw_chart(tot,accept,cancel,reject){
+	new Chart(document.getElementById("pie-chart"), {
+    type: 'pie',
+    data: {
+      labels: ["주문수락(건)", "주문취소(건)", "주문거절(건)"],
+      datasets: [{
+        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+        data: [accept,cancel,reject]
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: "총 주문 : "+tot+"건"
+      },
+	  pieceLabel: {
+		  mode:"value",
+		  position:"default",
+		  fontSize: 11,
+		  fontStyle: 'bold' 
+	}
+
+    }
+});
+}
 
 function pad(n) {
     return (n < 10) ? ("0" + n) : n;
@@ -61,18 +87,21 @@ function communicate(date){
 			$("#num_ordersd").html(data.message.num_orders+"건");
 			$("#num_orders_canceledd").html(data.message.num_orders_canceled+"건");
 			$("#num_order_rejectedd").html(data.message.num_orders_rejected+"건");
+			Draw_chart(data.message.num_orders,data.message.num_orders-data.message.num_orders_canceled-data.message.num_orders_rejected,data.message.num_orders_canceled,data.message.num_orders_rejected);
 		}
 		else if(selected_type == "월별"){
 			$("#salesm").html(data.message.sales.toLocaleString()+"원");
 			$("#num_ordersm").html(data.message.num_orders+"건");
 			$("#num_orders_canceledm").html(data.message.num_orders_canceled+"건");
 			$("#num_order_rejectedm").html(data.message.num_orders_rejected+"건");
+			Draw_chart(data.message.num_orders,data.message.num_orders-data.message.num_orders_canceled-data.message.num_orders_rejected,data.message.num_orders_canceled,data.message.num_orders_rejected);
 		}
 		else{
 			$("#salesy").html(data.message.sales.toLocaleString()+"원");
 			$("#num_ordersy").html(data.message.num_orders+"건");
 			$("#num_orders_canceledy").html(data.message.num_orders_canceled+"건");
 			$("#num_order_rejectedy").html(data.message.num_orders_rejected+"건");
+			Draw_chart(data.message.num_orders,data.message.num_orders-data.message.num_orders_canceled-data.message.num_orders_rejected,data.message.num_orders_canceled,data.message.num_orders_rejected);
 		}
 		
 	});

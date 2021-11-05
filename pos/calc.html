@@ -14,6 +14,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/inko@1.1.1/inko.min.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="resources/css/styles.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 </head>
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark uof-nav-bg">
@@ -124,90 +125,97 @@
 											</table>
 										</div>
 									</div>
-							</div>
-							<div class="tab-pane fade" id="month">
-								<div class="card-body">
-									<div class="table-responsive">
-										<table class="table" style="table-layout: fixed">
-											<thead>
-												<tr>
-													<th colspan = "5">
-														<button onclick="prev_month()"><</button>
-															<h2 id = "print_month" style = "display : inline">
-																2021년 11월
-															</h2>
-														<button onclick="next_month()">></button>
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td colspan = "2">매 출</td>
-													<td colspan = "1">:</td>
-													<td colspan = "2" id="salesm"></td>
-												</tr>
-												<tr>
-													<td colspan = "2">주 문 건 수</td>
-													<td colspan = "1">:</td>
-													<td colspan = "2" id="num_ordersm"></td>
-												</tr>
-												<tr>
-													<td colspan = "2">주 문 취 소</td>
-													<td colspan = "1">:</td>
-													<td colspan = "2" id="num_orders_canceledm"></td>
-												</tr>
-												<tr>
-													<td colspan = "2">주 문 거 절</td>
-													<td colspan = "1">:</td>
-													<td colspan = "2" id="num_order_rejectedm"></td>
-												</tr>
-											</tbody>
-										</table>
+								</div>
+								<div class="tab-pane fade" id="month">
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="table" style="table-layout: fixed">
+												<thead>
+													<tr>
+														<th colspan = "5">
+															<button onclick="prev_month()"><</button>
+																<h2 id = "print_month" style = "display : inline">
+																	2021년 11월
+																</h2>
+															<button onclick="next_month()">></button>
+														</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td colspan = "2">매 출</td>
+														<td colspan = "1">:</td>
+														<td colspan = "2" id="salesm"></td>
+													</tr>
+													<tr>
+														<td colspan = "2">주 문 건 수</td>
+														<td colspan = "1">:</td>
+														<td colspan = "2" id="num_ordersm"></td>
+													</tr>
+													<tr>
+														<td colspan = "2">주 문 취 소</td>
+														<td colspan = "1">:</td>
+														<td colspan = "2" id="num_orders_canceledm"></td>
+													</tr>
+													<tr>
+														<td colspan = "2">주 문 거 절</td>
+														<td colspan = "1">:</td>
+														<td colspan = "2" id="num_order_rejectedm"></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div class="tab-pane fade show active" id="date">
-								<div class="card-body">
-									<div class="table-responsive">
-										<table class="table" style="table-layout: fixed">
-											<thead>
-												<tr>
-													<th colspan = "5">
-														<button onclick="prev_date()"><</button>
-															<h2 id = "print_date" style = "display : inline">
-																2021년 11월 5일
-															</h2>
-														<button onclick="next_date()">></button>
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td colspan = "2">매 출</td>
-													<td colspan = "1">:</td>
-													<td colspan = "2" id="salesd"></td>
-												</tr>
-												<tr>
-													<td colspan = "2">주 문 건 수</td>
-													<td colspan = "1">:</td>
-													<td colspan = "2" id="num_ordersd"></td>
-												</tr>
-												<tr>
-													<td colspan = "2">주 문 취 소</td>
-													<td colspan = "1">:</td>
-													<td colspan = "2" id="num_orders_canceledd"></td>
-												</tr>
-												<tr>
-													<td colspan = "2">주 문 거 절</td>
-													<td colspan = "1">:</td>
-													<td colspan = "2" id="num_order_rejectedd"></td>
-												</tr>
-											</tbody>
-										</table>
+								<div class="tab-pane fade show active" id="date">
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="table" style="table-layout: fixed">
+												<thead>
+													<tr>
+														<th colspan = "5">
+															<button onclick="prev_date()"><</button>
+																<h2 id = "print_date" style = "display : inline">
+																	2021년 11월 5일
+																</h2>
+															<button onclick="next_date()">></button>
+														</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td colspan = "2">매 출</td>
+														<td colspan = "1">:</td>
+														<td colspan = "2" id="salesd"></td>
+													</tr>
+													<tr>
+														<td colspan = "2">주 문 건 수</td>
+														<td colspan = "1">:</td>
+														<td colspan = "2" id="num_ordersd"></td>
+													</tr>
+													<tr>
+														<td colspan = "2">주 문 취 소</td>
+														<td colspan = "1">:</td>
+														<td colspan = "2" id="num_orders_canceledd"></td>
+													</tr>
+													<tr>
+														<td colspan = "2">주 문 거 절</td>
+														<td colspan = "1">:</td>
+														<td colspan = "2" id="num_order_rejectedd"></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+
 									</div>
 								</div>
+								
 							</div>
-						</div>
+						
+					</div>
+					<div class="col-lg-3">
+						
+						<canvas id="pie-chart" width="200px" height="200px"></canvas>
 					</div>
 				</div>
             </div>
