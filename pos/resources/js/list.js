@@ -55,9 +55,9 @@ function init(){
 			if(eval(order_array[i].order_list).length == 1){
 				if(eval(order_array[i].order_list)[0].type==1)
 					if(count>1)
-						menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu;
+						menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
 					else
-						menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
+						menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
 				else{
 					if(count>1)
 						menu_name = max_name + " "+count +"개";
@@ -159,23 +159,38 @@ function btn_reject(order_code){
 		}
 		var max_name = "";
 		var max_price = -1;
-		for(var j=0;j<eval(data.message.order_list).length;j++){
-			if(max_price < eval(data.message.order_list)[j].price){
-				max_name = eval(data.message.order_list)[j].menu;
-				max_price = eval(data.message.order_list)[j].price;
+		var count = 0;
+			for(var j=0;j<eval(order_array[i].order_list).length;j++){
+				if(max_price < eval(order_array[i].order_list)[j].price){
+					max_name = eval(order_array[i].order_list)[j].menu;
+					count = eval(order_array[i].order_list)[j].count;
+					max_price = eval(order_array[i].order_list)[j].price;
+				}
 			}
-		}
-		var menu_name;
-		if(eval(data.message.order_list).length == 1){
-			if(eval(data.message.order_list)[0].type==1)
-				menu_name = max_name+" 및 "+eval(data.message.order_list)[0].submenu;
-			else
-				menu_name = max_name;
-				
-		}
-		else{
-			menu_name = max_name+" 외 "+eval(data.message.order_list).length+"개 상품";
-		}
+			var menu_name;
+			if(eval(order_array[i].order_list)[0].type == 2){
+				max_name = (eval(order_array[i].order_list)[0].menu).split("&")[0] + "("+(eval(order_array[i].order_list)[0].menu).split("&")[1]+")";
+			};
+			if(eval(order_array[i].order_list).length == 1){
+				if(eval(order_array[i].order_list)[0].type==1)
+					if(count>1)
+						menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
+					else
+						menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
+				else{
+					if(count>1)
+						menu_name = max_name + " "+count +"개";
+					else					
+						menu_name = max_name;
+				}
+			}
+			else{
+				if(count>1){
+					menu_name = max_name+" "+count+"개 외 "+eval(order_array[i].order_list).length+"개 상품";
+				}
+				else
+					menu_name = max_name+" 외 "+eval(order_array[i].order_list).length+"개 상품";
+			}
 		list_attr_add('#finished_order_list',cnt_finish,data.message.order_code,menu_name,data.message.date,data.message.state);
 		cnt_finish++;
 		timing = true;
@@ -321,9 +336,9 @@ function repeat_request000B(){
 					if(eval(order_array[i].order_list).length == 1){
 						if(eval(order_array[i].order_list)[0].type==1)
 							if(count>1)
-								menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu;
+								menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
 							else
-								menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
+								menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
 						else{
 							if(count>1)
 								menu_name = max_name + " "+count +"개";
@@ -432,9 +447,9 @@ function repeat_request000I(){
 					if(eval(order_array[i].order_list).length == 1){
 						if(eval(order_array[i].order_list)[0].type==1)
 							if(count>1)
-								menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu;
+								menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
 							else
-								menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu;
+								menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
 						else{
 							if(count>1)
 								menu_name = max_name + " "+count +"개";
