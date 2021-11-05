@@ -129,6 +129,9 @@ $('#myTab a').on('click', function (e) {
 	}
 });
 function init(){
+	$("#print_year").html(today_year+"년");
+	$("#print_month").html(today_year+"년 "+today_month+"월");
+	$("#print_date").html(today_year+"년 "+today_month+"월 " + today_date+"일");
 	communicate(today.getFullYear()+"-"+(today.getMonth()+1)+"-"+pad(today.getDate()));
 }
 $(document).ready(function(){
