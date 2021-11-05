@@ -101,6 +101,9 @@ router.route('/pos/movies').get(function(req, res){
 router.route('/pos/corona').get(function(req, res){
     res.redirect('/pos/corona.html');
 });
+router.route('/pos/calc').get(function(req, res){
+    res.redirect('/pos/calc.html');
+});
 
 router.route('/pos/index.html').get(function(req, res){
     res.redirect('/pos/list.html');
@@ -1613,7 +1616,6 @@ app.post('/post', function(req, res, next){
                         console.log("Something has gone wrong");
                     } else {
                         console.log("Successfully sent with response: ", response);
-                        
                     }
                 });
             }
@@ -1688,24 +1690,45 @@ app.post('/post', function(req, res, next){
 
         // 정산 정보 전송
         case '000J' : {
-
-            var select_query = "select orderlist, price from order_buffer where uospartner_id='" + message.uospartner_id + "' and (state=0 or state=1 or state=2 or state=3)";
+            var select_query = "select state, orderlist, price from order_buffer where uospartner_id='" + message.uospartner_id + "' and date like '" + message.date + "%'";
             let results = sync_connection.query(select_query);
             var response_obj = new Object();
-            response_obj.message = "J000"
-            var orderlist_arr = new Array();
-            var price_arr = new Array();
-            for(var i=0; i < results1.length; i++){
-                orderlist_arr.push(results[i].orderlist);
-                price_arr.push(results[i].price);
+            response_obj.message = "J000";
+
+            var send_sales = 0;
+            var send_num_orders = 0;
+            var send_num_orders_canceled = 0;
+            var send_num_orders_rejected = 0;
+
+            for(var i=0; i < results.length; i++){
+
+                send_num_orders++;
+
+                // 주문 취소
+                if(results[i].state == 4){
+                    send_num_orders_canceled++;
+                }
+                // 구문 거절
+                else if(results[i].state == 5){
+                    send_num_orders_rejected++;
+                }
+                // 매출 계산
+                else{
+                    send_sales += results[i].price;
+                }
+
             }
+            
             response_obj.message = {
-                orderlist_array : orderlist_arr,
-                price_array : price_arr
+                sales : send_sales,
+                num_orders : send_num_orders,
+                num_orders_canceled : send_num_orders_canceled,
+                num_orders_rejected : send_num_orders_rejected
             };
+
             res.json(response_obj);
             connection.end();
-
+            break;
         }
 
 
