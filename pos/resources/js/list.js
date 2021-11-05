@@ -55,9 +55,9 @@ function init(){
 			if(eval(order_array[i].order_list).length == 1){
 				if(eval(order_array[i].order_list)[0].type==1)
 					if(count>1)
-						menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
+						menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ',');
 					else
-						menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
+						menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ',');
 				else{
 					if(count>1)
 						menu_name = max_name + " "+count +"개";
@@ -174,9 +174,9 @@ function btn_reject(order_code){
 			if(eval(order_array[i].order_list).length == 1){
 				if(eval(order_array[i].order_list)[0].type==1)
 					if(count>1)
-						menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
+						menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ',');
 					else
-						menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
+						menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ',');
 				else{
 					if(count>1)
 						menu_name = max_name + " "+count +"개";
@@ -336,9 +336,9 @@ function repeat_request000B(){
 					if(eval(order_array[i].order_list).length == 1){
 						if(eval(order_array[i].order_list)[0].type==1)
 							if(count>1)
-								menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
+								menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ',');
 							else
-								menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
+								menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ',');
 						else{
 							if(count>1)
 								menu_name = max_name + " "+count +"개";
@@ -447,9 +447,9 @@ function repeat_request000I(){
 					if(eval(order_array[i].order_list).length == 1){
 						if(eval(order_array[i].order_list)[0].type==1)
 							if(count>1)
-								menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
+								menu_name = max_name+" "+count+"개 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ',');
 							else
-								menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ' ');
+								menu_name = max_name+" 및 "+eval(order_array[i].order_list)[0].submenu.replace(/&/g, ',');
 						else{
 							if(count>1)
 								menu_name = max_name + " "+count +"개";
