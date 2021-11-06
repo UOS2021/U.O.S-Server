@@ -23,6 +23,8 @@
 <p align = "center">
   <a href="https://2021uos.gitbook.io/">
 <img src="https://img.shields.io/badge/GitBook-project_doc-blue?&style=for-the-badge&logo=github">
+  <a href="https://2021uos.gitbook.io/u-o-f/technical-note/server#undefined"  target="_blank">
+<img src="https://img.shields.io/badge/API_GUIDE-UOS_MOBILE-blue?&style=for-the-badge&">
  </p>
 <br><br>
 
