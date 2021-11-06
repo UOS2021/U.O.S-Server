@@ -39,7 +39,7 @@
 </thead>
 <tbody>
     <tr>
-        <td width="100" align="center"><img src="/image/youngjin.PNG" width="60" height="60"></td>
+        <td width="100" align="center"><img src="/image/youngjin.png" width="60" height="60"></td>
         <td width="100" align="center">손영진</td>
         <td width="150">U.O.S팀장<br>U.O.S-Mobile 개발<br>통신 소켓 구축</td>
         <td width="100" align="center">
@@ -52,7 +52,7 @@
         </td>
     </tr>
     <tr>
-        <td width="100" align="center"><img src="/image/sungjoon.PNG" width="60" height="60"></td>
+        <td width="100" align="center"><img src="/image/sungjoon.png" width="60" height="60"></td>
         <td width="100" align="center">배성준</td>
         <td width="150">U.O.S-Server 개발<br>U.O.S-Mobile 개발<br>U.O.S-Pos Design 등</td>
         <td width="100" align="center">
@@ -65,7 +65,7 @@
         </td>
     </tr>
     <tr>
-        <td width="100" align="center"><img src="/image/jongbum.PNG" width="60" height="60"></td>
+        <td width="100" align="center"><img src="/image/jongbum.png" width="60" height="60"></td>
         <td width="100" align="center">윤종범</td>
         <td width="150">U.O.S-Mobile 개발<br>API 설계<br>Json 통신 등</td>
         <td width="100" align="center">
@@ -78,7 +78,7 @@
         </td>
     </tr>
     <tr>
-        <td width="100" align="center"><img src="/image/inus.PNG" width="60" height="60"></td>
+        <td width="100" align="center"><img src="/image/inus.png" width="60" height="60"></td>
         <td width="100" align="center">이인우</td>
         <td width="150">U.O.S-Server 개발<br>U.O.S-Pos 개발<br서버 제공 등</td>
         <td width="100" align="center">
@@ -91,7 +91,7 @@
         </td>
     </tr>
     <tr>
-        <td width="100" align="center"><img src="/image/hyunseung.PNG" width="60" height="60"></td>
+        <td width="100" align="center"><img src="/image/hyunseung.png" width="60" height="60"></td>
         <td width="100" align="center">유현승</td>
         <td width="150">U.O.S-Server 개발<br>U.O.S-Pos 개발<br>통신 소켓 구축 등</td>
         <td width="100" align="center">
