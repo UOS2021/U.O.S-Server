@@ -3,6 +3,7 @@
   <br/>
 </p>
 <h1 align="center"><strong>U.O.S</strong><br>내 손 안에 키오스크를 담다.</h1>
+<p align="center"><a href="https://www.oss.kr/dev_competition_activities/show/29368b31-ff43-4540-8317-45d7eb927b06">2021 공개SW개발자대회 동상(알티베이스상) 수상</a></p>
 <p align="center">
  코로나 시대에 접촉을 최소화 하여 감염병을 예방할 수 있는 언택트 기술을 사용하여 비대면으로 주문하세요.
 </p>
